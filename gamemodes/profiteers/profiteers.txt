@@ -2,4 +2,5 @@
 {
 	"base"		"base"
 	"title"		"Profiteers"
+    "menusystem" "1"
 }
