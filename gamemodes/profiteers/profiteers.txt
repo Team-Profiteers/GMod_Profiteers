@@ -1,0 +1,5 @@
+"profiteers"
+{
+	"base"		"base"
+	"title"		"Profiteers"
+}
