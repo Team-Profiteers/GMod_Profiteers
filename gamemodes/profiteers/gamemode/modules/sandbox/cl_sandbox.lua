@@ -9,7 +9,7 @@ SPAWN_Destroy = {
 	["#spawnmenu.category.vehicles"] = true,
 	["#spawnmenu.category.entities"] = true,
 	["#spawnmenu.category.postprocess"] = true,
-	["#spawnmenu.content_tab"] = true,
+	// ["#spawnmenu.content_tab"] = true,
 	["simfphys"] = true,
 }
 

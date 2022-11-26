@@ -1,6 +1,6 @@
 
 
-Nodes = Nodes or {}
+Profiteers.Nodes = nil
 
 
 local defaultrels = {"ww_frag_thrown D_FR 99",
@@ -28,6 +28,8 @@ local function ReadUShort(f) return toUShort(f:Read(SIZEOF_SHORT)) end
 --3 = playerspawns
 --4 = wall climbers
 function ParseFile()
+    Profiteers.Nodes = {}
+
     if found_ain then
         return
     end
@@ -68,7 +70,7 @@ function ParseFile()
 
         local node = v
 
-        table.insert(Nodes,node)
+        table.insert(Profiteers.Nodes, node)
     end
 end
 
@@ -76,12 +78,16 @@ function createEnemyNPC()
 
     local c = 0
 
+    if !Profiteers.Nodes then
+        ParseFile()
+    end
+
     print( "Attempted to spawn new batch of NPCs!" )
 
     for i, k in pairs( ents.GetAll() ) do
-    if k:IsNPC() then
-        c = c + 1
-    end
+        if k:IsNPC() then
+            c = c + 1
+        end
     end
 
     if c > Profiteers.MaxNPCs then
@@ -139,14 +145,12 @@ function createEnemyNPC()
         enemy:Fire("SetReadinessHigh")
         enemy:SetNPCState(NPC_STATE_COMBAT)
 
-        print("Enemy spawned at "..tostring(a))
+        print("Enemy spawned at " .. tostring(a))
     end
 end
 
 function GM:OnNPCKilled( npc, atk, inf )
 end
-
-ParseFile()
 
 timer.Create("Profiteers - Spawn NPCs", 5, 0, function()
     createEnemyNPC()

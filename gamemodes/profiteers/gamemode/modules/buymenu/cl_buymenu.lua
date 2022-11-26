@@ -1,7 +1,7 @@
 hook.Add("PopulateShop", "AddShopContent", function(pnlContent, tree, _)
 	local categorized = {}
 
-	for k, v in pairs(GAMEMODE.Buyables) do
+	for k, v in pairs(Profiteers.Buyables) do
 		local Category = v.Category or "Other"
 
 		if not isstring(Category) then
@@ -75,7 +75,7 @@ spawnmenu.AddCreationTab("Shop", function()
 end, "icon16/money.png", 20)
 
 concommand.Add("pt_buy", function(ply, cmd, args, argStr)
-	local itemtbl = GAMEMODE.Buyables[args[1]]
+	local itemtbl = Profiteers.Buyables[args[1]]
 	if not itemtbl then return end
 
 	if ply:GetMoney() < (itemtbl.Price or 0) then
@@ -96,7 +96,7 @@ concommand.Add("pt_buy", function(ply, cmd, args, argStr)
 	net.SendToServer()
 end, function(cmd, args)
 	local ret = {}
-	for k, _ in pairs(GAMEMODE.Buyables) do
+	for k, _ in pairs(Profiteers.Buyables) do
 		table.insert(ret, "pt_buy " .. k)
 	end
 	return ret
