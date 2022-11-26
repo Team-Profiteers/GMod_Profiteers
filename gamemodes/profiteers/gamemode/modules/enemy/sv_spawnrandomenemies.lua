@@ -139,6 +139,8 @@ function createEnemyNPC()
 
         enemy:SetCurrentWeaponProficiency(squad["prof"])
 
+        enemy.DamageMult = squad["dmgmult"] or 1
+
         enemy:Fire("StartPatrolling")
         enemy:Fire("SetReadinessHigh")
         enemy:SetNPCState(NPC_STATE_COMBAT)

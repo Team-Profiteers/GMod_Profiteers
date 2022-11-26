@@ -10,6 +10,7 @@ Profiteers.Enemies["Combine Soldiers"] = {
     ["maxsize"] = 3,
     ["rels"] = {"npc_metropolice D_HT 40", "npc_stalker D_HT 50", "npc_manhack D_FR 80", "npc_hunter D_FR 90"},
     ["bounty"] = 500,
+	["dmgmult"] = 2
 }
 
 Profiteers.Enemies["Cops"] = { 
@@ -22,6 +23,7 @@ Profiteers.Enemies["Cops"] = {
     ["maxsize"] = 5,
     ["rels"] = {"npc_combine_s D_FR 40", "CombinePrison D_FR 60", "npc_stalker D_HT 50", "npc_manhack D_FR 90", "npc_hunter D_FR 90"},
     ["bounty"] = 150,
+	["dmgmult"] = 1.5
 }
 
 Profiteers.Enemies["Zombies"] = { 
@@ -34,6 +36,7 @@ Profiteers.Enemies["Zombies"] = {
     ["maxsize"] = 12,
     ["rels"] = {""},
     ["bounty"] = 500,
+	["dmgmult"] = 5
 }
 
 Profiteers.MaxNPCs = 50
