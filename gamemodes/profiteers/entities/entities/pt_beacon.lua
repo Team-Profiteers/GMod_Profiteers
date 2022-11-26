@@ -11,6 +11,7 @@ ENT.Spawnable = true
 
 function ENT:SetupDataTables()
     self:NetworkVar("Bool", 0, "Anchored")
+    self:NetworkVar("Entity", 0, "User")
 end
 
 if SERVER then
@@ -57,7 +58,7 @@ if SERVER then
                     self:EmitSound("npc/roller/mine/rmine_blades_out" .. math.random(1, 3) .. ".wav", 100, 95)
                     timer.Simple(0.1, function() if IsValid(self) then self:EmitSound("npc/roller/blade_cut.wav", 100, 90) end end)
                     self:SetAnchored(true)
-                    self:SetOwner(ply)
+                    self:SetUser(ply) -- SetOwner will disable collisions. lovely!
                 else
                     self:EmitSound("npc/roller/code2.wav", 100, 90)
                 end
@@ -81,4 +82,37 @@ else
             render.DrawLine(tr.StartPos, tr.HitPos, tr.Hit and Color(0, 255, 0) or Color(255, 0, 0))
         end
     end
+
+    --[[]
+    function ENT:DrawTranslucent()
+        if LocalPlayer() == self:GetUser() and IsValid(LocalPlayer():GetActiveWeapon()) and
+                LocalPlayer():GetActiveWeapon():GetClass() == "weapon_physgun" and LocalPlayer():KeyDown(IN_ATTACK) then
+            render.DrawWireframeSphere(self:GetPos(), 1024, 4, 4)
+        end
+    end
+    ]]
+
+    local beaconcache
+    local color_ok = Color(0, 255, 0)
+    local color_bad = Color(255, 0, 0)
+
+    hook.Add("PostDrawTranslucentRenderables", "Profiteers_Beacon", function()
+        if LocalPlayer():GetActiveWeapon():GetClass() == "weapon_physgun" and LocalPlayer():KeyDown(IN_ATTACK) then
+            if !beaconcache then
+                beaconcache = {}
+                for _, ent in pairs(ents.FindByClass("pt_beacon")) do
+                    if ent:GetUser() ~= LocalPlayer() then continue end
+                    table.insert(beaconcache, ent)
+                end
+            end
+
+
+            for _, ent in pairs(beaconcache) do
+                local clr = IsValid(LocalPlayer().PhysgunProp) and ((LocalPlayer().PhysgunProp:GetPos():Distance(ent:GetPos()) <= 1024) and color_ok or color_bad) or color_white
+                render.DrawWireframeSphere(ent:GetPos(), 1024, 16, 16, clr, true)
+            end
+        else
+            beaconcache = nil
+        end
+    end)
 end

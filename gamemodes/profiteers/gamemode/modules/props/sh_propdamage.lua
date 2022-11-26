@@ -10,6 +10,22 @@ function Entity:CanTakePropDamage()
     return self:GetClass() == "prop_physics" or self.TakePropDamage
 end
 
+function Entity:WithinBeacon()
+    local owner = self:GetNWEntity("PFPropOwner")
+    if !IsValid(owner) then return false end
+    if !self.beaconcache or self.beaconcache[1] ~= CurTime() then
+        self.beaconcache = {CurTime(), false}
+        for _, ent in pairs(ents.FindByClass("pt_beacon")) do
+            if ent:GetUser() == owner and ent:GetPos():Distance(self:GetPos()) <= 1024 then
+                self.beaconcache[2] = true
+                break
+            end
+        end
+    end
+
+    return self.beaconcache[2]
+end
+
 function Entity:CalculatePropHealth()
     local mins, maxs = self:GetCollisionBounds()
     local volume = (maxs.z - mins.z) * (maxs.y - mins.y) * (maxs.x - mins.x)
@@ -48,6 +64,9 @@ hook.Add("EntityTakeDamage", "Profiteers_PropDamage", function(ent, dmginfo)
         if dmginfo:IsDamageType(k) then
             mult = math.max(mult, v)
         end
+    end
+    if ent:WithinBeacon() and mult == 0 then
+        mult = 0.1
     end
     dmginfo:ScaleDamage(mult)
     ent:SetNWInt("PFPropHealth", ent:GetNWInt("PFPropHealth") - dmginfo:GetDamage())
