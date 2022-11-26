@@ -42,6 +42,7 @@ if SERVER then
             self:SetArmed(true)
             self:SetArmTime(CurTime())
             Profiteers.ActiveNuke = self
+            self:EmitSound("ambient/machines/thumper_startup1.wav", 125)
         end
     end
 

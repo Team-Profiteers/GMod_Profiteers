@@ -33,6 +33,7 @@ if SERVER then
     function ENT:StartTouch(ply)
         if !self.USED and ply:IsPlayer() then
             self.USED = true
+            self:EmitSound("weapons/357/357_spin1.wav", 75)
             ply:AddMoney(self:GetAmount())
             self:Remove()
         end
