@@ -94,7 +94,7 @@ function createEnemyNPC()
         return
     end
 
-    local a = table.Random( Nodes )
+    local a = table.Random( Profiteers.Nodes )
 
     for i, k in pairs( player.GetAll() ) do
         if k:VisibleVec( a ) and (k:GetPos():Distance( a ) < 6500 ) then
