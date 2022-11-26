@@ -139,8 +139,6 @@ function createEnemyNPC()
 
         enemy:SetCurrentWeaponProficiency(squad["prof"])
 
-        enemy:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
-
         enemy:Fire("StartPatrolling")
         enemy:Fire("SetReadinessHigh")
         enemy:SetNPCState(NPC_STATE_COMBAT)
