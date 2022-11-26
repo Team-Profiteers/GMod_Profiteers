@@ -14,3 +14,5 @@ TODO:
  - Loot spawning around a map
  - Money and purchase system
  - Nuke mechanics
+
+Play on gm_bigcity
