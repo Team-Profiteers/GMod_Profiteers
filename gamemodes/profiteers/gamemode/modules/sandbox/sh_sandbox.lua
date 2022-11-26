@@ -19,9 +19,19 @@ function Profiteers:IsSpawnableWeapon(class)
 	return true
 end
 
+Profiteers.DenySpawningCats = {
+	["dynamite"] = true,
+	["sents"] = true,
+	["item_ammo_crates"] = true,
+	["item_item_crates"] = true,
+	["vehicles"] = true,
+	["ragdolls"] = true,
+	["npcs"] = true,
+}
+
 hook.Add("PlayerCheckLimit", "ArcCWTDM_PlayerCheckLimit", function(ply, name, cur, max)
 	-- This disables spawning or using anything else
-	if not ply:IsAdmin() and GetConVar("tdm_spawn"):GetBool() == false then return false end
+	if Profiteers.DenySpawningCats[name] and not ply:IsAdmin() then return false end
 end)
 
 hook.Add("PlayerGiveSWEP", "BlockPlayerSWEPs", function(ply, class, swep)

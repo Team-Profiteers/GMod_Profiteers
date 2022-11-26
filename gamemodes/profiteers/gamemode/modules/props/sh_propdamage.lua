@@ -2,7 +2,7 @@ local Entity = FindMetaTable("Entity")
 
 GM.PropDamageMultipliers = {
     [DMG_BLAST] = 1,
-    [DMG_CLUB] = 1,
+    [DMG_CLUB] = 2,
     [DMG_SLASH] = 1,
 }
 
@@ -27,14 +27,29 @@ function Entity:WithinBeacon()
 end
 
 function Entity:CalculatePropHealth()
-    local mins, maxs = self:GetCollisionBounds()
-    local volume = (maxs.z - mins.z) * (maxs.y - mins.y) * (maxs.x - mins.x)
-    local health = math.Clamp(math.ceil(volume ^ 0.5 / 50) * 50 + 100, 100, 5000)
+    // local mins, maxs = self:GetCollisionBounds()
+    // local volume = (maxs.z - mins.z) * (maxs.y - mins.y) * (maxs.x - mins.x)
+    // local health = math.Clamp(math.ceil(volume ^ 0.5 / 50) * 50 + 100, 100, 5000)
+    local health = 500
+    local phys = self:GetPhysicsObject()
+
+    health = health * phys:GetMass() / 500
 
     self:SetNWInt("PFPropHealth", health)
     self:SetNWInt("PFPropMaxHealth", health)
-    print(volume, health)
+
+    print(health)
 end
+
+local explosionSounds = {
+    "phx/explode00.wav",
+    "phx/explode01.wav",
+    "phx/explode02.wav",
+    "phx/explode03.wav",
+    "phx/explode04.wav",
+    "phx/explode05.wav",
+    "phx/explode06.wav",
+ }
 
 hook.Add("EntityTakeDamage", "Profiteers_PropDamage", function(ent, dmginfo)
     if !ent:CanTakePropDamage() then return end
@@ -75,7 +90,9 @@ hook.Add("EntityTakeDamage", "Profiteers_PropDamage", function(ent, dmginfo)
         local eff = EffectData()
         eff:SetOrigin(ent:GetPos())
         eff:SetEntity(ent)
-        util.Effect("balloon_pop", eff)
+        util.Effect("helicoptermegabomb", eff)
+
+        ent:EmitSound(explosionSounds[math.random(#explosionSounds)], 110)
         ent:Remove()
     end
 
