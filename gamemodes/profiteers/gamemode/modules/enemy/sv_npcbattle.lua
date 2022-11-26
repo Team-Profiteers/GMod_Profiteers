@@ -14,3 +14,11 @@ hook.Add("EntityTakeDamage", "NPCDamageMult", function(target, dmginfo)
         dmginfo:ScaleDamage(attacker.DamageMult or 1)
     end
 end)
+
+// Prevent zombies from spawning headcrabs on death
+
+hook.Add("OnEntityCreated", "RemoveNPCHeadcrabs", function(ent)
+    if !ent.ProfiteersSpawned and ent:GetClass() == "npc_headcrab" then
+        ent:Remove()
+    end
+end)
