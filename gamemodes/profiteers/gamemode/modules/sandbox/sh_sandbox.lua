@@ -1,9 +1,9 @@
-GM.EntityBlacklist = {["arccw_uo_m67"] = true }
+Profiteers.EntityBlacklist = {["arccw_uo_m67"] = true }
 
-function GM:IsSpawnableWeapon(class)
+function Profiteers:IsSpawnableWeapon(class)
 
-	if self.EntityBlacklist[class] then return false end
-	if self.BuyableEntities[class] then return false end
+	if Profiteers.EntityBlacklist[class] then return false end
+	if Profiteers.BuyableEntities[class] then return false end
 
 	if not (weapons.IsBasedOn(class, "arccw_base") or
 		weapons.IsBasedOn(class, "bobs_gun_base") or
@@ -25,7 +25,7 @@ hook.Add("PlayerCheckLimit", "ArcCWTDM_PlayerCheckLimit", function(ply, name, cu
 end)
 
 hook.Add("PlayerGiveSWEP", "BlockPlayerSWEPs", function(ply, class, swep)
-	if not ply:IsAdmin() and (not GetConVar("tdm_spawn"):GetBool() and not GAMEMODE:IsSpawnableWeapon(class)) then return false end
+	if not ply:IsAdmin() and (not Profiteers:IsSpawnableWeapon(class)) then return false end
 end)
 
 function GM:PlayerNoClip(pl, on)

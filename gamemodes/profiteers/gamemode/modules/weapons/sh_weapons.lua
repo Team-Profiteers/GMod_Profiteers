@@ -19,11 +19,16 @@ function GM:WeaponHasInfiniteAmmo(wep)
 	return not GAMEMODE.AmmoBlacklist[string.lower(game.GetAmmoName(wep:GetPrimaryAmmoType()) or "")]
 end
 
-hook.Add("O_Hook_Override_InfiniteAmmo", "tdm_infiniteammo", function(wep, data)
+hook.Add("O_Hook_Override_InfiniteAmmo", "profiteers_infiniteammo", function(wep, data)
 	local ammo = string.lower(wep:GetBuff_Override("Override_Ammo", wep.Primary.Ammo))
 	if not GAMEMODE.AmmoBlacklist[ammo] then
 		return {current = true}
 	end
 end)
 
--- ARC9 does not have an external way to hook into values... yet
+hook.Add("ARC9_InfiniteAmmoHook", "profiteers_infiniteammo_arc9", function(wep, data)
+	local ammo = string.lower(wep:GetProcessedValue("Ammo"))
+	if not GAMEMODE.AmmoBlacklist[ammo] then
+		return {current = true}
+	end
+end)

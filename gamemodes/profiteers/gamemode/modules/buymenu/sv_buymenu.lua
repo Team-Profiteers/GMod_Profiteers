@@ -2,7 +2,7 @@ util.AddNetworkString("pt_buy")
 util.AddNetworkString("pt_vehicle")
 
 net.Receive("pt_buy", function(len, ply)
-	local itemtbl = GAMEMODE.Buyables[net.ReadString()]
+	local itemtbl = Profiteers.Buyables[net.ReadString()]
 	if not itemtbl then return end
 
 	if ply:GetMoney() < (itemtbl.Price or 0) then

@@ -1,6 +1,6 @@
 
 
-Nodes = Nodes or {}
+Profiteers.Nodes = nil
 
 
 local defaultrels = {"ww_frag_thrown D_FR 99",
@@ -28,6 +28,8 @@ local function ReadUShort(f) return toUShort(f:Read(SIZEOF_SHORT)) end
 --3 = playerspawns
 --4 = wall climbers
 function ParseFile()
+    Profiteers.Nodes = {}
+
     if found_ain then
         return
     end
@@ -68,7 +70,7 @@ function ParseFile()
 
         local node = v
 
-        table.insert(Nodes,node)
+        table.insert(Profiteers.Nodes, node)
     end
 end
 
@@ -76,19 +78,27 @@ function createEnemyNPC()
 
     local c = 0
 
+    if !Profiteers.Nodes then
+        ParseFile()
+    end
+
+    
+
     print( "Attempted to spawn new batch of NPCs!" )
 
     for i, k in pairs( ents.GetAll() ) do
-    if k:IsNPC() then
-        c = c + 1
-    end
+        if k:IsNPC() then
+            c = c + 1
+        end
     end
 
     if c > Profiteers.MaxNPCs then
         return
     end
 
-    local a = table.Random( Nodes )
+    local a = table.Random( Profiteers.Nodes )
+
+    if !a then return end
 
     for i, k in pairs( player.GetAll() ) do
         if k:VisibleVec( a ) and (k:GetPos():Distance( a ) < 6500 ) then
@@ -133,20 +143,27 @@ function createEnemyNPC()
 
         enemy:SetCurrentWeaponProficiency(squad["prof"])
 
-        enemy:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
+        enemy.DamageMult = squad["dmgmult"] or 1
 
         enemy:Fire("StartPatrolling")
         enemy:Fire("SetReadinessHigh")
         enemy:SetNPCState(NPC_STATE_COMBAT)
 
-        print("Enemy spawned at "..tostring(a))
+        print("Enemy spawned at " .. tostring(a))
     end
 end
 
 function GM:OnNPCKilled( npc, atk, inf )
-end
+    // Spawn money entity
 
-ParseFile()
+    if npc.bounty then
+        local money = ents.Create("pt_money")
+        money:SetAngles(AngleRand())
+        money:SetPos(npc:GetPos())
+        money:SetAmount(npc.bounty)
+        money:Spawn()
+    end
+end
 
 timer.Create("Profiteers - Spawn NPCs", 5, 0, function()
     createEnemyNPC()

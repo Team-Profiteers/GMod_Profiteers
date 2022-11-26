@@ -9,7 +9,7 @@ SPAWN_Destroy = {
 	["#spawnmenu.category.vehicles"] = true,
 	["#spawnmenu.category.entities"] = true,
 	["#spawnmenu.category.postprocess"] = true,
-	["#spawnmenu.content_tab"] = true,
+	// ["#spawnmenu.content_tab"] = true,
 	["simfphys"] = true,
 }
 
@@ -50,7 +50,7 @@ hook.Add("PopulateWeapons", "AddWeaponContent", function(pnlContent, tree, node)
 
 	-- Build into categories
 	for k, weapon in pairs(Weapons) do
-		if not weapon.Spawnable or (!GetConVar("pt_sandbox"):GetBool() and not GAMEMODE:IsSpawnableWeapon(weapon.ClassName)) then continue end
+		if not weapon.Spawnable or (!GetConVar("pt_sandbox"):GetBool() and not Profiteers:IsSpawnableWeapon(weapon.ClassName)) then continue end
 		local Category = weapon.Category or "Other2"
 
 		if not isstring(Category) then
