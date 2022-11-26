@@ -31,9 +31,7 @@ Profiteers.DenySpawningCats = {
 
 hook.Add("PlayerCheckLimit", "ArcCWTDM_PlayerCheckLimit", function(ply, name, cur, max)
 	-- This disables spawning or using anything else
-	if Profiteers.AllowSpawningCats[name] then return end
-
-	if not ply:IsAdmin() then return false end
+	if Profiteers.DenySpawningCats[name] and not ply:IsAdmin() then return false end
 end)
 
 hook.Add("PlayerGiveSWEP", "BlockPlayerSWEPs", function(ply, class, swep)

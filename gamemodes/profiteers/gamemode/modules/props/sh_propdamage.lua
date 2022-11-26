@@ -15,9 +15,11 @@ function Entity:CalculatePropHealth()
     local volume = (maxs.z - mins.z) * (maxs.y - mins.y) * (maxs.x - mins.x)
     local health = math.Clamp(math.ceil(volume ^ 0.5 / 50) * 50 + 100, 100, 5000)
 
+    health = health * phys:GetMass() / 1000
+
     self:SetNWInt("PFPropHealth", health)
     self:SetNWInt("PFPropMaxHealth", health)
-    print(volume, health)
+    print(health)
 end
 
 hook.Add("EntityTakeDamage", "Profiteers_PropDamage", function(ent, dmginfo)
