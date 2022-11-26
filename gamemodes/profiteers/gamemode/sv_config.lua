@@ -1,6 +1,6 @@
-GM.Enemies = {}
+Profiteers.Enemies = {}
 
-GM.Enemies["Combine Soldiers"] = {
+Profiteers.Enemies["Combine Soldiers"] = {
     ["class_type"] = "npc_combine_s",
     ["hp"] = 100,
     ["prof"] = WEAPON_PROFICIENCY_AVERAGE,
@@ -12,7 +12,7 @@ GM.Enemies["Combine Soldiers"] = {
     ["bounty"] = 500,
 }
 
-GM.Enemies["Cops"] = { 
+Profiteers.Enemies["Cops"] = { 
     ["class_type"] = "npc_metropolice",
     ["hp"] = 85,
     ["prof"] = WEAPON_PROFICIENCY_POOR,
@@ -24,7 +24,7 @@ GM.Enemies["Cops"] = {
     ["bounty"] = 150,
 }
 
-GM.Enemies["Zombies"] = { 
+Profiteers.Enemies["Zombies"] = { 
     ["class_type"] = "npc_zombie",
     ["hp"] = 150,
     ["prof"] = WEAPON_PROFICIENCY_POOR,

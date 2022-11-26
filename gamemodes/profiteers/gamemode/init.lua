@@ -7,3 +7,5 @@ include("sv_events.lua")
 include("sh_maps.lua")
 
 AddCSLuaFile("sh_maps.lua")
+
+Profiteers = {}

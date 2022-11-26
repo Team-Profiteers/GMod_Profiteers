@@ -90,7 +90,7 @@ function createEnemyNPC()
 
     local a = table.Random( Nodes )
 
-    local squad = table.Random(GM.Enemies)
+    local squad = table.Random(Profiteers.Enemies)
 
     for i = 0,math.random(squad["minsize"],squad["maxsize"]) do
         local enemy = ents.Create(squad["class_type"])
