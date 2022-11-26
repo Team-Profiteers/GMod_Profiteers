@@ -5,6 +5,7 @@ ENT.PrintName = "Cash"
 ENT.Type = "anim"
 ENT.RenderGroup = RENDERGROUP_BOTH
 ENT.Model = "models/props/cs_assault/Money.mdl"
+ENT.SpawnTime = 0
 
 function ENT:SetupDataTables()
     self:NetworkVar("Int", 0, "Amount")
@@ -19,6 +20,14 @@ if SERVER then
         self:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
         self:SetTrigger(true)
         self:UseTriggerBounds(true, 24)
+
+        self.SpawnTime = CurTime()
+    end
+
+    function ENT:Think()
+        if (self.SpawnTime + 300) < CurTime() then
+            self:Remove()
+        end
     end
 
     function ENT:StartTouch(ply)

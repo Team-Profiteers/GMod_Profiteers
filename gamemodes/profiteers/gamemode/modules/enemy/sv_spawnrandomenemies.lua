@@ -117,6 +117,11 @@ function createEnemyNPC()
         if (util.PointContents( va ) == CONTENTS_SOLID or util.PointContents( va + Vector(0, 0, 48) ) == CONTENTS_SOLID )then return end
         enemy:SetPos( va )
         enemy:SetAngles(Angle(0, math.random(0, 360), 0))
+
+        if squad["model"] then
+            enemy:SetModel(squad["model"])
+        end
+
         enemy:Spawn()
 
         if wp then

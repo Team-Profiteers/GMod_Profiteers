@@ -92,4 +92,16 @@ hook.Add("DoPlayerDeath", "pt_money", function(ply, attacker, dmginfo)
 
 		attacker:AddMoney(reward)
 	end
+
+	// Drop money
+	local loss = math.Round(ply:GetMoney() * 0.5)
+
+	if loss > 0 then
+		ply:AddMoney(-loss)
+
+		local ent = ents.Create("pt_money")
+		ent:SetPos(ply:GetPos() + Vector(0, 0, 20))
+		ent:SetAmount(loss)
+		ent:Spawn()
+	end
 end)
