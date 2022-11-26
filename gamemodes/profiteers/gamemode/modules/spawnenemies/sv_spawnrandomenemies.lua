@@ -84,11 +84,17 @@ function createEnemyNPC()
     end
     end
 
-    if c > 100 then
-    return
+    if c > Profiteers.MaxNPCs then
+        return
     end
 
     local a = table.Random( Nodes )
+
+    for i, k in pairs( player.GetAll() ) do
+        if k:VisibleVec( a ) and (k:GetPos():Distance( a ) < 6500 ) then
+            return
+        end
+    end
 
     local squad = table.Random(Profiteers.Enemies)
 
@@ -142,6 +148,6 @@ end
 
 ParseFile()
 
-timer.Create("Profiteers - Spawn NPCs", 30, 0, function()
+timer.Create("Profiteers - Spawn NPCs", 5, 0, function()
     createEnemyNPC()
 end)

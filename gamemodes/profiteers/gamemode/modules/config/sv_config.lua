@@ -35,3 +35,5 @@ Profiteers.Enemies["Zombies"] = {
     ["rels"] = {""},
     ["bounty"] = 500,
 }
+
+Profiteers.MaxNPCs = 50
