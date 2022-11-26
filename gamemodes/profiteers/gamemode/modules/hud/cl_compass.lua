@@ -1,6 +1,7 @@
 local bgmat = Material("profiteers/topshadow.png", "noclamp smooth")
 
 local last_stronk = 0
+local last_strink = 0
 local nextstronktime = 0
 local spikes = {}
 
@@ -13,7 +14,8 @@ hook.Add("HUDPaint", "Profiteers Enemy Finder", function()
     surface.SetMaterial(bgmat)
     surface.DrawTexturedRect(ScrW() / 2 - bgw / 2, 0, bgw, bgh)
 
-    local stronk = 0
+    local stronk = 0 -- for NPCs
+    local strink = 0 -- for players
     local spikecount = 8
 
     if nextstronktime < CurTime() then
@@ -35,24 +37,29 @@ hook.Add("HUDPaint", "Profiteers Enemy Finder", function()
                 if v:IsNPC() then
                     stronk = stronk + (dot * (5000 / dist))
                 elseif v:IsPlayer() then
-                    stronk = stronk + (dot * (15000 / dist))
+                    strink = strink + (dot * (5000 / dist))
                 end
             end
         end
 
         stronk = math.max(stronk, 0)
+        strink = math.max(strink, 0)
 
-        last_stronk = stronk
-
-        nextstronktime = CurTime() + 0.1
+        stronk = math.Approach(last_stronk, stronk, FrameTime() * 100)
+        strink = math.Approach(last_strink, strink, FrameTime() * 100)
 
         for i = 1, spikecount do
-            local spike = math.sin((CurTime() + (i * 1.12)) * 10) * ((spikecount / 2) - math.abs((spikecount / 2) - i)) * (stronk / 50)
+            local spike = 0
+
+            spike = spike + math.sin((CurTime() + (i * 1.12)) * 10) * ((spikecount / 2) - math.abs((spikecount / 2) - i)) * (stronk / 50)
+            spike = spike + math.sin((CurTime() + (i * 1.12) - 4) * 5) * ((spikecount / 2) - math.abs((spikecount / 2) - i)) * (strink / 50)
 
             spikes[i] = spike
         end
-    else
-        stronk = last_stronk
+
+        last_stronk = stronk
+        last_strink = strink
+        nextstronktime = CurTime() + 0.1
     end
 
     // draw stronk
