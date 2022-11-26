@@ -11,7 +11,6 @@ TODO:
  - DONE: Restrict what players can and cannot buy
  - DONE: Add a bare minimum of special equipment for players to buy
  - DONE: NPC random spawning around a map
- - Loot spawning around a map
  - DONE: Money and purchase system
  - Nuke mechanics
 
