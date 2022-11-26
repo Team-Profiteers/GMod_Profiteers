@@ -1,6 +1,22 @@
 local clr_ghost = Color(255, 180, 100, 200)
 local clr_ghost2 = Color(255, 255, 255, 200)
 
+function GM:FreezeProp(ent, bool)
+    if !ent:GetPhysicsObject():IsValid() then return end
+    ent:GetPhysicsObject():EnableMotion(!bool)
+end
+
+function GM:UnGhostCheck(ent)
+    local tr = util.TraceEntity({
+        start = ent:GetPos(),
+        endpos = ent:GetPos(),
+        filter = ent,
+        ignoreworld = true,
+    }, ent)
+    if tr.Hit then return false end
+    return true
+end
+
 function GM:GhostProp(ent)
     if ent:GetNWBool("Ghosted") then return end
     ent:SetNWBool("Ghosted", true)
@@ -28,46 +44,34 @@ function GM:UnGhostProp(ent, physics)
     ent:SetRenderFX(ent._rfx or kRenderFxNone)
 end
 
-function GM:FreezeProp(ent, bool)
-    if !ent:GetPhysicsObject():IsValid() then return end
-    ent:GetPhysicsObject():EnableMotion(!bool)
-end
-
--- Doesn't really work?
-function GM:UnGhostCheck(ent)
-    local tr = util.TraceEntity({
-        start = ent:GetPos(),
-        endpos = ent:GetPos(),
-        filter = ent,
-    }, ent)
-    if tr.Hit then return false end
-    return true
-end
-
-hook.Add("PhysgunDrop", "Profiteers", function(ply, ent)
-    if !GetConVar("pt_prop_ghost"):GetBool() then return end
-    GAMEMODE:FreezeProp(ent, true)
-    local t = ent:WithinBeacon() and 3 or 10
+function GM:StartUnGhost(ent)
+    local t = ent:GetGhostDuration()
     ent:SetColor(ent:WithinBeacon() and clr_ghost2 or clr_ghost)
     ent:SetRenderFX(ent:WithinBeacon() and kRenderFxPulseFast or kRenderFxPulseSlow)
-    ent.NextUnGhost = CurTime() + t
+    ent:SetNWFloat("PFUnGhostEnd", CurTime() + t)
     timer.Remove("unghost_" .. ent:EntIndex())
     timer.Create("unghost_" .. ent:EntIndex(), t, 1, function()
         if IsValid(ent) then
-            GAMEMODE:UnGhostProp(ent)
-            --[[]
-            if GAMEMODE:UnGhostCheck(ent) then
-                timer.Create("unghost_repeat_" .. ent:EntIndex(), 0.5, 6, function()
+            if !GAMEMODE:UnGhostCheck(ent) then
+                timer.Create("unghost_repeat_" .. ent:EntIndex(), 0.5, 10, function()
                     if GAMEMODE:UnGhostCheck(ent) then
                         GAMEMODE:UnGhostProp(ent)
+                    else
+                        ent:SetNWFloat("PFUnGhostEnd", CurTime() + 0.5)
                     end
                 end)
             else
                 GAMEMODE:UnGhostProp(ent)
             end
-            ]]
         end
     end)
+end
+
+
+hook.Add("PhysgunDrop", "Profiteers", function(ply, ent)
+    if !GetConVar("pt_prop_ghost"):GetBool() then return end
+    GAMEMODE:FreezeProp(ent, true)
+    GAMEMODE:StartUnGhost(ent)
 end)
 
 hook.Add("PhysgunPickup", "ProfiteersPhysgunPickupDisallowNonProps", function(ply, ent)
@@ -78,6 +82,9 @@ end)
 hook.Add("OnPhysgunPickup", "ProfiteersOnPhysgunPickupGhostProps", function(ply, ent)
     if !GetConVar("pt_prop_ghost"):GetBool() then return end
     GAMEMODE:GhostProp(ent)
+    ent:SetColor(Color(50, 50, 50, 200))
+    ent:SetNWFloat("PFUnGhostEnd", -1)
+    timer.Remove("unghost_" .. ent:EntIndex())
 end)
 
 hook.Add("PlayerSpawnedProp", "Profiteers", function(ply, model, ent)
@@ -85,15 +92,7 @@ hook.Add("PlayerSpawnedProp", "Profiteers", function(ply, model, ent)
     ent:SetNWEntity("PFPropOwner", ply)
     GAMEMODE:GhostProp(ent)
     GAMEMODE:FreezeProp(ent, true)
-    ent:SetColor(ent:WithinBeacon() and clr_ghost2 or clr_ghost)
-    ent:SetRenderFX(ent:WithinBeacon() and kRenderFxPulseFast or kRenderFxPulseSlow)
-    local t = ent:WithinBeacon() and 3 or 10
-    ent.NextUnGhost = CurTime() + t
-    timer.Create("unghost_" .. ent:EntIndex(), t, 1, function()
-        if IsValid(ent) then
-            GAMEMODE:UnGhostProp(ent)
-        end
-    end)
+    GAMEMODE:StartUnGhost(ent)
 end)
 
 hook.Add("CanPlayerUnfreeze", "Profiteers", function(ply, ent, phys)
