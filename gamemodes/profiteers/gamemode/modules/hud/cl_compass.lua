@@ -1,36 +1,67 @@
-hook.Add("HUDPaint", "Profiteers Compass", function()
-    // Show a linear compass across the top of the screen
+local bgmat = Material("profiteers/topshadow.png", "noclamp smooth")
 
-    local ply = LocalPlayer()
+local last_stronk = 0
+local nextstronktime = 0
 
-    local dir = ply:GetAngles().y
+hook.Add("HUDPaint", "Profiteers Enemy Finder", function()
+    // draw bg
 
-    // Draw direction text in top middle
+    local bgw = ScreenScale(200)
+    local bgh = bgw / 2
+    surface.SetDrawColor(0, 0, 0, 200)
+    surface.SetMaterial(bgmat)
+    surface.DrawTexturedRect(ScrW() / 2 - bgw / 2, 0, bgw, bgh)
 
-    dir = math.NormalizeAngle(dir)
+    local stronk = 0
 
-    // between -180 and 180
+    if nextstronktime < CurTime() then
+        // count NPCs in the direction you're looking
 
-    local dir_str = "N"
+        local ents = ents.FindInCone(LocalPlayer():GetShootPos(), LocalPlayer():GetAimVector(), 30000, 0.5)
 
-    if dir >= -22.5 and dir <= 22.5 then
-        dir_str = "N"
-    elseif dir >= 22.5 and dir <= 67.5 then
-        dir_str = "NE"
-    elseif dir >= 67.5 and dir <= 112.5 then
-        dir_str = "E"
-    elseif dir >= 112.5 and dir <= 157.5 then
-        dir_str = "SE"
-    elseif dir >= 157.5 or dir <= -157.5 then
-        dir_str = "S"
-    elseif dir >= -157.5 and dir <= -112.5 then
-        dir_str = "SW"
-    elseif dir >= -112.5 and dir <= -67.5 then
-        dir_str = "W"
-    elseif dir >= -67.5 and dir <= -22.5 then
-        dir_str = "NW"
+        for k, v in pairs(ents) do
+            if v:IsNPC() or v:IsPlayer() then
+                // get dot product
+                local dot = LocalPlayer():GetAimVector():Dot((v:GetPos() - LocalPlayer():GetShootPos()):GetNormalized())
+
+                // get dist
+                local dist = LocalPlayer():GetShootPos():Distance(v:GetPos())
+
+                // Calculate stronk value based on dot product and distance
+                // The closer we are and the more we're looking at the NPC, the higher the value
+
+                if v:IsNPC() then
+                    stronk = stronk + (dot * (5000 / dist))
+                elseif v:IsPlayer() then
+                    stronk = stronk + (dot * (15000 / dist))
+                end
+            end
+        end
+
+        stronk = math.max(stronk, 0)
+
+        last_stronk = stronk
+
+        nextstronktime = CurTime() + 0.1
+    else
+        stronk = last_stronk
     end
 
-    draw.SimpleText(dir_str, "DermaLarge", ScrW() / 2, 10, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+    // draw stronk
 
+    local str = tostring(math.Round(stronk, 2))
+    surface.SetFont("CGHUD_5")
+    local strw = surface.GetTextSize(str)
+
+    surface.SetTextColor(255, 255, 255, 255)
+    surface.SetTextPos(ScrW() / 2 - strw / 2, ScreenScale(2))
+    surface.DrawText(str)
+
+    local label = "Radar Return"
+    surface.SetFont("CGHUD_8")
+    local labelw = surface.GetTextSize(label)
+
+    surface.SetTextColor(255, 255, 255, 255)
+    surface.SetTextPos(ScrW() / 2 - labelw / 2, ScreenScale(14))
+    surface.DrawText(label)
 end)

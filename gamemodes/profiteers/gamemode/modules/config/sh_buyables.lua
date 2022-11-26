@@ -107,6 +107,40 @@ Profiteers.Buyables = {
         Description = "Mysterious Alien Artifact",
         Description2 = "The ultimate weapon",
         Category = "Special Weapons",
+    },
+
+    ["item_rpg_round"] = {
+        Name = "Rocket",
+        EntityClass = "item_rpg_round",
+        Price = 250,
+
+        Description = "For use with rocket launchers",
+        Category = "Ammunition",
+    },
+    ["item_ammo_smg1_grenade"] = {
+        Name = "Rifle Grenade",
+        EntityClass = "item_ammo_smg1_grenade",
+        Price = 100,
+
+        Description = "For use with grenade launchers",
+        Category = "Ammunition",
+    },
+
+    ["item_healthkit"] = {
+        Name = "Health Kit",
+        EntityClass = "item_healthkit",
+        Price = 100,
+
+        Description = "Restores a good deal of health",
+        Category = "Utility",
+    },
+    ["item_battery"] = {
+        Name = "Armor Battery",
+        EntityClass = "item_battery",
+        Price = 250,
+
+        Description = "Provides a bit of armor",
+        Category = "Utility",
     }
 }
 
