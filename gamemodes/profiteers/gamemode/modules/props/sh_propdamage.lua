@@ -36,18 +36,22 @@ hook.Add("EntityTakeDamage", "Profiteers_PropDamage", function(ent, dmginfo)
         return true
     end
 
-    local mult = nil
+    -- Special handling for when prop is on fire
+    if dmginfo:GetInflictor():GetClass() == "entityflame" then
+        local damage = 2 + ent:GetNWInt("PFPropMaxHealth") * 0.01
+        ent:SetNWInt("PFPropHealth", ent:GetNWInt("PFPropHealth") - damage)
+        print(ent:GetNWInt("PFPropHealth"), damage)
+    end
+
+    local mult = 0
     for k, v in pairs(GAMEMODE.PropDamageMultipliers) do
         if dmginfo:IsDamageType(k) then
-            mult = math.max(mult or 0, v)
+            mult = math.max(mult, v)
         end
     end
-    if !mult then return end
-    print(mult, ent:GetNWInt("PFPropHealth"), dmginfo:GetDamage())
-
     dmginfo:ScaleDamage(mult)
-
     ent:SetNWInt("PFPropHealth", ent:GetNWInt("PFPropHealth") - dmginfo:GetDamage())
+
     if ent:GetNWInt("PFPropHealth") <= 0 then
         local eff = EffectData()
         eff:SetOrigin(ent:GetPos())
