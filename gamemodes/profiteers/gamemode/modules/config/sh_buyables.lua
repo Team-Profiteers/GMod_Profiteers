@@ -91,6 +91,22 @@ Profiteers.Buyables = {
         Description = "Mysterious Alien Artifact",
         Description2 = "The ultimate weapon",
         Category = "Special Weapons",
+    },
+    ["arc9_waw_flamethrower"] = {
+        EntityClass = "arc9_waw_flamethrower",
+        Price = 5000,
+
+        Description = "Flamethrower",
+        Description2 = "Napalm sweet as wine",
+        Category = "Special Weapons",
+    },
+    ["arc9_bo1_raygun"] = {
+        EntityClass = "arc9_bo1_raygun",
+        Price = 200000,
+
+        Description = "Mysterious Alien Artifact",
+        Description2 = "The ultimate weapon",
+        Category = "Special Weapons",
     }
 }
 
