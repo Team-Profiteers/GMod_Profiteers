@@ -88,7 +88,7 @@ hook.Add("DoPlayerDeath", "pt_money", function(ply, attacker, dmginfo)
 		local reward = GetConVar("pt_money_per_kill"):GetInt()
 		local class = dmginfo:GetInflictor():IsWeapon() and dmginfo:GetInflictor():GetClass() or attacker:GetActiveWeapon():GetClass()
 
-		reward = reward * (GAMEMODE.WeaponRewardMultipliers[class] or 1)
+		reward = reward * (Profiteers.WeaponRewardMultipliers[class] or 1)
 
 		attacker:AddMoney(reward)
 	end
