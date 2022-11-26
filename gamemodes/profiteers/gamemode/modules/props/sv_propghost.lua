@@ -7,6 +7,8 @@ function GM:FreezeProp(ent, bool)
 end
 
 function GM:UnGhostCheck(ent)
+    -- not very reliable since it doesn't rotate
+    --[[]
     local tr = util.TraceEntity({
         start = ent:GetPos(),
         endpos = ent:GetPos(),
@@ -14,6 +16,7 @@ function GM:UnGhostCheck(ent)
         ignoreworld = true,
     }, ent)
     if tr.Hit then return false end
+    ]]
     return true
 end
 
