@@ -1,7 +1,7 @@
 hook.Add("HUDPaint", "PT PropDMG", function()
     local tr = util.TraceHull({
         start = LocalPlayer():EyePos(),
-        endpos = LocalPlayer():EyePos() + LocalPlayer():GetAimVector() * 48,
+        endpos = LocalPlayer():EyePos() + LocalPlayer():GetAimVector() * 128,
         mins = Vector(-4, -4, -4),
         maxs = Vector(4, 4, 4),
         filter = LocalPlayer()
@@ -18,7 +18,7 @@ hook.Add("HUDPaint", "PT PropDMG", function()
         local y = ScrH() / 2
 
         local col1 = Color(255, 0, 0)
-        local col2 = Color(100, 255, 25)
+        local col2 = Color(100, 255, 25) -- tr.Entity:WithinBeacon() displays differently?
 
         local text = math.Round(tr.Entity:GetNWFloat("PFPropHealth")) .. "/" .. math.Round(tr.Entity:GetNWFloat("PFPropMaxHealth", 1))
 

@@ -27,18 +27,14 @@ function Entity:WithinBeacon()
 end
 
 function Entity:CalculatePropHealth()
-    // local mins, maxs = self:GetCollisionBounds()
-    // local volume = (maxs.z - mins.z) * (maxs.y - mins.y) * (maxs.x - mins.x)
-    // local health = math.Clamp(math.ceil(volume ^ 0.5 / 50) * 50 + 100, 100, 5000)
-    local health = 500
-    local phys = self:GetPhysicsObject()
+    local mins, maxs = self:GetCollisionBounds()
+    local volume = (maxs.z - mins.z) * (maxs.y - mins.y) * (maxs.x - mins.x)
+    local health = math.Clamp(math.ceil(volume ^ 0.5 / 50) * 50, 100, 5000)
 
-    health = health * phys:GetMass() / 500
+    health = math.Clamp(health * math.Clamp(self:GetPhysicsObject():GetMass() / 500, 1, 3), 50, 5000)
 
     self:SetNWInt("PFPropHealth", health)
     self:SetNWInt("PFPropMaxHealth", health)
-
-    print(health)
 end
 
 local explosionSounds = {
@@ -51,6 +47,7 @@ local explosionSounds = {
     "phx/explode06.wav",
  }
 
+local lasteffecttick = 0
 hook.Add("EntityTakeDamage", "Profiteers_PropDamage", function(ent, dmginfo)
     if !ent:CanTakePropDamage() then return end
 
@@ -62,8 +59,14 @@ hook.Add("EntityTakeDamage", "Profiteers_PropDamage", function(ent, dmginfo)
         local eff = EffectData()
         eff:SetOrigin(ent:GetPos())
         eff:SetEntity(ent)
-        util.Effect("entity_remove", eff)
-        ent:Remove()
+        util.Effect("entity_remove", eff, true, true)
+
+        -- Remover tool does this so...
+        ent:SetNotSolid( true )
+        ent:SetMoveType( MOVETYPE_NONE )
+        ent:SetNoDraw( true )
+        SafeRemoveEntityDelayed(ent, 1)
+
         return true
     end
 
@@ -71,7 +74,6 @@ hook.Add("EntityTakeDamage", "Profiteers_PropDamage", function(ent, dmginfo)
     if dmginfo:GetInflictor():GetClass() == "entityflame" then
         local damage = 2 + ent:GetNWInt("PFPropMaxHealth") * 0.01
         ent:SetNWInt("PFPropHealth", ent:GetNWInt("PFPropHealth") - damage)
-        print(ent:GetNWInt("PFPropHealth"), damage)
     end
 
     local mult = 0
@@ -80,8 +82,15 @@ hook.Add("EntityTakeDamage", "Profiteers_PropDamage", function(ent, dmginfo)
             mult = math.max(mult, v)
         end
     end
-    if ent:WithinBeacon() and mult == 0 then
-        mult = 0.1
+    if mult == 0 and !ent:WithinBeacon() then
+        mult = 0.25
+        local eff = EffectData()
+        eff:SetOrigin(dmginfo:GetDamagePosition())
+        eff:SetNormal(dmginfo:GetDamageForce():GetNormalized())
+        eff:SetMagnitude(1)
+        eff:SetScale(2)
+        eff:SetRadius(4)
+        util.Effect("Sparks", eff)
     end
     dmginfo:ScaleDamage(mult)
     ent:SetNWInt("PFPropHealth", ent:GetNWInt("PFPropHealth") - dmginfo:GetDamage())
@@ -90,9 +99,13 @@ hook.Add("EntityTakeDamage", "Profiteers_PropDamage", function(ent, dmginfo)
         local eff = EffectData()
         eff:SetOrigin(ent:GetPos())
         eff:SetEntity(ent)
-        util.Effect("helicoptermegabomb", eff)
+        util.Effect(ent:GetNWInt("PFPropMaxHealth") > 150 and "helicoptermegabomb" or "balloon_pop", eff)
 
-        ent:EmitSound(explosionSounds[math.random(#explosionSounds)], 110)
+        if lasteffecttick ~= CurTime() then
+            lasteffecttick = CurTime()
+            ent:EmitSound(explosionSounds[math.random(#explosionSounds)], 110)
+        end
+
         ent:Remove()
     end
 

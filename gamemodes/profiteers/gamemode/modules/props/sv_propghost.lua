@@ -81,6 +81,7 @@ hook.Add("OnPhysgunPickup", "Profiteers", function(ply, ent)
 end)
 
 hook.Add("PlayerSpawnedProp", "Profiteers", function(ply, model, ent)
+    ent:CalculatePropHealth()
     ent:SetNWEntity("PFPropOwner", ply)
     GAMEMODE:GhostProp(ent)
     GAMEMODE:FreezeProp(ent, true)
