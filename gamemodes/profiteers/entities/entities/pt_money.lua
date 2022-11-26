@@ -15,7 +15,7 @@ if SERVER then
     function ENT:Initialize()
         self:SetModel(self.Model)
         self:PhysicsInit(SOLID_VPHYSICS)
-        self:SetMoveType(MOVETYPE_NONE)
+        self:SetMoveType(MOVETYPE_VPHYSICS)
         self:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
         self:SetTrigger(true)
         self:UseTriggerBounds(true, 24)
@@ -27,6 +27,53 @@ if SERVER then
             ply:AddMoney(self:GetAmount())
             self:Remove()
         end
+    end
+
+    // Money stops moving once it hits the ground and stops moving
+
+    function ENT:PhysicsCollide(data, physobj)
+        if data.HitEntity:IsWorld() then
+            self:SetMoveType(MOVETYPE_NONE)
+
+            // aligns to ground
+
+            local ang = data.HitNormal:Angle()
+            ang:RotateAroundAxis(ang:Right(), 90)
+            ang:RotateAroundAxis(ang:Up(), 90)
+            self:SetAngles(ang)
+        end
+    end
+
+else
+
+    local glowmat = Material("sprites/glow04_noz")
+
+    function ENT:DrawTranslucent()
+        //  Make the money draw a glowing effect
+        self:DrawModel()
+
+        local dist = EyePos():Distance(self:GetPos())
+
+        if dist > 512 then return end
+
+        local ang = EyeAngles()
+        ang:RotateAroundAxis(ang:Forward(), 90)
+        ang:RotateAroundAxis(ang:Right(), 90)
+
+        cam.IgnoreZ(true)
+
+        cam.Start3D2D(self:GetPos() + Vector(0, 0, 10), ang, 0.1)
+            draw.SimpleTextOutlined("$" .. self:GetAmount(), "CGHUD_72_Unscaled_Glow", 0, 0, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, 255))
+            draw.SimpleTextOutlined("$" .. self:GetAmount(), "CGHUD_72_Unscaled", 0, 0, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, 255))
+        cam.End3D2D()
+
+        // draw glow sprite
+
+        render.SetMaterial(glowmat)
+        render.DrawSprite(self:GetPos(), 16, 16, Color(255, 255, 255, 255))
+
+        cam.IgnoreZ(false)
+
     end
 
 end

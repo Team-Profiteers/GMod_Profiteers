@@ -82,8 +82,6 @@ function createEnemyNPC()
         ParseFile()
     end
 
-    
-
     print( "Attempted to spawn new batch of NPCs!" )
 
     for i, k in pairs( ents.GetAll() ) do
