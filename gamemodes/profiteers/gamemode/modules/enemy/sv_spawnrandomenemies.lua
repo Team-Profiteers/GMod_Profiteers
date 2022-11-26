@@ -82,7 +82,7 @@ function createEnemyNPC()
         ParseFile()
     end
 
-    print( "Attempted to spawn new batch of NPCs!" )
+    // print( "Attempted to spawn new batch of NPCs!" )
 
     for i, k in pairs( ents.GetAll() ) do
         if k:IsNPC() then
@@ -96,10 +96,10 @@ function createEnemyNPC()
 
     local a = table.Random( Profiteers.Nodes )
 
-    if !a then return end
+    if !a then ParseFile() return end
 
     for i, k in pairs( player.GetAll() ) do
-        if k:VisibleVec( a ) and (k:GetPos():Distance( a ) < 6500 ) then
+        if (k:GetPos():Distance( a ) < 6500 ) and k:VisibleVec( a ) then
             return
         end
     end
@@ -117,6 +117,12 @@ function createEnemyNPC()
         if (util.PointContents( va ) == CONTENTS_SOLID or util.PointContents( va + Vector(0, 0, 48) ) == CONTENTS_SOLID )then return end
         enemy:SetPos( va )
         enemy:SetAngles(Angle(0, math.random(0, 360), 0))
+        enemy.ProfiteersSpawned = true
+
+        if squad["model"] then
+            enemy:SetModel(squad["model"])
+        end
+
         enemy:Spawn()
 
         if wp then
@@ -147,7 +153,7 @@ function createEnemyNPC()
         enemy:Fire("SetReadinessHigh")
         enemy:SetNPCState(NPC_STATE_COMBAT)
 
-        print("Enemy spawned at " .. tostring(a))
+        // print("Enemy spawned at " .. tostring(a))
     end
 end
 
