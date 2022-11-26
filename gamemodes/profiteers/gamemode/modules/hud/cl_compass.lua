@@ -52,7 +52,7 @@ hook.Add("HUDPaint", "Profiteers Enemy Finder", function()
             local spike = 0
 
             spike = spike + math.sin((CurTime() + (i * 1.12)) * 10) * ((spikecount / 2) - math.abs((spikecount / 2) - i)) * (stronk / 50)
-            spike = spike + math.sin((CurTime() + (i * 1.12) - 4) * 5) * ((spikecount / 2) - math.abs((spikecount / 2) - i)) * (strink / 50)
+            spike = spike + math.sin((CurTime() + (i * 1.12) - 4) * 3) * ((spikecount / 2) - math.abs((spikecount / 2) - i)) * (strink / 50)
 
             spikes[i] = spike
         end
