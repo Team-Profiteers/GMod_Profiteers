@@ -5,6 +5,8 @@ GM.Author 	= "Team Profiteers"
 GM.Email 	= "888888zombies@gmail.com"
 GM.Website 	= "https://github.com/Team-Profiteers/GMod_Profiteers"
 
+DeriveGamemode("sandbox")
+
 -- Load modules
 local path = GM.FolderName .. "/gamemode/modules/"
 local modules, folders = file.Find(path .. "*", "LUA")
