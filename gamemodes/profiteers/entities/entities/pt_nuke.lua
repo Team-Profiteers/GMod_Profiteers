@@ -4,7 +4,9 @@ ENT.Type = "anim"
 ENT.RenderGroup = RENDERGROUP_BOTH
 ENT.Model = "models/props_phx/torpedo.mdl"
 ENT.SpawnTime = 0
-ENT.DetonationTime = 180
+ENT.DetonationTime = 300
+
+ENT.BombOwner = nil
 
 function ENT:SetupDataTables()
     self:NetworkVar("Float", 0, "ArmTime")
@@ -19,6 +21,11 @@ if SERVER then
         self:SetMoveType(MOVETYPE_VPHYSICS)
         self:SetUseType(SIMPLE_USE)
         self.SpawnTime = CurTime()
+
+        self:SetHealth(100)
+        self:SetMaxHealth(100)
+
+        self:SetPos(self:GetPos() + Vector(0, 0, 16))
     end
 
     function ENT:Think()
@@ -31,7 +38,7 @@ if SERVER then
 
     function ENT:Use(activator)
         if !self:GetArmed() and !IsValid(Profiteers.ActiveNuke) then
-            self:SetOwner(activator)
+            self.BombOwner = activator
             self:SetArmed(true)
             self:SetArmTime(CurTime())
             Profiteers.ActiveNuke = self
@@ -41,11 +48,29 @@ if SERVER then
     function ENT:Detonate()
         local nuke = ents.Create("pt_nukeexplosion")
         nuke:SetPos(self:GetPos())
-        nuke:SetOwner(self:GetOwner())
+        nuke:SetOwner(self.BombOwner)
         nuke:Spawn()
         nuke:Activate()
         self:Remove()
         Profiteers.ActiveNuke = nil
+    end
+
+    function ENT:OnTakeDamage(damage)
+        self:SetHealth(self:Health() - damage:GetDamage())
+
+        local effectdata = EffectData()
+        effectdata:SetOrigin(self:GetPos())
+
+        util.Effect("explosion", effectdata)
+
+        local ent = ents.Create("pt_money")
+        ent:SetPos(self:GetPos())
+        ent:SetAmount(550000)
+        ent:Spawn()
+
+        if self:Health() <= 0 then
+            self:Remove()
+        end
     end
 else
     function ENT:Think()

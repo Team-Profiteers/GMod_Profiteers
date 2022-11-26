@@ -389,6 +389,8 @@ if CLIENT then
             self.lastThink = CurTime() + 999
             self:PlayPopSound()
         end
+
+		LocalPlayer():ScreenFade(SCREENFADE.OUT, color_white, 5, 0.5)
     end
 
     function ENT:Think()
