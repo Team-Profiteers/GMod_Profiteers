@@ -62,7 +62,7 @@ Profiteers.Buyables = {
     },
     ["arc9_bo1_rpg7"] = {
         EntityClass = "arc9_bo1_rpg7",
-        Price = 10000,
+        Price = 2000,
 
         Description = "Anti-Tank Rocket Launcher",
         Description2 = "Dumb-fire rocket launcher",
