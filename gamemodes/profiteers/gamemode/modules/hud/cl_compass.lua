@@ -2,6 +2,7 @@ local bgmat = Material("profiteers/topshadow.png", "noclamp smooth")
 
 local last_stronk = 0
 local nextstronktime = 0
+local spikes = {}
 
 hook.Add("HUDPaint", "Profiteers Enemy Finder", function()
     // draw bg
@@ -13,6 +14,7 @@ hook.Add("HUDPaint", "Profiteers Enemy Finder", function()
     surface.DrawTexturedRect(ScrW() / 2 - bgw / 2, 0, bgw, bgh)
 
     local stronk = 0
+    local spikecount = 8
 
     if nextstronktime < CurTime() then
         // count NPCs in the direction you're looking
@@ -43,19 +45,36 @@ hook.Add("HUDPaint", "Profiteers Enemy Finder", function()
         last_stronk = stronk
 
         nextstronktime = CurTime() + 0.1
+
+        for i = 1, spikecount do
+            local spike = math.sin((CurTime() + (i * 1.12)) * 10) * ((spikecount / 2) - math.abs((spikecount / 2) - i)) * (stronk / 50)
+
+            spikes[i] = spike
+        end
     else
         stronk = last_stronk
     end
 
     // draw stronk
 
-    local str = tostring(math.Round(stronk, 2))
-    surface.SetFont("CGHUD_5")
-    local strw = surface.GetTextSize(str)
+    // local str = tostring(math.Round(stronk, 2))
+    // surface.SetFont("CGHUD_5")
+    // local strw = surface.GetTextSize(str)
 
-    surface.SetTextColor(255, 255, 255, 255)
-    surface.SetTextPos(ScrW() / 2 - strw / 2, ScreenScale(2))
-    surface.DrawText(str)
+    // surface.SetTextColor(255, 255, 255, 255)
+    // surface.SetTextPos(ScrW() / 2 - strw / 2, ScreenScale(2))
+    // surface.DrawText(str)
+
+    for i, sp in ipairs(spikes) do
+        surface.SetDrawColor(255, 255, 255, 255)
+
+        local x = (ScrW() / 2) - ((spikecount / 2) * ScreenScale(4)) + (ScreenScale(4) * i)
+        local h = sp * ScreenScale(14)
+        local w = ScreenScale(1)
+        local y = ScreenScale(14) - h
+
+        surface.DrawRect(x, y, w, h)
+    end
 
     local label = "Radar Return"
     surface.SetFont("CGHUD_8")
