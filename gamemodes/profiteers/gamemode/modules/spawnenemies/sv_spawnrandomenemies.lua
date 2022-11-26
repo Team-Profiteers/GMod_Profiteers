@@ -138,11 +138,6 @@ function createEnemyNPC()
 end
 
 function GM:OnNPCKilled( npc, atk, inf )
-
-    if npc.bounty and atk:IsPlayer() then
-        atk:AddMoney( npc.bounty )
-    end
-
 end
 
 ParseFile()
