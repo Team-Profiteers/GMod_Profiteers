@@ -36,17 +36,17 @@ hook.Add("HUDPaint", "Profiteers Enemy Finder", function()
 
                 if v:IsNPC() then
                     stronk = stronk + (dot * (5000 / dist))
-                elseif v:IsPlayer() then
+                elseif v:IsPlayer() and v != LocalPlayer() then
                     strink = strink + (dot * (5000 / dist))
                 end
             end
         end
 
-        stronk = math.max(stronk, 0)
-        strink = math.max(strink, 0)
+        stronk = math.Clamp(stronk, 0, 25)
+        strink = math.Clamp(strink, 0, 25)
 
-        stronk = math.Approach(last_stronk, stronk, FrameTime() * 100)
-        strink = math.Approach(last_strink, strink, FrameTime() * 100)
+        stronk = math.Approach(last_stronk, stronk, FrameTime() * 250)
+        strink = math.Approach(last_strink, strink, FrameTime() * 250)
 
         for i = 1, spikecount do
             local spike = 0

@@ -97,7 +97,8 @@ else
     local color_bad = Color(255, 0, 0)
 
     hook.Add("PostDrawTranslucentRenderables", "Profiteers_Beacon", function()
-        if LocalPlayer():GetActiveWeapon():GetClass() == "weapon_physgun" and LocalPlayer():KeyDown(IN_ATTACK) then
+        local wep = LocalPlayer():GetActiveWeapon()
+        if IsValid(wep) and wep:GetClass() == "weapon_physgun" and LocalPlayer():KeyDown(IN_ATTACK) then
             if !beaconcache then
                 beaconcache = {}
                 for _, ent in pairs(ents.FindByClass("pt_beacon")) do

@@ -164,7 +164,7 @@ function GM:OnNPCKilled( npc, atk, inf )
         local money = ents.Create("pt_money")
         money:SetAngles(AngleRand())
         money:SetPos(npc:GetPos())
-        money:SetAmount(npc.bounty)
+        money:SetAmount(math.Round(npc.bounty * math.Rand(0.9, 1.1)))
         money:Spawn()
     end
 end

@@ -147,7 +147,7 @@ Profiteers.Buyables = {
         EntityClass = "item_battery",
         Price = 1500,
 
-        Description = "Provides a bit of armor",
+        Description = "Provides 15 points of armor",
         Category = "Utility",
     }
 }
