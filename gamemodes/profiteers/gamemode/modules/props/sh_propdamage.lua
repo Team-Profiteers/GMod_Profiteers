@@ -14,6 +14,7 @@ function Entity:CalculatePropHealth()
     local mins, maxs = self:GetCollisionBounds()
     local volume = (maxs.z - mins.z) * (maxs.y - mins.y) * (maxs.x - mins.x)
     local health = math.Clamp(math.ceil(volume ^ 0.5 / 50) * 50 + 100, 100, 5000)
+    local phys = self:GetPhysicsObject()
 
     health = health * phys:GetMass() / 1000
 
