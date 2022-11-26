@@ -42,8 +42,8 @@ end
 hook.Add("PhysgunDrop", "Profiteers", function(ply, ent)
     if !GetConVar("pt_prop_ghost"):GetBool() then return end
     GAMEMODE:FreezeProp(ent, true)
-    ent.NextUnGhost = CurTime() + 10
-    timer.Create("unghost_" .. ent:EntIndex(), 10, 1, function()
+    ent.NextUnGhost = CurTime() + 2.5
+    timer.Create("unghost_" .. ent:EntIndex(), 2.5, 1, function()
         if IsValid(ent) then
             GAMEMODE:UnGhostProp(ent)
             --[[]
@@ -69,8 +69,9 @@ end)
 hook.Add("PlayerSpawnedProp", "Profiteers", function(ply, model, ent)
     GAMEMODE:GhostProp(ent)
     GAMEMODE:FreezeProp(ent, true)
-    ent.NextUnGhost = CurTime() + 5
-    timer.Create("unghost_" .. ent:EntIndex(), 5, 1, function()
+    ent.NextUnGhost = CurTime() + 2.5
+    ent:CalculatePropHealth()
+    timer.Create("unghost_" .. ent:EntIndex(), 2.5, 1, function()
         if IsValid(ent) then
             GAMEMODE:UnGhostProp(ent)
         end

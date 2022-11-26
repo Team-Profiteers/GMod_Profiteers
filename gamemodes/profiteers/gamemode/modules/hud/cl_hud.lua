@@ -522,31 +522,28 @@ hook.Add("HUDPaint", "HUDPaint_DrawABox", function()
 		surface.DrawTexturedRect(x - s * 0.5, y - s * 0.5, s, s)
 	end
 
-	if money_last_t + 7 > CurTime() then
-
-		local display_money
-		for k, v in pairs(money_updates) do
-			if v[1] + 2 > CurTime() then
-				if not display_money then display_money = v[3] end
-				local f = 1 - math.Clamp((CurTime() - v[1] - 0.5) / 1.5, 0, 1)
-				CLR_W.a = f * 255
-				CLR_B2.a = f * 127
-				local str = (v[2] > 0 and "+" or "-") .. GAMEMODE:FormatMoney(v[2])
-				GAMEMODE:ShadowText(str, "CGHUD_4", 0 + CGSS(16), h - CGSS(80) - f ^ 2 * CGSS(16), CLR_W, CLR_B2, TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
-			else
-				table.remove(money_updates, k)
-			end
+	local display_money
+	for k, v in pairs(money_updates) do
+		if v[1] + 2 > CurTime() then
+			if not display_money then display_money = v[3] end
+			local f = 1 - math.Clamp((CurTime() - v[1] - 0.5) / 1.5, 0, 1)
+			CLR_W.a = f * 255
+			CLR_B2.a = f * 127
+			local str = (v[2] > 0 and "+" or "-") .. GAMEMODE:FormatMoney(v[2])
+			GAMEMODE:ShadowText(str, "CGHUD_4", 0 + CGSS(16), h - CGSS(80) - f ^ 2 * CGSS(16), CLR_W, CLR_B2, TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
+		else
+			table.remove(money_updates, k)
 		end
-		display_money = display_money or ply:GetNWInt("pt_money", 0)
-
-		local a = (1 - math.Clamp((CurTime() - money_last_t - 5) / 2, 0, 1)) ^ 2
-		CLR_W.a = a * 255
-		CLR_B2.a = a * 127
-		GAMEMODE:ShadowText(GAMEMODE:FormatMoney(display_money), "CGHUD_3", 0 + CGSS(16), h - CGSS(64), CLR_W, CLR_B2, TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
-
-		CLR_W.a = 255
-		CLR_B2.a = 127
 	end
+	display_money = display_money or ply:GetNWInt("pt_money", 0)
+
+	local a = 1
+	CLR_W.a = a * 255
+	CLR_B2.a = a * 127
+	GAMEMODE:ShadowText(GAMEMODE:FormatMoney(display_money), "CGHUD_3", 0 + CGSS(16), h - CGSS(64), CLR_W, CLR_B2, TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
+
+	CLR_W.a = 255
+	CLR_B2.a = 127
 end)
 
 net.Receive("pt_updatemoney", function()
