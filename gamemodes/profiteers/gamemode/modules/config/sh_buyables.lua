@@ -33,7 +33,7 @@ Profiteers.Buyables = {
         Price = 100000,
 
         Description = "Multiple Rocket Launcher",
-        Description2 = "Massive burst damage",
+        Description2 = "Massive incendiary damage",
         Category = "Explosives",
     },
     ["arc9_bo1_minigun"] = {

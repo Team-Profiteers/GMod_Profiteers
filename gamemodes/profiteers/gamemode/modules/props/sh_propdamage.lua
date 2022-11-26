@@ -2,8 +2,10 @@ local Entity = FindMetaTable("Entity")
 
 GM.PropDamageMultipliers = {
     [DMG_BLAST] = 1,
-    [DMG_CLUB] = 2,
+    [DMG_BURN] = 10,
+    [DMG_CLUB] = 1,
     [DMG_SLASH] = 1,
+    [DMG_AIRBOAT] = 0.5,
 }
 
 function Entity:CanTakePropDamage()
@@ -55,8 +57,24 @@ hook.Add("EntityTakeDamage", "Profiteers_PropDamage", function(ent, dmginfo)
         return true
     end
 
-    -- Special handling for when prop is on fire
-    if dmginfo:GetInflictor():GetClass() == "entityflame" then
+    if dmginfo:GetInflictor():IsPlayer() and IsValid(dmginfo:GetInflictor():GetActiveWeapon()) and dmginfo:GetInflictor():GetActiveWeapon():GetClass() == "weapon_stunstick" and dmginfo:GetDamageType() == DMG_CLUB then
+        -- Stunstick heals instead of hurts
+        local heal = 100 + ent:GetNWInt("PFPropMaxHealth") * 0.05
+        if ent:IsOnFire() then
+            heal = 25 + ent:GetNWInt("PFPropMaxHealth") * 0.025
+        end
+        ent:SetNWInt("PFPropHealth", math.min(ent:GetNWInt("PFPropHealth") + heal, ent:GetNWInt("PFPropMaxHealth")))
+        ent:EmitSound("buttons/lever7.wav", 80, 105, 0.75)
+        return true
+    elseif dmginfo:GetInflictor():IsPlayer() and IsValid(dmginfo:GetInflictor():GetActiveWeapon()) and dmginfo:GetInflictor():GetActiveWeapon():GetClass() == "weapon_crowbar" and dmginfo:GetDamageType() == DMG_CLUB then
+        -- Crowbar does extra prop damage
+        local damage = 30 + ent:GetNWInt("PFPropMaxHealth") * 0.005
+        if !ent:WithinBeacon() then
+            damage = 75 + ent:GetNWInt("PFPropMaxHealth") * 0.015
+        end
+        dmginfo:SetDamage(damage)
+    elseif dmginfo:GetInflictor():GetClass() == "entityflame" then
+        -- Special handling for props on fire
         local damage = 5 + ent:GetNWInt("PFPropMaxHealth") * 0.01
         ent:SetNWInt("PFPropHealth", ent:GetNWInt("PFPropHealth") - damage)
     end
