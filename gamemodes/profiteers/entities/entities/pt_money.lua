@@ -46,17 +46,33 @@ if SERVER then
 
 else
 
+    local glowmat = Material("sprites/glow04_noz")
+
     function ENT:DrawTranslucent()
         //  Make the money draw a glowing effect
         self:DrawModel()
+
+        local dist = EyePos():Distance(self:GetPos())
+
+        if dist > 512 then return end
+
         local ang = EyeAngles()
         ang:RotateAroundAxis(ang:Forward(), 90)
         ang:RotateAroundAxis(ang:Right(), 90)
+
+        cam.IgnoreZ(true)
 
         cam.Start3D2D(self:GetPos() + Vector(0, 0, 10), ang, 0.1)
             draw.SimpleTextOutlined("$" .. self:GetAmount(), "CGHUD_72_Unscaled_Glow", 0, 0, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, 255))
             draw.SimpleTextOutlined("$" .. self:GetAmount(), "CGHUD_72_Unscaled", 0, 0, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, 255))
         cam.End3D2D()
+
+        // draw glow sprite
+
+        render.SetMaterial(glowmat)
+        render.DrawSprite(self:GetPos(), 16, 16, Color(255, 255, 255, 255))
+
+        cam.IgnoreZ(false)
 
     end
 
