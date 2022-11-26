@@ -84,8 +84,8 @@ function createEnemyNPC()
     end
     end
 
-    if c > 100 then
-    return
+    if c > Profiteers.MaxNPCs then
+        return
     end
 
     local a = table.Random( Nodes )
@@ -142,6 +142,6 @@ end
 
 ParseFile()
 
-timer.Create("Profiteers - Spawn NPCs", 30, 0, function()
+timer.Create("Profiteers - Spawn NPCs", 5, 0, function()
     createEnemyNPC()
 end)
