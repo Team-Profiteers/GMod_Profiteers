@@ -3,7 +3,7 @@ GM.EntityBlacklist = {["arccw_uo_m67"] = true }
 function GM:IsSpawnableWeapon(class)
 
 	if self.EntityBlacklist[class] then return false end
-	if self.BuyableEntities[class] then return false end
+	if Profiteers.BuyableEntities[class] then return false end
 
 	if not (weapons.IsBasedOn(class, "arccw_base") or
 		weapons.IsBasedOn(class, "bobs_gun_base") or
