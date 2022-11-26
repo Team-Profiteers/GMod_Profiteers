@@ -17,7 +17,7 @@ function Entity:CalculatePropHealth()
     local health = 500
     local phys = self:GetPhysicsObject()
 
-    health = health * phys:GetMass() / 100
+    health = health * phys:GetMass() / 500
 
     self:SetNWInt("PFPropHealth", health)
     self:SetNWInt("PFPropMaxHealth", health)
