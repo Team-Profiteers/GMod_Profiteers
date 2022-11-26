@@ -16,7 +16,7 @@ hook.Add("HUDPaint", "Profiteers Enemy Finder", function()
 
     local stronk = 0 -- for NPCs
     local strink = 0 -- for players
-    local spikecount = 8
+    local spikecount = 12
 
     if nextstronktime < CurTime() then
         // count NPCs in the direction you're looking
@@ -78,16 +78,16 @@ hook.Add("HUDPaint", "Profiteers Enemy Finder", function()
         local x = (ScrW() / 2) - ((spikecount / 2) * ScreenScale(4)) + (ScreenScale(4) * i)
         local h = sp * ScreenScale(14)
         local w = ScreenScale(1)
-        local y = ScreenScale(14) - h
+        local y = ScreenScale(24) - h
 
         surface.DrawRect(x, y, w, h)
     end
 
-    local label = "mmWR Scan"
+    local label = "[        mmWR Scan        ]"
     surface.SetFont("CGHUD_8")
     local labelw = surface.GetTextSize(label)
 
     surface.SetTextColor(255, 255, 255, 255)
-    surface.SetTextPos(ScrW() / 2 - labelw / 2, ScreenScale(14))
+    surface.SetTextPos(ScrW() / 2 - labelw / 2, ScreenScale(24))
     surface.DrawText(label)
 end)

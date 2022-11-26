@@ -149,6 +149,16 @@ Profiteers.Buyables = {
 
         Description = "Provides 15 points of armor",
         Category = "Utility",
+    },
+    ["pt_nuke"] = {
+        Name = "Nuclear Device",
+        EntityClass = "pt_nuke",
+        Price = 1000000,
+
+        Description = "1.2mt fission bomb",
+        Description2 = "End it all and watch it burn",
+
+        Category = "Utility"
     }
 }
 
