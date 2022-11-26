@@ -57,7 +57,7 @@ hook.Add("EntityTakeDamage", "Profiteers_PropDamage", function(ent, dmginfo)
 
     -- Special handling for when prop is on fire
     if dmginfo:GetInflictor():GetClass() == "entityflame" then
-        local damage = 2 + ent:GetNWInt("PFPropMaxHealth") * 0.01
+        local damage = 5 + ent:GetNWInt("PFPropMaxHealth") * 0.01
         ent:SetNWInt("PFPropHealth", ent:GetNWInt("PFPropHealth") - damage)
     end
 
@@ -92,6 +92,18 @@ hook.Add("EntityTakeDamage", "Profiteers_PropDamage", function(ent, dmginfo)
         end
 
         ent:Remove()
+    elseif IsValid(ent:GetPhysicsObject()) and !ent:GetPhysicsObject():IsMotionEnabled() and ent:GetNWInt("PFPropHealth") <= ent:GetNWInt("PFPropMaxHealth") * 0.15 then
+        -- unfreeze
+        ent:GetPhysicsObject():EnableMotion(true)
+        local eff = EffectData()
+        eff:SetOrigin(dmginfo:GetDamagePosition())
+        eff:SetNormal(dmginfo:GetDamageForce():GetNormalized())
+        eff:SetMagnitude(4)
+        eff:SetScale(4)
+        eff:SetRadius(16)
+        util.Effect("Sparks", eff)
+        ent:GetPhysicsObject():Wake()
+        ent:GetPhysicsObject():ApplyForceOffset(dmginfo:GetDamageForce():GetNormalized() * ent:GetPhysicsObject():GetMass() ^ 0.6 * 2000, dmginfo:GetDamagePosition())
     end
 
     return true
