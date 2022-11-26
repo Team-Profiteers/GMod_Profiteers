@@ -129,15 +129,23 @@ Profiteers.Buyables = {
     ["item_healthkit"] = {
         Name = "Health Kit",
         EntityClass = "item_healthkit",
+        Price = 250,
+
+        Description = "Restores 25 health",
+        Category = "Utility",
+    },
+    ["item_healthvial"] = {
+        Name = "Health Vial",
+        EntityClass = "item_healthvial",
         Price = 100,
 
-        Description = "Restores a good deal of health",
+        Description = "Restores 10 health",
         Category = "Utility",
     },
     ["item_battery"] = {
         Name = "Armor Battery",
         EntityClass = "item_battery",
-        Price = 250,
+        Price = 500,
 
         Description = "Provides a bit of armor",
         Category = "Utility",
