@@ -83,7 +83,7 @@ hook.Add("HUDPaint", "Profiteers Enemy Finder", function()
         surface.DrawRect(x, y, w, h)
     end
 
-    local label = "Radar Return"
+    local label = "mmWR Scan"
     surface.SetFont("CGHUD_8")
     local labelw = surface.GetTextSize(label)
 
