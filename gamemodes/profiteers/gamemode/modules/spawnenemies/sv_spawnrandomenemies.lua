@@ -90,6 +90,12 @@ function createEnemyNPC()
 
     local a = table.Random( Nodes )
 
+    for i, k in pairs( player.GetAll() ) do
+        if k:VisibleVec( a ) and (k:GetPos():Distance( a ) < 6500 ) then
+            return
+        end
+    end
+
     local squad = table.Random(Profiteers.Enemies)
 
     for i = 0,math.random(squad["minsize"],squad["maxsize"]) do
