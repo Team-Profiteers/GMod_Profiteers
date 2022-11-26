@@ -21,7 +21,9 @@ end
 
 hook.Add("PlayerCheckLimit", "ArcCWTDM_PlayerCheckLimit", function(ply, name, cur, max)
 	-- This disables spawning or using anything else
-	if not ply:IsAdmin() and GetConVar("tdm_spawn"):GetBool() == false then return false end
+	if name == "props" then return end
+
+	if not ply:IsAdmin() then return false end
 end)
 
 hook.Add("PlayerGiveSWEP", "BlockPlayerSWEPs", function(ply, class, swep)
