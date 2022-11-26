@@ -48,7 +48,7 @@ end)
 
 gameevent.Listen("player_spawn")
 hook.Add("player_spawn", "BEEP!", function(data)
-	if GetConVar("tdm_deathcam"):GetBool() and data.userid == LocalPlayer():UserID() then
+	if data.userid == LocalPlayer():UserID() then
 		LocalPlayer():ScreenFade(SCREENFADE.IN, Color(0, 0, 0, 255), 0.25, 0.06)
 	end
 end)

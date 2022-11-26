@@ -46,6 +46,7 @@ surface.CreateFont("CGHUD_1", {
 })
 
 local fonts_unscaled = {
+	72,
 	32,
 	24,
 }
