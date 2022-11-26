@@ -8,11 +8,11 @@
 5. If your nuke goes off, you win!
 
 TODO:
- - Restrict what players can and cannot buy
- - Add a bare minimum of special equipment for players to buy
- - NPC random spawning around a map
+ - DONE: Restrict what players can and cannot buy
+ - DONE: Add a bare minimum of special equipment for players to buy
+ - DONE: NPC random spawning around a map
  - Loot spawning around a map
- - Money and purchase system
+ - DONE: Money and purchase system
  - Nuke mechanics
 
 Play on gm_bigcity
