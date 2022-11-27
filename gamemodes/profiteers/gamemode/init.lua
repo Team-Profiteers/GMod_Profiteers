@@ -24,3 +24,8 @@ end
 function GM:PlayerDeathSound(ply)
     return true
 end
+
+function GM:PostGamemodeLoaded()
+    BaseClass.PostGamemodeLoaded(self)
+    GAMEMODE:GenerateRandomWeaponLists()
+end

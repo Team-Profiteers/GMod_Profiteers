@@ -194,7 +194,30 @@ Profiteers.Buyables = {
         Description2 = "Critical vertical mobility tool",
 
         Category = "Utility"
-    }
+    },
+
+    ["pt_cart_health"] = {
+        Name = "Health Station",
+        EntityClass = "pt_cart_health",
+        Price = 2000,
+        PlaceEntity = true,
+
+        Description = "Restores your health",
+        Description2 = "Charge regenerates over time",
+
+        Category = "Construction"
+    },
+    ["pt_cart_armor"] = {
+        Name = "Armor Station",
+        EntityClass = "pt_cart_armor",
+        Price = 10000,
+        PlaceEntity = true,
+
+        Description = "Grants armor",
+        Description2 = "Charge regenerates over time",
+
+        Category = "Construction"
+    },
 }
 
 Profiteers.BuyableEntities = {}

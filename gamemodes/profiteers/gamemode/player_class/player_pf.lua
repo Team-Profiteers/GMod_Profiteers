@@ -12,7 +12,7 @@ PLAYER.RunSpeed				= 300		-- How fast to move when running
 PLAYER.CrouchedWalkSpeed	= 0.4		-- Multiply move speed by this when crouching
 PLAYER.DuckSpeed			= 0.4		-- How fast to go from not ducking, to ducking
 PLAYER.UnDuckSpeed			= 0.4		-- How fast to go from ducking, to not ducking
-PLAYER.JumpPower			= 170		-- How powerful our jump should be
+PLAYER.JumpPower			= 200		-- How powerful our jump should be
 PLAYER.CanUseFlashlight		= true		-- Can we use the flashlight
 PLAYER.MaxHealth			= 100		-- Max health we can have
 PLAYER.MaxArmor				= 100			-- Max armor we can have
@@ -48,16 +48,16 @@ end
 -- Ret1:
 --
 function PLAYER:Spawn()
-	BaseClass.Spawn( self )
+    BaseClass.Spawn( self )
 
-	local col = self.Player:GetInfo( "cl_playercolor" )
-	self.Player:SetPlayerColor( Vector( col ) )
+    local col = self.Player:GetInfo( "cl_playercolor" )
+    self.Player:SetPlayerColor( Vector( col ) )
 
-	local col = Vector( self.Player:GetInfo( "cl_weaponcolor" ) )
-	if ( col:Length() < 0.001 ) then
-		col = Vector( 0.001, 0.001, 0.001 )
-	end
-	self.Player:SetWeaponColor( col )
+    local col = Vector( self.Player:GetInfo( "cl_weaponcolor" ) )
+    if ( col:Length() < 0.001 ) then
+        col = Vector( 0.001, 0.001, 0.001 )
+    end
+    self.Player:SetWeaponColor( col )
 end
 
 --
@@ -67,31 +67,38 @@ end
 -- Ret1:
 --
 function PLAYER:Loadout()
-	self.Player:RemoveAllAmmo()
+    self.Player:RemoveAllAmmo()
 
-	self.Player:Give("weapon_crowbar")
-	self.Player:Give("weapon_stunstick")
-	self.Player:Give("weapon_physcannon")
+    self.Player:Give("weapon_crowbar")
+    self.Player:Give("weapon_stunstick")
+    self.Player:Give("weapon_physcannon")
 
-	self.Player:Give("gmod_tool")
-	self.Player:Give("gmod_camera")
-	self.Player:Give("weapon_physgun")
+    self.Player:Give("gmod_tool")
+    self.Player:Give("gmod_camera")
+    self.Player:Give("weapon_physgun")
 
-	self.Player:SwitchToDefaultWeapon()
+    if table.Count(GAMEMODE.RandomPistolSpawnList or {}) > 0 then
+        self.Player:Give(GAMEMODE.RandomPistolSpawnList[math.random(#GAMEMODE.RandomPistolSpawnList)])
+    end
+    if table.Count(GAMEMODE.RandomPrimarySpawnList or {}) > 0 then
+        self.Player:Give(GAMEMODE.RandomPrimarySpawnList[math.random(#GAMEMODE.RandomPrimarySpawnList)])
+    end
+
+    self.Player:SwitchToDefaultWeapon()
 end
 
 function PLAYER:SetModel()
-	BaseClass.SetModel( self )
+    BaseClass.SetModel( self )
 
-	local skin = self.Player:GetInfoNum( "cl_playerskin", 0 )
-	self.Player:SetSkin( skin )
+    local skin = self.Player:GetInfoNum( "cl_playerskin", 0 )
+    self.Player:SetSkin( skin )
 
-	local groups = self.Player:GetInfo( "cl_playerbodygroups" )
-	if ( groups == nil ) then groups = "" end
-	local groups = string.Explode( " ", groups )
-	for k = 0, self.Player:GetNumBodyGroups() - 1 do
-		self.Player:SetBodygroup( k, tonumber( groups[ k + 1 ] ) or 0 )
-	end
+    local groups = self.Player:GetInfo( "cl_playerbodygroups" )
+    if ( groups == nil ) then groups = "" end
+    groups = string.Explode( " ", groups )
+    for k = 0, self.Player:GetNumBodyGroups() - 1 do
+        self.Player:SetBodygroup( k, tonumber( groups[ k + 1 ] ) or 0 )
+    end
 end
 
 function PLAYER:Death( inflictor, attacker )
@@ -112,9 +119,9 @@ function PLAYER:PreDrawViewModel( vm, weapon ) end
 function PLAYER:PostDrawViewModel( vm, weapon ) end
 
 function PLAYER:GetHandsModel()
-	local playermodel = player_manager.TranslateToPlayerModelName( self.Player:GetModel() )
-	playermodel = player_manager.TranslatePlayerHands( playermodel )
-	return playermodel
+    local playermodel = player_manager.TranslateToPlayerModelName( self.Player:GetModel() )
+    playermodel = player_manager.TranslatePlayerHands( playermodel )
+    return playermodel
 end
 
 player_manager.RegisterClass( "player_pf", PLAYER, "player_default" )

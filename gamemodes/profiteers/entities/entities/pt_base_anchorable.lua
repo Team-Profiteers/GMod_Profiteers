@@ -5,10 +5,13 @@ ENT.Type = "anim"
 ENT.RenderGroup = RENDERGROUP_BOTH
 ENT.Model = "models/props_combine/combine_light002a.mdl"
 
+ENT.BaseHealth = 500
 ENT.TakePropDamage = true
 
 ENT.PreferredAngle = Angle(0, 0, 0)
 ENT.AnchorRequiresBeacon = false
+ENT.AllowUnAnchor = false
+ENT.AnchorOffset = Vector(0, 0, 0)
 
 
 function ENT:SetupDataTables()
@@ -27,53 +30,64 @@ if SERVER then
         self:SetMoveType(MOVETYPE_VPHYSICS)
         self:SetCollisionGroup(COLLISION_GROUP_NONE)
         self:SetUseType(SIMPLE_USE)
-        self:GetPhysicsObject():SetMass(10)
+        self:GetPhysicsObject():SetMass(100)
 
-        self:SetNWInt("PFPropHealth", 500)
-        self:SetNWInt("PFPropMaxHealth", 500)
+        self:SetNWInt("PFPropHealth", self.BaseHealth)
+        self:SetNWInt("PFPropMaxHealth", self.BaseHealth)
+    end
+
+    function ENT:TryAnchor(ply)
+
+        if self:GetAnchored() then
+            if self.AllowUnAnchor then
+                GAMEMODE:FreezeProp(self, false)
+                self:SetAnchored(false)
+                self:EmitSound("npc/roller/blade_in.wav", 100, 90)
+            end
+            return
+        end
+
+        if self.AnchorRequiresBeacon and !self:WithinBeacon() then
+            self:EmitSound("npc/roller/code2.wav", 100, 90)
+            GAMEMODE:HintOneTime(ply, 3, "This can only be deployed within a Beacon.")
+            return
+        end
+
+        local tr = util.TraceLine({
+            start = self:WorldSpaceCenter(),
+            endpos = self:WorldSpaceCenter() - self:GetUp() * 64,
+            mask = MASK_SOLID_BRUSHONLY,
+        })
+        local pos = tr.HitPos + self.AnchorOffset
+        local mins, maxs = self:GetCollisionBounds()
+        local tr2 = util.TraceHull({
+            start = pos,
+            endpos = pos,
+            mins = mins - Vector(4, 4, 4),
+            maxs = maxs + Vector(4, 4, 4),
+            filter = self,
+            ignoreworld = true
+        })
+        if tr.Hit and !tr2.Hit then
+            self:SetPos(pos)
+            self:SetAngles(Angle(0, self:GetAngles().y, 0))
+            GAMEMODE:FreezeProp(self, true)
+            self:SetAnchored(true)
+            self:OnAnchor(ply)
+        else
+            self:EmitSound("npc/roller/code2.wav", 100, 90)
+            GAMEMODE:Hint(ply, 3, "This can only be deployed on solid ground.")
+        end
     end
 
     function ENT:Use(ply)
         if !self:GetAnchored() then
             if ply:KeyDown(IN_WALK) then
-
-                if self.AnchorRequiresBeacon and !self:WithinBeacon() then
-                    self:EmitSound("npc/roller/code2.wav", 100, 90)
-                    GAMEMODE:HintOneTime(ply, 3, "This can only be deployed within a Beacon.")
-                    return
-                end
-
-                local tr = util.TraceLine({
-                    start = self:WorldSpaceCenter(),
-                    endpos = self:WorldSpaceCenter() - self:GetUp() * 64,
-                    mask = MASK_SOLID_BRUSHONLY,
-                })
-                local pos = tr.HitPos + Vector(0, 0, 0)
-                local mins, maxs = self:GetCollisionBounds()
-                local tr2 = util.TraceHull({
-                    start = pos,
-                    endpos = pos,
-                    mins = mins - Vector(4, 4, 4),
-                    maxs = maxs + Vector(4, 4, 4),
-                    filter = self,
-                    ignoreworld = true
-                })
-                if tr.Hit and !tr2.Hit then
-                    self:SetPos(tr.HitPos)
-                    self:SetAngles(Angle(0, self:GetAngles().y, 0))
-                    GAMEMODE:FreezeProp(self, true)
-                    self:SetAnchored(true)
-                    self:OnAnchor(ply)
-                else
-                    self:EmitSound("npc/roller/code2.wav", 100, 90)
-                    GAMEMODE:Hint(ply, 3, "This can only be deployed on solid ground.")
-                end
+                self:TryAnchor(ply)
             elseif !self:IsPlayerHolding() then
-                ply:PickupObject(self)
+                --ply:PickupObject(self)
                 GAMEMODE:Hint(ply, 0, "Hold WALK key (Default Alt) and Use to deploy this.")
             end
-        else
-            -- idk
         end
     end
 
