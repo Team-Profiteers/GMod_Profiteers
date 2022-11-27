@@ -4,7 +4,7 @@ ENT.Type = "anim"
 ENT.RenderGroup = RENDERGROUP_BOTH
 ENT.Model = "models/props_phx/torpedo.mdl"
 ENT.SpawnTime = 0
-ENT.DetonationTime = 300
+ENT.DetonationTime = 5
 
 ENT.TakePropDamage = true
 
@@ -41,6 +41,7 @@ if SERVER then
     function ENT:Use(activator)
         if !self:GetArmed() and !IsValid(Profiteers.ActiveNuke) then
             self.BombOwner = activator
+            self:SetOwner(activator)
             self:SetArmed(true)
             self:SetArmTime(CurTime())
             Profiteers.ActiveNuke = self
@@ -51,12 +52,18 @@ if SERVER then
     function ENT:Detonate()
         local nuke = ents.Create("pt_nukeexplosion")
         nuke:SetPos(self:GetPos())
-        nuke:SetOwner(self.BombOwner)
+        nuke:SetOwner(self:GetOwner())
         nuke:Spawn()
         nuke:Activate()
-        self:Remove()
+
         Profiteers.ActiveNuke = nil
-        Profiteers.RoundOver = true
+        Profiteers.GameOver = true
+
+        if MapVote then
+            MapVote.Start(60, false)
+        end
+
+        self:Remove()
     end
 
     function ENT:OnPropDestroyed(dmginfo)

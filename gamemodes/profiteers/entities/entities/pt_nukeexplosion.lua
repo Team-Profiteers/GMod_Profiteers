@@ -8,9 +8,9 @@ ENT.DisableDuplicator = true
 
 -- Proudly continuing the tradition of stealing code from m9k
 --Teta_Bonita, holy shit i wish I were half as good a coder as you.
-if SERVER then
-    AddCSLuaFile('shared.lua')
+AddCSLuaFile()
 
+if SERVER then
     function ENT:Initialize()
         self.CanTool = false
         --performance variables
@@ -141,7 +141,7 @@ if SERVER then
             end
 
             --radiation
-            local radiation = ents.Create("pt_sent_nuke_radiation")
+            local radiation = ents.Create("pt_nukeradiation")
             radiation:SetOwner(self:GetOwner())
             radiation.Owner = self:GetOwner()
             radiation:SetVar("owner", self:GetOwner())
