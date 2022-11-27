@@ -1,6 +1,27 @@
 hook.Add("PlayerSpawn", "ProfiteersPlayerSpawn", function(ply, trans)
     if trans then return end
 
+    local spawns = {}
+    for _, ent in pairs(ents.FindByClass("pt_spawn")) do
+        if ent:CPPIGetOwner() == ply and ent:GetAnchored() and ent:WithinBeacon() then
+            table.insert(spawns, ent)
+        end
+    end
+    if #spawns > 0 then
+        local spawn = spawns[math.random(#spawns)]
+        ply:SetPos(spawn:GetPos() + Vector(0, 0, 12))
+        ply:SetAngles(Angle(0, spawn:GetAngles().y, 0))
+        local eff = EffectData()
+        eff:SetOrigin(ply:GetPos())
+        eff:SetNormal(ply:GetUp())
+        eff:SetScale(32)
+        eff:SetEntity(ply)
+        util.Effect("cball_explode", eff)
+        util.Effect("ThumperDust", eff)
+
+        return
+    end
+
     if !Profiteers.Nodes or table.Count(Profiteers.Nodes) == 0 then
         ParseNodeFile()
     end
