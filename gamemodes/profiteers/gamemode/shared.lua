@@ -53,3 +53,5 @@ for _, f in SortedPairs(file.Find(path_vgui .. "*.lua", "LUA"), false) do
 		include(path_vgui .. f)
 	end
 end
+
+include("player_class/player_pf.lua")
