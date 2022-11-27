@@ -28,6 +28,9 @@ end)
 
 hook.Add("ARC9_InfiniteAmmoHook", "profiteers_infiniteammo_arc9", function(wep, data)
 	local ammo = string.lower(wep:GetProcessedValue("Ammo"))
+	if wep:GetUBGL() then
+		ammo = string.lower(wep:GetProcessedValue("UBGLAmmo"))
+	end
 	if not GAMEMODE.AmmoBlacklist[ammo] then
 		return {current = true}
 	end
