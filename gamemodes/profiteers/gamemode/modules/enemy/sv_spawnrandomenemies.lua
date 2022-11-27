@@ -27,19 +27,16 @@ local function ReadUShort(f) return toUShort(f:Read(SIZEOF_SHORT)) end
 --2 = info_nodes
 --3 = playerspawns
 --4 = wall climbers
-function ParseFile()
+function ParseNodeFile()
     Profiteers.Nodes = {}
 
-    if found_ain then
-        return
-    end
+    print("Parsing node file...")
 
     f = file.Open("maps/graphs/" .. game.GetMap() .. ".ain","rb","GAME")
     if (!f) then
         return
     end
 
-    found_ain = true
     local ainet_ver = ReadInt(f)
     local map_ver = ReadInt(f)
     if (ainet_ver != AINET_VERSION_NUMBER) then
@@ -72,14 +69,16 @@ function ParseFile()
 
         table.insert(Profiteers.Nodes, node)
     end
+
+    f:Close()
 end
 
 function createEnemyNPC()
 
     local c = 0
 
-    if !Profiteers.Nodes then
-        ParseFile()
+    if !Profiteers.Nodes or table.Count(Profiteers.Nodes) == 0 then
+        ParseNodeFile()
     end
 
     // print( "Attempted to spawn new batch of NPCs!" )
@@ -96,7 +95,7 @@ function createEnemyNPC()
 
     local a = table.Random( Profiteers.Nodes )
 
-    if !a then ParseFile() return end
+    if !a then ParseNodeFile() return end
 
     for i, k in pairs( player.GetAll() ) do
         if (k:GetPos():Distance( a ) < 6500 ) and k:VisibleVec( a ) then
@@ -106,15 +105,26 @@ function createEnemyNPC()
 
     local squad = table.Random(Profiteers.Enemies)
 
-    for i = 0,math.random(squad["minsize"],squad["maxsize"]) do
+    local tospawn = math.random(squad["minsize"],squad["maxsize"])
+
+    for i = 1, tospawn do
         local enemy = ents.Create(squad["class_type"])
         wp = nil
         if squad["wpn"] then
             wp = table.Random(squad["wpn"])
         end
-        local va = a + Vector( math.random(-256, 256), math.random(-256, 256), 16 )
+
+        local va = a
+
+        // Spawn enemies in a circle
+
+        local ang = i * (360 / tospawn)
+
+        va.x = va.x + math.cos(math.rad(ang)) * 128
+        va.y = va.y + math.sin(math.rad(ang)) * 128
+
         if !enemy:IsValid() then return end
-        if (util.PointContents( va ) == CONTENTS_SOLID or util.PointContents( va + Vector(0, 0, 48) ) == CONTENTS_SOLID )then return end
+        if (util.PointContents( va ) == CONTENTS_SOLID or util.PointContents( va + Vector(0, 0, 48) ) == CONTENTS_SOLID ) then return end
         enemy:SetPos( va )
         enemy:SetAngles(Angle(0, math.random(0, 360), 0))
         enemy.ProfiteersSpawned = true
