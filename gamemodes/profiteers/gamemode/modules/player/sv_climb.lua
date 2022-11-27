@@ -12,6 +12,8 @@ hook.Add("SetupMove", "ProfiteersSetupMoveClimb", function(ply, mv, cmd)
         if ply:IsOnGround() then return end
         if ply:GetNWFloat("pt_nextclimb", 0) > CurTime() then return end
 
+        local eyeangs = mv:GetAngles()
+
         local tr = util.TraceHull({
             start = ply:GetPos(),
             endpos = ply:GetPos() + (ply:EyeAngles():Forward() * 16),
@@ -22,6 +24,7 @@ hook.Add("SetupMove", "ProfiteersSetupMoveClimb", function(ply, mv, cmd)
 
         if !tr.Hit then return end
         if tr.HitSky then return end
+        if tr.HitNormal.z > 0.75 or tr.HitNormal.z < -0.75 then return end
 
         if IsFirstTimePredicted() then
             ply:EmitSound(sounds[math.random(1, #sounds)], 80, 100)
@@ -34,7 +37,7 @@ hook.Add("SetupMove", "ProfiteersSetupMoveClimb", function(ply, mv, cmd)
 
         local ang = ply:GetAngles()
 
-        local up = ang:Up()
+        local up = Vector(0, 0, 1)
         local forward = ang:Forward()
 
         local upforce = 400
