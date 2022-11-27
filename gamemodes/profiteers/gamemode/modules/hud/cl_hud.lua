@@ -246,11 +246,11 @@ hook.Add("HUDPaint", "HUDPaint_DrawABox", function()
 	surface.DrawRect(ox + c * 128, h - (c * 46), (c * 200) *  math.min(health_mult, 1), c * 18)
 
 	-- stamina
-	if ply.GetStamina_Run and ply:GetStamina_Run() < 1 then
+	if ply:Armor() > 0 then
 		surface.SetDrawColor(CLR_B2)
 		surface.DrawRect(ox + (c * 128) + (c * 4), h - (c * 46) + (c * 22) + (c * 4), c * 200, c * 4)
 		surface.SetDrawColor(CLR_W)
-		surface.DrawRect(ox + c * 128, h - (c * 46) + (c * 22), (c * 200) * (ply:GetStamina_Run() / 1), c * 4)
+		surface.DrawRect(ox + c * 128, h - (c * 46) + (c * 22), (c * 200) * (ply:Armor() / ply:GetMaxArmor()), c * 4)
 	end
 
 	if IsValid(veh) then
