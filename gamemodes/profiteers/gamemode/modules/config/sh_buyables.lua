@@ -78,7 +78,7 @@ Profiteers.Buyables = {
     },
     ["arc9_bo2_m32"] = {
         EntityClass = "arc9_bo2_m32",
-        Price = 15000,
+        Price = 10000,
 
         Description = "Multiple Grenade Launcher",
         Description2 = "Fast-firing, high damage",
