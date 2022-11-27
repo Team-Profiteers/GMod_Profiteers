@@ -126,22 +126,22 @@ Profiteers.Buyables = {
         Category = "Ammunition",
     },
 
-    ["item_healthkit"] = {
-        Name = "Health Kit",
-        EntityClass = "item_healthkit",
-        Price = 250,
+    // ["item_healthkit"] = {
+    //     Name = "Health Kit",
+    //     EntityClass = "item_healthkit",
+    //     Price = 250,
 
-        Description = "Restores 25 health",
-        Category = "Utility",
-    },
-    ["item_healthvial"] = {
-        Name = "Health Vial",
-        EntityClass = "item_healthvial",
-        Price = 100,
+    //     Description = "Restores 25 health",
+    //     Category = "Utility",
+    // },
+    // ["item_healthvial"] = {
+    //     Name = "Health Vial",
+    //     EntityClass = "item_healthvial",
+    //     Price = 100,
 
-        Description = "Restores 10 health",
-        Category = "Utility",
-    },
+    //     Description = "Restores 10 health",
+    //     Category = "Utility",
+    // },
     ["item_battery"] = {
         Name = "Armor Battery",
         EntityClass = "item_battery",
@@ -206,17 +206,17 @@ Profiteers.Buyables = {
 
         Category = "Construction"
     },
-    ["pt_cart_health"] = {
-        Name = "Health Station",
-        EntityClass = "pt_cart_health",
-        Price = 1500,
-        PlaceEntity = true,
+    // ["pt_cart_health"] = {
+    //     Name = "Health Station",
+    //     EntityClass = "pt_cart_health",
+    //     Price = 1500,
+    //     PlaceEntity = true,
 
-        Description = "Restores your health",
-        Description2 = "Place near Beacon to use",
+    //     Description = "Restores your health",
+    //     Description2 = "Place near Beacon to use",
 
-        Category = "Construction"
-    },
+    //     Category = "Construction"
+    // },
     ["pt_cart_armor"] = {
         Name = "Armor Station",
         EntityClass = "pt_cart_armor",
