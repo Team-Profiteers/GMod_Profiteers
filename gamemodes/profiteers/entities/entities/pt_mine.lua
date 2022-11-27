@@ -11,6 +11,8 @@ if SERVER then
         self:SetMoveType(MOVETYPE_VPHYSICS)
         self:SetCollisionGroup(COLLISION_GROUP_PROJECTILE)
         self:DrawShadow(false)
+
+        self.SpawnTime = CurTime()
     end
 
     function ENT:PhysicsCollide(colData, collider)
@@ -31,6 +33,10 @@ if SERVER then
                 self:Detonate()
                 break
             end
+        end
+
+        if (self.SpawnTime + 600) < CurTime() then
+            self:Detonate()
         end
     end
 
