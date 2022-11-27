@@ -150,6 +150,7 @@ Profiteers.Buyables = {
         Description = "Provides 15 points of armor",
         Category = "Utility",
     },
+
     ["pt_nuke"] = {
         Name = "Nuclear Device",
         EntityClass = "pt_nuke",
@@ -159,7 +160,29 @@ Profiteers.Buyables = {
         Description = "1.2mt fission bomb",
         Description2 = "End it all and watch it burn",
 
-        Category = "Utility"
+        Category = "Construction"
+    },
+    ["pt_beacon"] = {
+        Name = "Base Beacon",
+        EntityClass = "pt_beacon",
+        Price = 1000,
+        PlaceEntity = true,
+
+        Description = "Reinforces nearby props",
+        Description2 = "Required for most buildings",
+
+        Category = "Construction"
+    },
+    ["pt_spawn"] = {
+        Name = "Deployable Spawn",
+        EntityClass = "pt_spawn",
+        Price = 5000,
+        PlaceEntity = true,
+
+        Description = "Respawn at your base",
+        Description2 = "Deploy near a Beacon to activate",
+
+        Category = "Construction"
     }
 }
 

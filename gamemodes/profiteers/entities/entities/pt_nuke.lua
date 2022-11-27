@@ -6,6 +6,8 @@ ENT.Model = "models/props_phx/torpedo.mdl"
 ENT.SpawnTime = 0
 ENT.DetonationTime = 300
 
+ENT.TakePropDamage = true
+
 ENT.BombOwner = nil
 
 function ENT:SetupDataTables()
@@ -22,10 +24,10 @@ if SERVER then
         self:SetUseType(SIMPLE_USE)
         self.SpawnTime = CurTime()
 
-        self:SetHealth(100)
-        self:SetMaxHealth(100)
+        self:GetPhysicsObject():SetMass(150)
 
-        self:SetPos(self:GetPos() + Vector(0, 0, 16))
+        self:SetNWInt("PFPropHealth", 1000)
+        self:SetNWInt("PFPropMaxHealth", 1000)
     end
 
     function ENT:Think()
@@ -57,22 +59,15 @@ if SERVER then
         Profiteers.RoundOver = true
     end
 
-    function ENT:OnTakeDamage(damage)
-        self:SetHealth(self:Health() - damage:GetDamage())
-
+    function ENT:OnPropDestroyed(dmginfo)
         local effectdata = EffectData()
         effectdata:SetOrigin(self:GetPos())
-
         util.Effect("explosion", effectdata)
 
         local ent = ents.Create("pt_money")
         ent:SetPos(self:GetPos())
         ent:SetAmount(550000)
         ent:Spawn()
-
-        if self:Health() <= 0 then
-            self:Remove()
-        end
     end
 else
     function ENT:Think()
