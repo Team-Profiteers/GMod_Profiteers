@@ -60,7 +60,7 @@ else
     local glowmat = Material("sprites/glow04_noz")
 
     function ENT:DrawTranslucent()
-        //  Make the money draw a glowing effect
+        --  Make the money draw a glowing effect
         self:DrawModel()
 
         local dist = EyePos():Distance(self:GetPos())
@@ -78,7 +78,7 @@ else
             draw.SimpleTextOutlined("$" .. self:GetAmount(), "CGHUD_72_Unscaled", 0, 0, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, 255))
         cam.End3D2D()
 
-        // draw glow sprite
+        -- draw glow sprite
 
         render.SetMaterial(glowmat)
         render.DrawSprite(self:GetPos(), 4, 4, Color(150, 255, 200, 255))

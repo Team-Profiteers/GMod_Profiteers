@@ -35,15 +35,13 @@ if SERVER then
         if !self:GetAnchored() then return end
 
         if !self:GetAngry() then
-            local ents = ents.FindInSphere(self:GetPos(), 128)
-
-            for k, v in pairs(ents) do
-                if v:IsPlayer() and v:Alive() then
+            for k, v in pairs(ents.FindInSphere(self:GetPos(), 128)) do
+                if v:IsPlayer() and v:Alive() and v ~= self:CPPIGetOwner() then
                     self:SetAngry(true)
                     self:SetAngryTime(CurTime() + 5)
-                    self:EmitSound("npc/roller/mine/rmine_blip3.wav", 110, 100)
-                    // notify owner
-                    GAMEMODE:Hint(self:GetOwner(), NOTIFY_ERROR, "Your Motion Sensor has detected an intruder!")
+                    self:EmitSound("ambient/alarms/klaxon1.wav", 110, 100)
+                    --
+                    GAMEMODE:Hint(self:CPPIGetOwner(), NOTIFY_ERROR, "Your Motion Sensor has detected an intruder!")
                     break
                 end
             end
@@ -54,10 +52,6 @@ if SERVER then
         if !self:GetAngry() then
             self:NextThink(CurTime() + 0.1)
         end
-    end
-
-    function ENT:OnAnchor(ply)
-        self:SetOwner(ply)
     end
 end
 
@@ -72,7 +66,7 @@ if CLIENT then
     function ENT:DrawTranslucent(flags)
         self:Draw()
 
-        // draw the glow
+        -- draw the glow
 
         if self:GetAnchored() then
             if self:GetAngry() then

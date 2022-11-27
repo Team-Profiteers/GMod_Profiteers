@@ -1,16 +1,16 @@
 Profiteers.Buyables = {
-    // ["arccw_ud_m79"] = {
-    // 	Name = nil, -- auto-generate from EntityClass
-    // 	EntityClass = "arccw_ud_m79",
-    // 	Price = 750,
+    -- ["arccw_ud_m79"] = {
+    -- 	Name = nil, -- auto-generate from EntityClass
+    -- 	EntityClass = "arccw_ud_m79",
+    -- 	Price = 750,
 
-    // 	Description = "Break action grenade launcher",
-    // 	Description2 = "Multiple payload types",
-    // 	Category = "Explosives",
-    // 	Icon = nil, -- taken from EntityClass
-    // 	CanBuy = nil, -- function(self, ply)
-    // 	OnBuy = nil, -- function(self, ply)
-    // },
+    -- 	Description = "Break action grenade launcher",
+    -- 	Description2 = "Multiple payload types",
+    -- 	Category = "Explosives",
+    -- 	Icon = nil, -- taken from EntityClass
+    -- 	CanBuy = nil, -- function(self, ply)
+    -- 	OnBuy = nil, -- function(self, ply)
+    -- },
 
     ["arc9_bo2_stinger"] = {
         EntityClass = "arc9_bo2_stinger",
@@ -126,22 +126,22 @@ Profiteers.Buyables = {
         Category = "Ammunition",
     },
 
-    // ["item_healthkit"] = {
-    //     Name = "Health Kit",
-    //     EntityClass = "item_healthkit",
-    //     Price = 250,
+    -- ["item_healthkit"] = {
+    --     Name = "Health Kit",
+    --     EntityClass = "item_healthkit",
+    --     Price = 250,
 
-    //     Description = "Restores 25 health",
-    //     Category = "Utility",
-    // },
-    // ["item_healthvial"] = {
-    //     Name = "Health Vial",
-    //     EntityClass = "item_healthvial",
-    //     Price = 100,
+    --     Description = "Restores 25 health",
+    --     Category = "Utility",
+    -- },
+    -- ["item_healthvial"] = {
+    --     Name = "Health Vial",
+    --     EntityClass = "item_healthvial",
+    --     Price = 100,
 
-    //     Description = "Restores 10 health",
-    //     Category = "Utility",
-    // },
+    --     Description = "Restores 10 health",
+    --     Category = "Utility",
+    -- },
     ["item_battery"] = {
         Name = "Armor Battery",
         EntityClass = "item_battery",
@@ -150,16 +150,16 @@ Profiteers.Buyables = {
         Description = "Provides 15 points of armor",
         Category = "Utility",
     },
-    // ["spiderman's_swep"] = {
-    //     Name = "Spiderman's Gun",
-    //     EntityClass = "spiderman's_swep",
-    //     Price = 200,
+    -- ["spiderman's_swep"] = {
+    --     Name = "Spiderman's Gun",
+    --     EntityClass = "spiderman's_swep",
+    --     Price = 200,
 
-    //     Description = "Swing around the map",
-    //     Description2 = "Critical vertical mobility tool",
+    --     Description = "Swing around the map",
+    --     Description2 = "Critical vertical mobility tool",
 
-    //     Category = "Utility"
-    // },
+    --     Category = "Utility"
+    -- },
 
     ["pt_nuke"] = {
         Name = "Nuclear Device",
@@ -239,17 +239,17 @@ Profiteers.Buyables = {
 
         Category = "Construction"
     },
-    // ["pt_cart_health"] = {
-    //     Name = "Health Station",
-    //     EntityClass = "pt_cart_health",
-    //     Price = 1500,
-    //     PlaceEntity = true,
+    -- ["pt_cart_health"] = {
+    --     Name = "Health Station",
+    --     EntityClass = "pt_cart_health",
+    --     Price = 1500,
+    --     PlaceEntity = true,
 
-    //     Description = "Restores your health",
-    //     Description2 = "Place near Beacon to use",
+    --     Description = "Restores your health",
+    --     Description2 = "Place near Beacon to use",
 
-    //     Category = "Construction"
-    // },
+    --     Category = "Construction"
+    -- },
     ["pt_cart_armor"] = {
         Name = "Armor Station",
         EntityClass = "pt_cart_armor",

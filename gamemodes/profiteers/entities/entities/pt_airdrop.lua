@@ -30,7 +30,7 @@ if SERVER then
             self:SetAngles(a)
 
             local phys = self:GetPhysicsObject()
-            // fall slowly
+            -- fall slowly
             phys:SetVelocity(Vector(0, 0, -100))
         end
     end

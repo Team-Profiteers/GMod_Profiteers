@@ -81,7 +81,7 @@ function createEnemyNPC()
         ParseNodeFile()
     end
 
-    // print( "Attempted to spawn new batch of NPCs!" )
+    -- print( "Attempted to spawn new batch of NPCs!" )
 
     for i, k in pairs( ents.GetAll() ) do
         if k:IsNPC() then
@@ -116,7 +116,7 @@ function createEnemyNPC()
 
         local va = a
 
-        // Spawn enemies in a circle
+        -- Spawn enemies in a circle
 
         local ang = i * (360 / tospawn)
 
@@ -163,19 +163,19 @@ function createEnemyNPC()
         enemy:Fire("SetReadinessHigh")
         enemy:SetNPCState(NPC_STATE_COMBAT)
 
-        // print("Enemy spawned at " .. tostring(a))
+        -- print("Enemy spawned at " .. tostring(a))
     end
 end
 
 function GM:OnNPCKilled( npc, atk, inf )
-    // Spawn money entity
+    -- Spawn money entity
 
     if npc.bounty and npc.PlayerDamaged then
-        // local money = ents.Create("pt_money")
-        // money:SetAngles(AngleRand())
-        // money:SetPos(npc:GetPos())
-        // money:SetAmount(math.Round(npc.bounty * math.Rand(0.9, 1.1)))
-        // money:Spawn()
+        -- local money = ents.Create("pt_money")
+        -- money:SetAngles(AngleRand())
+        -- money:SetPos(npc:GetPos())
+        -- money:SetAmount(math.Round(npc.bounty * math.Rand(0.9, 1.1)))
+        -- money:Spawn()
         if atk:IsPlayer() then
             atk:AddMoney(math.Round(npc.bounty * math.Rand(0.9, 1.1)))
         end

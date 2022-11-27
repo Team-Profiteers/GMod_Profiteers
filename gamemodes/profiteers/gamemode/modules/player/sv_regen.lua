@@ -1,4 +1,4 @@
-// Player health regen
+-- Player health regen
 
 hook.Add("PlayerTick", "ProfiteersPlayerTickRegen", function(ply)
     if ply:Health() < ply:GetMaxHealth() and (ply:GetNWFloat("pt_lastdamagetime", 0) + 5) <= CurTime() then

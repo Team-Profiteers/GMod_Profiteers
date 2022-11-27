@@ -16,7 +16,7 @@ if SERVER then
     end
 
     function ENT:PhysicsCollide(colData, collider)
-        // sit down on the ground
+        -- sit down on the ground
         if colData.HitEntity:IsWorld() and colData.HitNormal.z < 0.5 then
             self:SetPos(colData.HitPos)
             self:SetMoveType(MOVETYPE_NONE)

@@ -1,4 +1,4 @@
-// Entirely cosmetic parachute entity. Attaches to parachuting players.
+-- Entirely cosmetic parachute entity. Attaches to parachuting players.
 
 AddCSLuaFile()
 ENT.PrintName = "Parachute"
