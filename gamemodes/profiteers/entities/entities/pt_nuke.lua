@@ -4,7 +4,7 @@ ENT.Type = "anim"
 ENT.RenderGroup = RENDERGROUP_BOTH
 ENT.Model = "models/props_phx/torpedo.mdl"
 ENT.SpawnTime = 0
-ENT.DetonationTime = 5
+ENT.DetonationTime = 300
 
 ENT.TakePropDamage = true
 
