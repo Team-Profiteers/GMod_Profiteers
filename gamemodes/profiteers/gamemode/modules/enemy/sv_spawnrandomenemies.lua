@@ -112,7 +112,7 @@ function createEnemyNPC()
         if squad["wpn"] then
             wp = table.Random(squad["wpn"])
         end
-        local va = a + Vector( math.random(-128, 128), math.random(-128, 128), 16 )
+        local va = a + Vector( math.random(-256, 256), math.random(-256, 256), 16 )
         if !enemy:IsValid() then return end
         if (util.PointContents( va ) == CONTENTS_SOLID or util.PointContents( va + Vector(0, 0, 48) ) == CONTENTS_SOLID )then return end
         enemy:SetPos( va )
