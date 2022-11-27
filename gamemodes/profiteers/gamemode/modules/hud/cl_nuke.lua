@@ -24,10 +24,18 @@ hook.Add("HUDPaint", "Profiteers Nuke Warning", function()
     surface.SetTextPos(ScreenScale(48), ScreenScale(4))
     surface.DrawText("ALERT ALERT ALERT")
 
+    local owner = nuke:GetOwner()
+    local name = "UNKNOWN"
+
+    if IsValid(owner) then
+        name = owner:Nick()
+        name = string.upper(name)
+    end
+
     surface.SetTextColor(255, 50, 50)
     surface.SetFont("CGHUD_6")
     surface.SetTextPos(ScreenScale(48), ScreenScale(36))
-    surface.DrawText("NUCLEAR DEVICE ARMED")
+    surface.DrawText(name .. " ARMED NUCLEAR DEVICE")
 
     surface.SetDrawColor(255, 255, 255)
     surface.SetMaterial(nukemat)

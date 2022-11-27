@@ -34,8 +34,6 @@ if SERVER then
         end
 
         self.Entity:SetNotSolid(true)
-        --remove this ent after awhile
-        self.Entity:Fire("kill", "", self.Duration)
         self.CanTool = false
     end
 
