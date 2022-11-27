@@ -1,3 +1,12 @@
+local sounds = {
+    "npc/combine_soldier/gear1.wav",
+    "npc/combine_soldier/gear2.wav",
+    "npc/combine_soldier/gear3.wav",
+    "npc/combine_soldier/gear4.wav",
+    "npc/combine_soldier/gear5.wav",
+    "npc/combine_soldier/gear6.wav",
+}
+
 hook.Add("SetupMove", "ProfiteersSetupMoveClimb", function(ply, mv, cmd)
     if mv:KeyPressed(IN_JUMP) then
         if ply:IsOnGround() then return end
@@ -13,6 +22,13 @@ hook.Add("SetupMove", "ProfiteersSetupMoveClimb", function(ply, mv, cmd)
 
         if !tr.Hit then return end
         if tr.HitSky then return end
+
+        if IsFirstTimePredicted() then
+            ply:EmitSound(sounds[math.random(1, #sounds)], 80, 100)
+        end
+
+        ply:SetNWBool("pt_parachute", false)
+        ply:SetNWBool("pt_parachute_auto", false)
 
         // apply up and forward force
 
