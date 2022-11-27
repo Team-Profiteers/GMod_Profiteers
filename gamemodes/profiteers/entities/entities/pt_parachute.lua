@@ -12,6 +12,11 @@ function ENT:Initialize()
 end
 
 function ENT:Think()
+    if SERVER and (!IsValid(self:GetOwner()) or !self:GetOwner():GetNWBool("pt_parachute")) then
+        self:Remove()
+        return
+    end
+
     self:SetPos(self:GetOwner():GetPos())
 
     local sa = self:GetOwner():GetAngles()
@@ -19,10 +24,6 @@ function ENT:Think()
     sa.p = 0
     sa.r = 0
     self:SetAngles(sa)
-
-    if SERVER and !self:GetOwner():GetNWBool("pt_parachute") then
-        self:Remove()
-    end
 end
 
 function ENT:Draw()
