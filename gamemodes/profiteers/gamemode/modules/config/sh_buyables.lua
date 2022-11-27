@@ -176,11 +176,11 @@ Profiteers.Buyables = {
     ["pt_spawn"] = {
         Name = "Deployable Spawn",
         EntityClass = "pt_spawn",
-        Price = 5000,
+        Price = 2500,
         PlaceEntity = true,
 
         Description = "Respawn at your base",
-        Description2 = "Deploy near a Beacon to activate",
+        Description2 = "Must be deployed near a Beacon",
 
         Category = "Construction"
     },
@@ -188,7 +188,7 @@ Profiteers.Buyables = {
     ["spiderman's_swep"] = {
         Name = "Spiderman's Gun",
         EntityClass = "spiderman's_swep",
-        Price = 150,
+        Price = 200,
 
         Description = "Swing around the map",
         Description2 = "Critical vertical mobility tool",
@@ -196,10 +196,21 @@ Profiteers.Buyables = {
         Category = "Utility"
     },
 
+    ["pt_arsenal"] = {
+        Name = "Arsenal",
+        EntityClass = "pt_arsenal",
+        Price = 2000,
+        PlaceEntity = true,
+
+        Description = "Free global weapon spawning",
+        Description2 = "Must be deployed near a Beacon",
+
+        Category = "Construction"
+    },
     ["pt_cart_health"] = {
         Name = "Health Station",
         EntityClass = "pt_cart_health",
-        Price = 2000,
+        Price = 500,
         PlaceEntity = true,
 
         Description = "Restores your health",
@@ -210,7 +221,7 @@ Profiteers.Buyables = {
     ["pt_cart_armor"] = {
         Name = "Armor Station",
         EntityClass = "pt_cart_armor",
-        Price = 10000,
+        Price = 3000,
         PlaceEntity = true,
 
         Description = "Grants armor",

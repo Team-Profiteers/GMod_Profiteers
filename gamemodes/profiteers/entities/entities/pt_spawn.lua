@@ -15,8 +15,3 @@ ENT.AnchorRequiresBeacon = true
 
 ENT.Category = "Profiteers"
 ENT.Spawnable = false
-
-function ENT:SetupDataTables()
-    self:NetworkVar("Bool", 0, "Anchored")
-    self:NetworkVar("Entity", 0, "User")
-end

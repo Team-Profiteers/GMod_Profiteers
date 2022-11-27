@@ -45,19 +45,11 @@ if SERVER then
         self:SetCharge(0)
     end
 
-    function ENT:Use(ply)
-        if ply == self:CPPIGetOwner() then
-
-            if ply:KeyDown(IN_WALK) then
-                self:TryAnchor(ply)
-            else
-
-                if self:CanConsume(ply) then
-                    self:OnConsume(ply)
-                else
-                    self:EmitSound("buttons/button18.wav", 80, 105)
-                end
-            end
+    function ENT:OnUse(ply)
+        if self:CanConsume(ply) then
+            self:OnConsume(ply)
+        else
+            self:EmitSound("buttons/button18.wav", 80, 105)
         end
     end
 
