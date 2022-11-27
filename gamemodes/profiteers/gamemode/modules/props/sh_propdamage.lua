@@ -99,14 +99,18 @@ hook.Add("EntityTakeDamage", "Profiteers_PropDamage", function(ent, dmginfo)
     ent:SetNWInt("PFPropHealth", ent:GetNWInt("PFPropHealth") - dmginfo:GetDamage())
 
     if ent:GetNWInt("PFPropHealth") <= 0 then
-        local eff = EffectData()
-        eff:SetOrigin(ent:GetPos())
-        eff:SetEntity(ent)
-        util.Effect(ent:GetNWInt("PFPropMaxHealth") > 150 and "helicoptermegabomb" or "balloon_pop", eff)
+        if ent.OnPropDestroyed then
+            ent:OnPropDestroyed(dmginfo)
+        else
+            local eff = EffectData()
+            eff:SetOrigin(ent:GetPos())
+            eff:SetEntity(ent)
+            util.Effect(ent:GetNWInt("PFPropMaxHealth") > 150 and "helicoptermegabomb" or "balloon_pop", eff)
 
-        if lasteffecttick ~= CurTime() then
-            lasteffecttick = CurTime()
-            ent:EmitSound(explosionSounds[math.random(#explosionSounds)], 110)
+            if lasteffecttick ~= CurTime() then
+                lasteffecttick = CurTime()
+                ent:EmitSound(explosionSounds[math.random(#explosionSounds)], 110)
+            end
         end
 
         ent:Remove()

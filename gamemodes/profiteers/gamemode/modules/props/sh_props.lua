@@ -1,13 +1,12 @@
 local Entity = FindMetaTable("Entity")
 
-
 function Entity:WithinBeacon()
-    local owner = self:GetNWEntity("PFPropOwner")
+    local owner = self:CPPIGetOwner()
     if !IsValid(owner) then return false end
     if !self.beaconcache or self.beaconcache[1] ~= CurTime() then
         self.beaconcache = {CurTime(), false}
         for _, ent in pairs(ents.FindByClass("pt_beacon")) do
-            if ent:GetUser() == owner and ent:GetPos():Distance(self:GetPos()) <= 1024 then
+            if ent:CPPIGetOwner() == owner and ent:GetPos():Distance(self:GetPos()) <= 1024 then
                 self.beaconcache[2] = true
                 break
             end

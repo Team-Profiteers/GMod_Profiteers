@@ -78,7 +78,7 @@ hook.Add("PhysgunDrop", "Profiteers", function(ply, ent)
 end)
 
 hook.Add("PhysgunPickup", "ProfiteersPhysgunPickupDisallowNonProps", function(ply, ent)
-    if ent:GetClass() ~= "prop_physics" then return false end
+    if !ent:CPPICanPhysgun(ply) then return false end
 end)
 
 
@@ -92,12 +92,13 @@ end)
 
 hook.Add("PlayerSpawnedProp", "Profiteers", function(ply, model, ent)
     ent:CalculatePropHealth()
-    ent:SetNWEntity("PFPropOwner", ply)
+    ent:CPPISetOwner(ply)
     GAMEMODE:GhostProp(ent)
     GAMEMODE:FreezeProp(ent, true)
     GAMEMODE:StartUnGhost(ent)
 end)
 
 hook.Add("CanPlayerUnfreeze", "Profiteers", function(ply, ent, phys)
+    if !ent:CPPICanPhysgun(ply) then return false end
     if GetConVar("pt_prop_ghost"):GetBool() and ent:GetNWBool("Ghosted") then return false end
 end)
