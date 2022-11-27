@@ -13,7 +13,6 @@ ENT.AnchorRequiresBeacon = false
 ENT.AllowUnAnchor = false
 ENT.AnchorOffset = Vector(0, 0, 0)
 
-
 function ENT:SetupDataTables()
     self:NetworkVar("Bool", 0, "Anchored")
 end
@@ -81,13 +80,19 @@ if SERVER then
     end
 
     function ENT:Use(ply)
-        if !self:GetAnchored() then
-            if ply:KeyDown(IN_WALK) then
-                self:TryAnchor(ply)
-            elseif !self:IsPlayerHolding() then
-                --ply:PickupObject(self)
-                GAMEMODE:Hint(ply, 0, "Hold WALK key (Default Alt) and Use to deploy this.")
-            end
+        if ply ~= self:CPPIGetOwner() then return end
+        if ply:KeyDown(IN_WALK) then
+            self:TryAnchor(ply)
+        else
+            self:OnUse(ply)
+        end
+    end
+
+    function ENT:OnUse(ply)
+        if self.AllowUnAnchor then
+            GAMEMODE:Hint(ply, 0, "Hold WALK key (Default Alt) and Use to toggle anchoring.")
+        elseif !self:GetAnchored() then
+            GAMEMODE:Hint(ply, 0, "Hold WALK key (Default Alt) and Use to deploy this.")
         end
     end
 

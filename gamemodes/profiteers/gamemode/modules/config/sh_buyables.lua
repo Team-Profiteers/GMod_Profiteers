@@ -150,6 +150,16 @@ Profiteers.Buyables = {
         Description = "Provides 15 points of armor",
         Category = "Utility",
     },
+    ["spiderman's_swep"] = {
+        Name = "Spiderman's Gun",
+        EntityClass = "spiderman's_swep",
+        Price = 200,
+
+        Description = "Swing around the map",
+        Description2 = "Critical vertical mobility tool",
+
+        Category = "Utility"
+    },
 
     ["pt_nuke"] = {
         Name = "Nuclear Device",
@@ -176,45 +186,67 @@ Profiteers.Buyables = {
     ["pt_spawn"] = {
         Name = "Deployable Spawn",
         EntityClass = "pt_spawn",
-        Price = 5000,
+        Price = 1500,
         PlaceEntity = true,
 
         Description = "Respawn at your base",
-        Description2 = "Deploy near a Beacon to activate",
+        Description2 = "Must be deployed near a Beacon",
 
         Category = "Construction"
     },
 
-    ["spiderman's_swep"] = {
-        Name = "Spiderman's Gun",
-        EntityClass = "spiderman's_swep",
-        Price = 150,
+    ["pt_arsenal"] = {
+        Name = "Arsenal",
+        EntityClass = "pt_arsenal",
+        Price = 3000,
+        PlaceEntity = true,
 
-        Description = "Swing around the map",
-        Description2 = "Critical vertical mobility tool",
+        Description = "Free global weapon spawning",
+        Description2 = "Must be deployed near a Beacon",
 
-        Category = "Utility"
+        Category = "Construction"
     },
-
     ["pt_cart_health"] = {
         Name = "Health Station",
         EntityClass = "pt_cart_health",
-        Price = 2000,
+        Price = 1500,
         PlaceEntity = true,
 
         Description = "Restores your health",
-        Description2 = "Charge regenerates over time",
+        Description2 = "Place near Beacon to use",
 
         Category = "Construction"
     },
     ["pt_cart_armor"] = {
         Name = "Armor Station",
         EntityClass = "pt_cart_armor",
-        Price = 10000,
+        Price = 2500,
         PlaceEntity = true,
 
         Description = "Grants armor",
-        Description2 = "Charge regenerates over time",
+        Description2 = "Place near Beacon to use",
+
+        Category = "Construction"
+    },
+    ["pt_cart_smg_grenade"] = {
+        Name = "Grenade Autolathe",
+        EntityClass = "pt_cart_smg_grenade",
+        Price = 4000,
+        PlaceEntity = true,
+
+        Description = "Produces Rifle Grenades",
+        Description2 = "Place near Beacon to use",
+
+        Category = "Construction"
+    },
+    ["pt_cart_rpg_rocket"] = {
+        Name = "Rocket Autolathe",
+        EntityClass = "pt_cart_rpg_rocket",
+        Price = 5000,
+        PlaceEntity = true,
+
+        Description = "Produces Rockets",
+        Description2 = "Place near Beacon to use",
 
         Category = "Construction"
     },
