@@ -474,7 +474,7 @@ hook.Add("HUDPaint", "HUDPaint_DrawABox", function()
 	local vehicle_positions = {}
 	cam.Start3D()
 	for _, p in pairs(player.GetAll()) do
-		if p ~= ply and p:Team() == ply:Team() then
+		if p ~= ply and p:Team() == ply:Team() and p:Team() != TEAM_UNASSIGNED then
 			table.insert(ally_positions, {p, (p:GetPos() + Vector(0, 0, 80)):ToScreen()})
 		end
 	end
