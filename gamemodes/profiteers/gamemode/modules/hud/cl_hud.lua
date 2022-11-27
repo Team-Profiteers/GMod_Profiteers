@@ -41,7 +41,6 @@ local diamond = Material("tdm/diamond.png", "smooth")
 local skull = Material("tdm/skull.png", "smooth")
 
 local money_updates = {}
-local money_last_t = 0
 
 local toop = {
 
@@ -552,7 +551,9 @@ net.Receive("pt_updatemoney", function()
 	else
 		table.insert(money_updates, {t, net.ReadInt(32), net.ReadInt(32)})
 	end
-	money_last_t = t
+	if money_updates[#money_updates][2] > 0 then
+		LocalPlayer():EmitSound("profiteers/money_pickup.wav", 70, math.Rand(95, 105), 0.75)
+	end
 end)
 
 local hide = {

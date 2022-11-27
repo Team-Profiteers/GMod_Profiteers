@@ -49,7 +49,7 @@ if SERVER then
     function ENT:StartTouch(ply)
         if !self.USED and ply:IsPlayer() then
             self.USED = true
-            self:EmitSound("profiteers/money_pickup.wav", 75, math.Rand(95, 105))
+            -- self:EmitSound("profiteers/money_pickup.wav", 75, math.Rand(95, 105))
             ply:AddMoney(self:GetAmount())
             self:Remove()
         end
