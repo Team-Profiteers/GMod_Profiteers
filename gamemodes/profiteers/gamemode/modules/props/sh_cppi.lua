@@ -51,3 +51,23 @@ if SERVER then
         return true
     end
 end
+
+CPPI.PropertyBlacklist = {
+}
+
+CPPI.ToolBlacklist = {
+    ["dynamite"] = true
+}
+
+hook.Add("CanProperty", "PropProtection", function(ply, prop, ent)
+    if CPPI.PropertyBlacklist[prop] and not ply:IsAdmin() then return false end
+
+    if ent:CPPIGetOwner() ~= ply and not ply:IsAdmin() then return false end
+end)
+
+hook.Add("CanTool", "PropProtection", function(ply, tr, toolname, tool, button)
+    if CPPI.ToolBlacklist[toolname] and not ply:IsAdmin() then return false end
+
+    local ent = tr.Entity
+    if IsValid(ent) and ent:CPPIGetOwner() ~= ply and not ply:IsAdmin() then return false end
+end)

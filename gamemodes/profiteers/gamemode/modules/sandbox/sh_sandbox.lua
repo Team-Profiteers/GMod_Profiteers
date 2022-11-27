@@ -39,7 +39,7 @@ Profiteers.DenySpawningCats = {
     ["npcs"] = true,
 }
 
-hook.Add("PlayerCheckLimit", "ArcCWTDM_PlayerCheckLimit", function(ply, name, cur, max)
+hook.Add("PlayerCheckLimit", "PlayerCheckLimit", function(ply, name, cur, max)
     -- This disables spawning or using anything else
     if Profiteers.DenySpawningCats[name] and not ply:IsAdmin() then return false end
 end)
