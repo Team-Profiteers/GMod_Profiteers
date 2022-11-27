@@ -59,9 +59,11 @@ hook.Add("SetupMove", "ProfiteersSetupMoveParachute", function(ply, mv, cmd)
             local chute = ents.Create("pt_parachute")
             chute:SetOwner(ply)
             chute:Spawn()
+            ply:EmitSound("profiteers/para_open.wav", 110)
         end
     elseif ply:GetNWBool("pt_parachute_pending") and ply:GetNWBool("pt_parachute") and mv:KeyPressed(IN_JUMP) then
         ply:SetNWBool("pt_parachute", false)
+        ply:EmitSound("profiteers/para_close.wav", 110)
     end
 
     local eyeangles = mv:GetAngles()
@@ -106,6 +108,7 @@ hook.Add("PlayerPostThink", "ProfiteersPostPlayerThinkParachute", function(ply)
         ply:SetNWBool("pt_parachute", false)
         ply:SetNWBool("pt_parachute_first", false)
         ply:EmitSound("npc/combine_soldier/gear3.wav", 100, 100)
+        ply:EmitSound("profiteers/para_close.wav", 110)
     end
     if ply:GetNWBool("pt_parachute_pending") and ply:IsOnGround() then
         ply:SetNWBool("pt_parachute_pending", false)
