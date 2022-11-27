@@ -1,9 +1,9 @@
 AddCSLuaFile()
 
-ENT.PrintName = "Base Beacon"
+ENT.PrintName = "Deployable Spawn"
 ENT.Type = "anim"
 ENT.RenderGroup = RENDERGROUP_BOTH
-ENT.Model = "models/props_combine/combine_light002a.mdl"
+ENT.Model = "models/props_combine/combine_mine01.mdl"
 
 ENT.TakePropDamage = true
 
@@ -30,8 +30,8 @@ if SERVER then
         self:SetUseType(SIMPLE_USE)
         self:GetPhysicsObject():SetMass(10)
 
-        self:SetNWInt("PFPropHealth", 500)
-        self:SetNWInt("PFPropMaxHealth", 500)
+        self:SetNWInt("PFPropHealth", 100)
+        self:SetNWInt("PFPropMaxHealth", 100)
     end
 
     function ENT:Use(ply)
@@ -39,10 +39,10 @@ if SERVER then
             if ply:KeyDown(IN_WALK) then
                 local tr = util.TraceLine({
                     start = self:WorldSpaceCenter(),
-                    endpos = self:WorldSpaceCenter() - Vector(0, 0, 32),
+                    endpos = self:WorldSpaceCenter() - Vector(0, 0, 16),
                     mask = MASK_SOLID_BRUSHONLY,
                 })
-                local pos = tr.HitPos + Vector(0, 0, 0)
+                local pos = tr.HitPos
                 local mins, maxs = self:GetCollisionBounds()
                 local tr2 = util.TraceHull({
                     start = pos,
@@ -52,8 +52,10 @@ if SERVER then
                     filter = self,
                     ignoreworld = true
                 })
-                if tr.Hit and !tr2.Hit then
-                    self:SetModel("models/props_combine/combine_light001a.mdl")
+                if !self:WithinBeacon() then
+                    self:EmitSound("npc/roller/code2.wav", 100, 90)
+                    GAMEMODE:Hint(ply, 3, "Spawns can only be deployed within a Beacon.")
+                elseif tr.Hit and !tr2.Hit then
                     self:SetPos(pos)
                     self:SetAngles(Angle(0, self:GetAngles().y, 0))
                     -- self:SetMoveType(MOVETYPE_NONE)
@@ -62,15 +64,12 @@ if SERVER then
                     timer.Simple(0.1, function() if IsValid(self) then self:EmitSound("npc/roller/blade_cut.wav", 100, 90) end end)
                     self:SetAnchored(true)
                     self:SetUser(ply) -- SetOwner will disable collisions. lovely!
-                    GAMEMODE:HintOneTime(ply, 0, "Props near the beacon unghost quickly and are invulnerable to small arms fire.")
                 else
                     self:EmitSound("npc/roller/code2.wav", 100, 90)
-                    GAMEMODE:HintOneTime(ply, 3, "Beacons can only be deployed on solid ground.")
-
                 end
             elseif !self:IsPlayerHolding() then
                 ply:PickupObject(self)
-                GAMEMODE:HintOneTime(ply, 0, "Hold WALK key (Default Alt) to deploy the Beacon.")
+                GAMEMODE:HintOneTime(ply, 0, "Hold WALK key (Default Alt) to deploy the Spawn.")
             end
         else
             -- idk

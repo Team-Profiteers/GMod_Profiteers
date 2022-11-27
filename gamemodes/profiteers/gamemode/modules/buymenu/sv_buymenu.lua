@@ -78,6 +78,8 @@ net.Receive("pt_buy", function(len, ply)
 			ent:SetPos( tr.HitPos )
 			ent:Spawn()
 
+			ent:CPPISetOwner(ply)
+
 			-- Attempt to move the object so it sits flush
 			-- We could do a TraceEntity instead of doing all
 			-- of this - but it feels off after the old way

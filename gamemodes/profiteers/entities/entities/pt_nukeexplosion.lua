@@ -20,26 +20,25 @@ if SERVER then
         self.DoDisintegration = 1
         self.EpicBlastWave = 1
         --We need to init physics properties even though this entity isn't physically simulated
-        self.Entity:SetMoveType(MOVETYPE_NONE)
-        self.Entity:DrawShadow(false)
-        self.Entity:SetCollisionBounds(Vector(-20, -20, -10), Vector(20, 20, 10))
-        self.Entity:PhysicsInitBox(Vector(-20, -20, -10), Vector(20, 20, 10))
-        local phys = self.Entity:GetPhysicsObject()
+        self:SetMoveType(MOVETYPE_NONE)
+        self:DrawShadow(false)
+        self:SetCollisionBounds(Vector(-20, -20, -10), Vector(20, 20, 10))
+        self:PhysicsInitBox(Vector(-20, -20, -10), Vector(20, 20, 10))
+        local phys = self:GetPhysicsObject()
 
         if phys:IsValid() then
             phys:EnableCollisions(false)
         end
 
-        self.Entity:SetNotSolid(true)
+        self:SetNotSolid(true)
         util.PrecacheModel("models/player/charple.mdl")
         self.Yield = 10
         self.YieldSlow = self.Yield ^ 0.75
         self.YieldSlowest = self.Yield ^ 0.5
-        self.SplodePos = self.Entity:GetPos() + Vector(0, 0, 4)
-        self.Owner = self.Entity.Owner
-        self.Weapon = self.Entity
+        self.SplodePos = self:GetPos() + Vector(0, 0, 4)
+        self.Weapon = self
         --remove this ent after awhile
-        self.Entity:Fire("kill", "", 6 * self.YieldSlow)
+        self:Fire("kill", "", 6 * self.YieldSlow)
         local blastradius = 2300 * self.YieldSlow
 
         if blastradius > 14000 then
@@ -115,7 +114,7 @@ if SERVER then
                             effectdata:SetEntity(found)
                             util.Effect("pt_nuke_vaporize", effectdata)
                             found:Fire("kill", "", "0.1")
-                            --self.Owner:AddFrags(1)
+                            --self:GetOwner():AddFrags(1)
                         else
                             local entpos = found:GetPos()
 
@@ -127,7 +126,7 @@ if SERVER then
                                 found:SetModel("models/player/charple.mdl")
                             end
 
-                            util.BlastDamage(self.Entity, self.Owner, entpos, 256, 512)
+                            util.BlastDamage(self, self:GetOwner(), entpos, 256, 512)
                         end
                     elseif foundspecs.player then
                         local entpos = found:GetPos()
@@ -136,16 +135,16 @@ if SERVER then
                         effectdata:SetNormal(Vector(0, 0, 1))
                         util.Effect("pt_nuke_disintegrate", effectdata)
                         found:SetModel("models/player/charple.mdl")
-                        util.BlastDamage(self.Entity, self.Owner, entpos, 256, 512)
+                        util.BlastDamage(self, self:GetOwner(), entpos, 256, 512)
                     end
                 end
             end
 
             --radiation
             local radiation = ents.Create("pt_sent_nuke_radiation")
-            radiation:SetOwner(self.Owner)
-            radiation.Owner = self.Owner
-            radiation:SetVar("owner", self.Owner)
+            radiation:SetOwner(self:GetOwner())
+            radiation.Owner = self:GetOwner()
+            radiation:SetVar("owner", self:GetOwner())
             radiation:SetPos(self.SplodePos)
             radiation:Spawn()
             --earthquake
@@ -177,7 +176,7 @@ if SERVER then
             end
         else
             local effectdata = EffectData()
-            effectdata:SetOrigin(self.Entity:GetPos())
+            effectdata:SetOrigin(self:GetPos())
             effectdata:SetNormal(Vector(0, 0, 1))
             effectdata:SetMagnitude(1)
             effectdata:SetScale(1)
@@ -198,9 +197,9 @@ if SERVER then
 
         timer.Simple(0.2, function()
             if not IsValid(self) then return end
-            if not IsValid(self.Entity) then return end
-            if not IsValid(self.Owner) then return end
-            util.BlastDamage(self.Entity, self.Owner, self.SplodePos, blastradius, 4096 * self.Yield)
+            if not IsValid(self) then return end
+            if not IsValid(self:GetOwner()) then return end
+            util.BlastDamage(self, self:GetOwner(), self.SplodePos, blastradius, 4096 * self.Yield)
         end)
 
         self.SplodeDist = 100
@@ -213,7 +212,7 @@ if SERVER then
 
     function ENT:Think()
         if not IsValid(self) then return end
-        if not IsValid(self.Entity) then return end
+        if not IsValid(self) then return end
         if not self.Sploding then return end
         local CurrentTime = CurTime()
         local FTime = CurrentTime - self.lastThink
@@ -277,17 +276,17 @@ if SERVER then
                         physobj:ApplyForceOffset(vecang * (8e4 * Damage), entpos + Vector(math.random(-20, 20), math.random(-20, 20), math.random(20, 40))) --still push it away
                     end
 
-                    util.BlastDamage(self.Entity, self:OwnerCheck(), entpos - vecang * 64, 384, Damage) --splode it
+                    util.BlastDamage(self, self:OwnerCheck(), entpos - vecang * 64, 384, Damage) --splode it
                 end
             end
         end
     end
 
     function ENT:OwnerCheck()
-        if IsValid(self.Owner) then
-            return self.Owner
+        if IsValid(self:GetOwner()) then
+            return self:GetOwner()
         else
-            return self.Entity
+            return self
         end
     end
 
@@ -390,7 +389,7 @@ if CLIENT then
             self:PlayPopSound()
         end
 
-		LocalPlayer():ScreenFade(SCREENFADE.OUT, color_white, 5, 0.5)
+        LocalPlayer():ScreenFade(SCREENFADE.OUT, color_white, 5, 0.5)
     end
 
     function ENT:Think()
@@ -398,7 +397,7 @@ if CLIENT then
         local FTime = CurTime() - self.lastThink
         self.lastThink = CurTime()
         self.SplodeDist = self.SplodeDist + self.BlastSpeed * FTime
-        local EntPos = EntPos or self.Entity:GetPos()
+        local EntPos = EntPos or self:GetPos()
         local CurDist = (EntPos - LocalPlayer():GetPos()):Length()
         local volume = 7e5 / CurDist
 
