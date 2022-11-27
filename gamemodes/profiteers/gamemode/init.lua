@@ -26,7 +26,7 @@ function GM:PlayerDeathSound(ply)
 end
 
 function GM:GetFallDamage(ply, speed)
-    return speed / 15
+    return speed / 20
 end
 
 function GM:PostGamemodeLoaded()
