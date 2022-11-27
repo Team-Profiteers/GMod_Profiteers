@@ -16,12 +16,28 @@ if SERVER then
     function ENT:Initialize()
         self:SetModel(self.Model)
         self:PhysicsInit(SOLID_VPHYSICS)
-        self:SetMoveType(MOVETYPE_VPHYSICS)
+        self:SetMoveType(MOVETYPE_NONE)
         self:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
         self:SetTrigger(true)
         self:UseTriggerBounds(true, 24)
 
         self.SpawnTime = CurTime()
+
+        local tr = util.TraceLine({
+            start = self:GetPos(),
+            endpos = self:GetPos() - Vector(0, 0, 300000),
+            mask = MASK_NPCWORLDSTATIC,
+        })
+
+        local v = tr.HitNormal
+
+        local a = v:Angle()
+
+        a:RotateAroundAxis(a:Up(), 90)
+        a:RotateAroundAxis(a:Forward(), 90)
+
+        self:SetPos(tr.HitPos)
+        self:SetAngles(a)
     end
 
     function ENT:Think()
@@ -36,21 +52,6 @@ if SERVER then
             self:EmitSound("weapons/357/357_spin1.wav", 75)
             ply:AddMoney(self:GetAmount())
             self:Remove()
-        end
-    end
-
-    // Money stops moving once it hits the ground and stops moving
-
-    function ENT:PhysicsCollide(data, physobj)
-        if data.HitEntity:IsWorld() then
-            self:SetMoveType(MOVETYPE_NONE)
-
-            // aligns to ground
-
-            local ang = data.HitNormal:Angle()
-            ang:RotateAroundAxis(ang:Right(), 90)
-            ang:RotateAroundAxis(ang:Up(), 90)
-            self:SetAngles(ang)
         end
     end
 
@@ -80,7 +81,7 @@ else
         // draw glow sprite
 
         render.SetMaterial(glowmat)
-        render.DrawSprite(self:GetPos(), 16, 16, Color(255, 255, 255, 255))
+        render.DrawSprite(self:GetPos(), 4, 4, Color(150, 255, 200, 255))
 
         cam.IgnoreZ(false)
 
