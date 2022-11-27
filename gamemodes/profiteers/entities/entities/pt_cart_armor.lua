@@ -9,7 +9,7 @@ ENT.Model = "models/props_lab/reciever_cart.mdl"
 
 ENT.PreferredAngle = Angle(0, 180, 0)
 
-ENT.ChargeRate = 0.02
+ENT.ChargeRate = 0.5
 ENT.ThinkDelay = 0.1
 
 ENT.ChargeColor = Color(125, 150, 255, 200)

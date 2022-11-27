@@ -562,6 +562,7 @@ local hide = {
 	["CHudDamageIndicator"] = true,
 	["CHudAmmo"] = true,
 	["CHudSecondaryAmmo"] = true,
+	["CHudBattery"] = true
 }
 
 hook.Add("HUDShouldDraw", "CG_HUDShouldDraw", function(name)
