@@ -7,11 +7,8 @@
 4. Defend the Nuke for 5 minutes while its position is revealed to every player on the server
 5. If your nuke goes off, you win!
 
-TODO:
- - DONE: Restrict what players can and cannot buy
- - DONE: Add a bare minimum of special equipment for players to buy
- - DONE: NPC random spawning around a map
- - DONE: Money and purchase system
- - Nuke mechanics
-
 Play on gm_bigcity
+
+Dependencies:
+ - Spiderman Swep: https://steamcommunity.com/sharedfiles/filedetails/?id=114578864
+ - Fretta-Style Map Vote: https://steamcommunity.com/sharedfiles/filedetails/?id=151583504

@@ -25,7 +25,7 @@ Profiteers.Buyables = {
         Price = 3000,
 
         Description = "Pump-Action Grenade Launcher",
-        Description2 = "Good firepower",
+        Description2 = "Poor firepower but cheap",
         Category = "Explosives",
     },
     ["arc9_bo1_m202"] = {
@@ -183,6 +183,17 @@ Profiteers.Buyables = {
         Description2 = "Deploy near a Beacon to activate",
 
         Category = "Construction"
+    },
+
+    ["spiderman's_swep"] = {
+        Name = "Spiderman's Gun",
+        EntityClass = "spiderman's_swep",
+        Price = 150,
+
+        Description = "Swing around the map",
+        Description2 = "Critical vertical mobility tool",
+
+        Category = "Utility"
     }
 }
 

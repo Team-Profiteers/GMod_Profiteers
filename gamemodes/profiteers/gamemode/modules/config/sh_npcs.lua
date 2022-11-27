@@ -25,12 +25,12 @@ Profiteers.Enemies["Combine Guards"] = {
 	["maxsize"] = 10,
 	["rels"] = {"npc_metropolice D_HT 40", "npc_stalker D_HT 50", "npc_manhack D_FR 80", "npc_hunter D_FR 90"},
 	["bounty"] = 1250,
-	["dmgmult"] = 2
+	["dmgmult"] = 3
 }
 
 Profiteers.Enemies["Combine Soldiers"] = {
 	["class_type"] = "npc_combine_s",
-	["hp"] = 100,
+	["hp"] = 110,
 	["prof"] = WEAPON_PROFICIENCY_AVERAGE,
 	["wpn"] = {"weapon_ar2", "weapon_smg1", "weapon_shotgun"},
 	["squad"] = 1,
@@ -38,20 +38,20 @@ Profiteers.Enemies["Combine Soldiers"] = {
 	["maxsize"] = 10,
 	["rels"] = {"npc_metropolice D_HT 40", "npc_stalker D_HT 50", "npc_manhack D_FR 80", "npc_hunter D_FR 90"},
 	["bounty"] = 800,
-	["dmgmult"] = 2
+	["dmgmult"] = 3
 }
 
 Profiteers.Enemies["Cops"] = { 
 	["class_type"] = "npc_metropolice",
-	["hp"] = 85,
-	["prof"] = WEAPON_PROFICIENCY_POOR,
+	["hp"] = 100,
+	["prof"] = WEAPON_PROFICIENCY_AVERAGE,
 	["wpn"] = {"weapon_smg1", "weapon_pistol"},
 	["squad"] = 2,
 	["minsize"] = 10,
 	["maxsize"] = 15,
 	["rels"] = {"npc_combine_s D_FR 40", "CombinePrison D_FR 60", "npc_stalker D_HT 50", "npc_manhack D_FR 90", "npc_hunter D_FR 90"},
 	["bounty"] = 600,
-	["dmgmult"] = 1.5
+	["dmgmult"] = 3
 }
 
 Profiteers.Enemies["Zombies"] = { 
