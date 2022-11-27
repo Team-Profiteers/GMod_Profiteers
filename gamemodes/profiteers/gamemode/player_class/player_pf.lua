@@ -58,6 +58,7 @@ function PLAYER:Spawn()
         col = Vector( 0.001, 0.001, 0.001 )
     end
     self.Player:SetWeaponColor( col )
+    self.Player:SetupHands()
 end
 
 --
