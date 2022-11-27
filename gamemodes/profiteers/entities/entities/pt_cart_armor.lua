@@ -15,18 +15,18 @@ ENT.ThinkDelay = 0.1
 ENT.ChargeColor = Color(125, 150, 255, 200)
 ENT.ChargeName = "Armor"
 
-ENT.ChargeToArmor = 100
+ENT.ChargeRatio = 100
 
 if SERVER then
 
     function ENT:CanConsume(ply)
-        return ply:Armor() < ply:GetMaxArmor() and math.floor(self:GetCharge() * self.ChargeToArmor) > 0
+        return ply:Armor() < ply:GetMaxArmor() and math.floor(self:GetCharge() * self.ChargeRatio) > 0
     end
 
     function ENT:OnConsume(ply)
-        local diff = math.min(ply:GetMaxArmor() - ply:Armor(), math.floor(self:GetCharge() * self.ChargeToArmor))
+        local diff = math.min(ply:GetMaxArmor() - ply:Armor(), math.floor(self:GetCharge() * self.ChargeRatio))
         ply:SetArmor(math.min(ply:GetMaxArmor(), ply:Armor() + diff))
-        self:SetCharge(self:GetCharge() - diff / self.ChargeToArmor)
+        self:SetCharge(self:GetCharge() - diff / self.ChargeRatio)
         self:EmitSound("items/battery_pickup.wav", 80, 90)
     end
 
@@ -36,7 +36,7 @@ if SERVER then
         util.Effect("explosion", effectdata)
         self:EmitSound("npc/turret_floor/die.wav", 120, 110, 0.8)
 
-        for i = 1, math.floor(self:GetCharge() * self.ChargeToArmor / 15) do
+        for i = 1, math.floor(self:GetCharge() * self.ChargeRatio / 15) do
             local ent = ents.Create("item_battery")
             ent:SetPos(self:GetPos() + VectorRand() * 8)
             ent:SetAngles(AngleRand())
