@@ -170,7 +170,7 @@ end
 function GM:OnNPCKilled( npc, atk, inf )
     // Spawn money entity
 
-    if npc.bounty then
+    if npc.bounty and npc.PlayerDamaged then
         local money = ents.Create("pt_money")
         money:SetAngles(AngleRand())
         money:SetPos(npc:GetPos())
