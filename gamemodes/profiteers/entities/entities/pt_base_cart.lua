@@ -100,7 +100,11 @@ else
 
             surface.SetDrawColor(self.ChargeColor:Unpack())
             surface.DrawRect(-500, 128, 1000 * self:GetCharge(), 96, 8)
-            surface.SetDrawColor(255, 255, 255, 200)
+            if self:WithinBeacon() then
+                surface.SetDrawColor(255, 255, 255, 200)
+            else
+                surface.SetDrawColor(255, 255, (math.sin(SysTime() * 10) * 0.5 + 0.5) * 255, 200)
+            end
             surface.DrawOutlinedRect(-500, 128, 1000, 96, 8)
         cam.End3D2D()
     end
