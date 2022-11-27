@@ -194,6 +194,17 @@ Profiteers.Buyables = {
 
         Category = "Construction"
     },
+    ["pt_safe"] = {
+        Name = "Safe Storage Box",
+        EntityClass = "pt_safe",
+        Price = 1000,
+        PlaceEntity = true,
+
+        Description = "Stores money safely",
+        Description2 = "Sprint + use to withdraw 10k",
+
+        Category = "Construction"
+    },
 
     ["pt_arsenal"] = {
         Name = "Arsenal",
