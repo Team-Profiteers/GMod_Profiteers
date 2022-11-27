@@ -194,6 +194,17 @@ Profiteers.Buyables = {
 
         Category = "Construction"
     },
+    ["pt_alarm"] = {
+        Name = "Motion Sensor",
+        EntityClass = "pt_alarm",
+        Price = 1000,
+        PlaceEntity = true,
+
+        Description = "Alerts you when enemies are nearby",
+        Description2 = "Helps stop intruders",
+
+        Category = "Construction"
+    },
     ["pt_safe"] = {
         Name = "Safe Storage Box",
         EntityClass = "pt_safe",

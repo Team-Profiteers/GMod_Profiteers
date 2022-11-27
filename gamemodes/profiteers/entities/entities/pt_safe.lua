@@ -11,7 +11,7 @@ ENT.TakePropDamage = true
 ENT.BaseHealth = 10000
 
 ENT.PreferredAngle = Angle(0, 180, 0)
-ENT.AnchorRequiresBeacon = true
+ENT.AnchorRequiresBeacon = false
 ENT.AllowUnAnchor = true
 ENT.AnchorOffset = Vector(0, 0, 16)
 
