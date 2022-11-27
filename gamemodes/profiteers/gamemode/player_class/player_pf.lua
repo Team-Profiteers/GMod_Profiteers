@@ -193,7 +193,7 @@ function PLAYER:StartMove( mv, cmd )
                 mv:SetVelocity(vel)
 
                 ply:SetNWFloat("pt_nextclimb", CurTime() + 0.5)
-                if SERVER then ply:EmitSound(sounds[math.random(#sounds)]) end
+                if SERVER then ply:EmitSound("npc/zombie/zombie_hit.wav", 75, math.Rand(102, 107)) end
                 done = true
             end
         end
@@ -213,7 +213,7 @@ function PLAYER:StartMove( mv, cmd )
 
     -- Parachute slow fall
     if ply:GetNWBool("pt_parachute") then
-        vel.z = math.Approach(vel.z, -300, -FrameTime() * 1500)
+        vel.z = math.Approach(vel.z, -300, -FrameTime() * 2000)
 
         vel = vel + eyeangles:Forward() * 100 * FrameTime()
 
@@ -254,6 +254,13 @@ function PLAYER:StartMove( mv, cmd )
                     ply:EmitSound("buttons/blip1.wav", 80, 115)
                 end
                 ply:SetNWBool("pt_parachute_auto", false)
+                ply:SetNWBool("pt_parachute", true)
+                if SERVER then
+                    local chute = ents.Create("pt_parachute")
+                    chute:SetOwner(ply)
+                    chute:Spawn()
+                    ply:EmitSound("profiteers/para_open.wav", 110)
+                end
             end
         end
     end
