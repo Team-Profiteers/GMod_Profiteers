@@ -62,7 +62,9 @@ end)
 
 hook.Add("SetupMove", "ProfiteersSetupMoveParachute", function(ply, mv, cmd)
 
-    if ply:GetNWBool("pt_parachute_pending") and !ply:GetNWBool("pt_parachute") then
+    local usingspidermangun = ply:GetActiveWeapon():IsValid() and ply:GetActiveWeapon():GetClass() == "spiderman's_swep"
+
+    if ply:GetNWBool("pt_parachute_pending") and !ply:GetNWBool("pt_parachute") and !usingspidermangun then
 
         local deploy = mv:KeyPressed(IN_JUMP)
         if !deploy and ply:GetNWBool("pt_parachute_auto") then
