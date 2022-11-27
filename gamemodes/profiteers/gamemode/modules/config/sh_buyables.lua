@@ -14,7 +14,7 @@ Profiteers.Buyables = {
 
     ["arc9_bo2_stinger"] = {
         EntityClass = "arc9_bo2_stinger",
-        Price = 12000,
+        Price = 11000,
 
         Description = "Anti-Aircraft Launcher",
         Description2 = "Fire and forget",
@@ -22,7 +22,7 @@ Profiteers.Buyables = {
     },
     ["arc9_bo1_chinalake"] = {
         EntityClass = "arc9_bo1_chinalake",
-        Price = 40000,
+        Price = 3000,
 
         Description = "Pump-Action Grenade Launcher",
         Description2 = "Good firepower",
@@ -30,7 +30,7 @@ Profiteers.Buyables = {
     },
     ["arc9_bo1_m202"] = {
         EntityClass = "arc9_bo1_m202",
-        Price = 100000,
+        Price = 21000,
 
         Description = "Multiple Rocket Launcher",
         Description2 = "Massive incendiary damage",
@@ -38,7 +38,7 @@ Profiteers.Buyables = {
     },
     ["arc9_bo1_minigun"] = {
         EntityClass = "arc9_bo1_minigun",
-        Price = 110000,
+        Price = 100000,
 
         Description = "Man-portable Minigun",
         Description2 = "Massive rate of fire",
@@ -46,7 +46,7 @@ Profiteers.Buyables = {
     },
     ["arc9_bo2_mm1"] = {
         EntityClass = "arc9_bo2_mm1",
-        Price = 90000,
+        Price = 12000,
 
         Description = "Multiple Grenade Launcher",
         Description2 = "Lay down fields of fire",
@@ -54,7 +54,7 @@ Profiteers.Buyables = {
     },
     ["arc9_bo1_strela"] = {
         EntityClass = "arc9_bo1_strela",
-        Price = 10000,
+        Price = 7500,
 
         Description = "Anti-Aircraft Launcher",
         Description2 = "Powerful, needs constant lock",
@@ -62,7 +62,7 @@ Profiteers.Buyables = {
     },
     ["arc9_bo1_rpg7"] = {
         EntityClass = "arc9_bo1_rpg7",
-        Price = 10000,
+        Price = 6000,
 
         Description = "Anti-Tank Rocket Launcher",
         Description2 = "Dumb-fire rocket launcher",
@@ -70,7 +70,7 @@ Profiteers.Buyables = {
     },
     ["arc9_bo1_law"] = {
         EntityClass = "arc9_bo1_law",
-        Price = 5000,
+        Price = 2500,
 
         Description = "Light Anti-Tank Weapon",
         Description2 = "Inaccurate but cheap",
@@ -78,7 +78,7 @@ Profiteers.Buyables = {
     },
     ["arc9_bo2_m32"] = {
         EntityClass = "arc9_bo2_m32",
-        Price = 85000,
+        Price = 15000,
 
         Description = "Multiple Grenade Launcher",
         Description2 = "Fast-firing, high damage",
@@ -94,7 +94,7 @@ Profiteers.Buyables = {
     },
     ["arc9_waw_flamethrower"] = {
         EntityClass = "arc9_waw_flamethrower",
-        Price = 70000,
+        Price = 7000,
 
         Description = "Flamethrower",
         Description2 = "Napalm sweet as wine",
@@ -120,7 +120,7 @@ Profiteers.Buyables = {
     ["item_ammo_smg1_grenade"] = {
         Name = "Rifle Grenade",
         EntityClass = "item_ammo_smg1_grenade",
-        Price = 750,
+        Price = 500,
 
         Description = "For use with grenade launchers",
         Category = "Ammunition",
@@ -129,7 +129,7 @@ Profiteers.Buyables = {
     ["item_healthkit"] = {
         Name = "Health Kit",
         EntityClass = "item_healthkit",
-        Price = 1000,
+        Price = 250,
 
         Description = "Restores 25 health",
         Category = "Utility",
@@ -137,7 +137,7 @@ Profiteers.Buyables = {
     ["item_healthvial"] = {
         Name = "Health Vial",
         EntityClass = "item_healthvial",
-        Price = 500,
+        Price = 100,
 
         Description = "Restores 10 health",
         Category = "Utility",
@@ -145,7 +145,7 @@ Profiteers.Buyables = {
     ["item_battery"] = {
         Name = "Armor Battery",
         EntityClass = "item_battery",
-        Price = 1500,
+        Price = 500,
 
         Description = "Provides 15 points of armor",
         Category = "Utility",

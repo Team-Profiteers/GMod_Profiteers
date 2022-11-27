@@ -54,6 +54,7 @@ if SERVER then
         nuke:Activate()
         self:Remove()
         Profiteers.ActiveNuke = nil
+        Profiteers.RoundOver = true
     end
 
     function ENT:OnTakeDamage(damage)
