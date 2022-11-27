@@ -12,3 +12,5 @@ Play on gm_bigcity
 Dependencies:
  - Spiderman Swep: https://steamcommunity.com/sharedfiles/filedetails/?id=114578864
  - Fretta-Style Map Vote: https://steamcommunity.com/sharedfiles/filedetails/?id=151583504
+ - ARC9
+ - ARC9 - Black Ops Pack

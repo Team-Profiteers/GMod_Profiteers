@@ -125,7 +125,15 @@ hook.Add("SetupMove", "ProfiteersSetupMoveParachute", function(ply, mv, cmd)
 end)
 
 hook.Add("PlayerPostThink", "ProfiteersPostPlayerThinkParachute", function(ply)
-    if ply:GetNWBool("pt_parachute") and ply:IsOnGround() then
+    local usingspidermangun = ply:GetActiveWeapon():IsValid() and ply:GetActiveWeapon():GetClass() == "spiderman's_swep"
+
+    if usingspidermangun then
+        ply:SetNWBool("pt_parachute", false)
+        ply:SetNWBool("pt_parachute_pending", false)
+        ply:SetNWBool("pt_parachute_auto", false)
+    end
+
+    if ply:GetNWBool("pt_parachute") and (ply:IsOnGround()) then
         ply:SetNWBool("pt_parachute", false)
         ply:SetNWBool("pt_parachute_auto", false)
         ply:EmitSound("npc/combine_soldier/gear3.wav", 100, 100)
