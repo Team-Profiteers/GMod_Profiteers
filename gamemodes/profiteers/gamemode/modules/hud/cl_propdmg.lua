@@ -1,6 +1,6 @@
 local clr_destroyed = Color(255, 0, 0)
-local clr_health = Color(100, 255, 25)
-local clr_health2 = Color(255, 175, 25)
+local clr_health = Color(25, 100, 255)
+local clr_health2 = Color(100, 255, 25)
 
 local clr_ghosted = Color(120, 120, 120)
 local clr_unghosting = Color(180, 180, 180)
@@ -37,7 +37,7 @@ hook.Add("HUDPaint", "PT PropDMG", function()
         local x = ScrW() / 2
         local y = ScrH() / 2 + ScreenScale(4)
 
-        local c1 = ent:WithinBeacon() and clr_health or clr_health2
+        local c1 = ent:IsVulnerableProp() and clr_health2 or clr_health
 
         local text = math.Round(ent:GetNWFloat("PFPropHealth")) .. "/" .. math.Round(ent:GetNWFloat("PFPropMaxHealth", 1))
         local clr = Color(Lerp(frac, clr_destroyed.r, c1.r), Lerp(frac, clr_destroyed.g, c1.g), Lerp(frac, clr_destroyed.b, c1.b), 255)

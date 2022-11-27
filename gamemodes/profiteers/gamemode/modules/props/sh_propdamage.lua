@@ -12,6 +12,10 @@ function Entity:CanTakePropDamage()
     return self:GetClass() == "prop_physics" or self.TakePropDamage
 end
 
+function Entity:IsVulnerableProp()
+    return !self:WithinBeacon() or self:GetClass() ~= "prop_physics"
+end
+
 function Entity:CalculatePropHealth()
     local mins, maxs = self:GetCollisionBounds()
     local volume = (maxs.z - mins.z) * (maxs.y - mins.y) * (maxs.x - mins.x)
@@ -85,7 +89,7 @@ hook.Add("EntityTakeDamage", "Profiteers_PropDamage", function(ent, dmginfo)
             mult = math.max(mult, v)
         end
     end
-    if mult == 0 and !ent:WithinBeacon() then
+    if mult == 0 and ent:IsVulnerableProp() then
         mult = 0.25
         local eff = EffectData()
         eff:SetOrigin(dmginfo:GetDamagePosition())
@@ -114,7 +118,7 @@ hook.Add("EntityTakeDamage", "Profiteers_PropDamage", function(ent, dmginfo)
         end
 
         ent:Remove()
-    elseif IsValid(ent:GetPhysicsObject()) and !ent:GetPhysicsObject():IsMotionEnabled() and ent:GetNWInt("PFPropHealth") <= ent:GetNWInt("PFPropMaxHealth") * 0.15 then
+    elseif ent:GetClass() == "prop_physics" and IsValid(ent:GetPhysicsObject()) and !ent:GetPhysicsObject():IsMotionEnabled() and ent:GetNWInt("PFPropHealth") <= ent:GetNWInt("PFPropMaxHealth") * 0.15 then
         -- unfreeze
         ent:GetPhysicsObject():EnableMotion(true)
         local eff = EffectData()

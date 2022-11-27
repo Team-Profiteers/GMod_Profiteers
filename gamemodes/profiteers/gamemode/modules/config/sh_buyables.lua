@@ -174,13 +174,13 @@ Profiteers.Buyables = {
         Category = "Construction"
     },
     ["pt_spawn"] = {
-        Name = "Mobile Spawnpoint",
+        Name = "Deployable Spawn",
         EntityClass = "pt_spawn",
         Price = 5000,
         PlaceEntity = true,
 
-        Description = "Mobile spawn point",
-        Description2 = "Anchor near a Beacon to activate",
+        Description = "Respawn at your base",
+        Description2 = "Deploy near a Beacon to activate",
 
         Category = "Construction"
     }
