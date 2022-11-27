@@ -205,6 +205,17 @@ Profiteers.Buyables = {
 
         Category = "Construction"
     },
+    ["pt_minelayer"] = {
+        Name = "Cluster Mine",
+        EntityClass = "pt_minelayer",
+        Price = 5000,
+        PlaceEntity = true,
+
+        Description = "Creates a field of mines",
+        Description2 = "Tread carefully",
+
+        Category = "Construction"
+    },
     ["pt_safe"] = {
         Name = "Safe Storage Box",
         EntityClass = "pt_safe",
