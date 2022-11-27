@@ -29,13 +29,7 @@ hook.Add("PlayerSpawn", "ProfiteersPlayerSpawn", function(ply, trans)
             ply:SetEyeAngles(Angle(0, math.Rand(-180, 180), 0))
 
             ply:SetNWBool("pt_parachute_pending", true)
-            --ply:SetNWBool("pt_parachute", true)
-
-            --[[]
-            local chute = ents.Create("pt_parachute")
-            chute:SetOwner(ply)
-            chute:Spawn()
-            ]]
+            timer.Simple(0.1, function() ply:SetNWBool("pt_parachute_first", true) end)
             return
         end
     end
@@ -47,10 +41,10 @@ end)
 
 hook.Add("SetupMove", "ProfiteersSetupMoveParachute", function(ply, mv, cmd)
 
-    if ply:GetNWBool("pt_parachute_pending") then
+    if ply:GetNWBool("pt_parachute_pending") and !ply:GetNWBool("pt_parachute") then
 
         local deploy = mv:KeyPressed(IN_JUMP)
-        if !deploy then
+        if !deploy and ply:GetNWBool("pt_parachute_first") then
             local tr = util.TraceLine({
                 start = ply:GetPos(),
                 endpos = ply:GetPos() - Vector(0, 0, 2048),
@@ -60,19 +54,21 @@ hook.Add("SetupMove", "ProfiteersSetupMoveParachute", function(ply, mv, cmd)
             if tr.Hit then deploy = true end
         end
         if deploy then
-            ply:SetNWBool("pt_parachute_pending", false)
             ply:SetNWBool("pt_parachute", true)
+            ply:SetNWBool("pt_parachute_first", false)
             local chute = ents.Create("pt_parachute")
             chute:SetOwner(ply)
             chute:Spawn()
         end
+    elseif ply:GetNWBool("pt_parachute_pending") and ply:GetNWBool("pt_parachute") and mv:KeyPressed(IN_JUMP) then
+        ply:SetNWBool("pt_parachute", false)
     end
 
     local eyeangles = mv:GetAngles()
     local vel = mv:GetVelocity()
 
     if ply:GetNWBool("pt_parachute") then
-        vel.z = -400
+        vel.z = math.Approach(vel.z, -300, -FrameTime() * 1500)
 
         vel = vel + eyeangles:Forward() * 100 * FrameTime()
 
@@ -87,14 +83,16 @@ hook.Add("SetupMove", "ProfiteersSetupMoveParachute", function(ply, mv, cmd)
 
         mv:SetVelocity(vel)
     elseif ply:GetNWBool("pt_parachute_pending") then
-        vel.z = math.max(-2000, vel.z)
-        vel = vel + eyeangles:Forward() * 100 * FrameTime()
+        vel.z = math.max(-1500, vel.z)
+        -- if vel:Cross(eyeangles:Forward()):Length() <= 1500 then
+        --     vel = vel + eyeangles:Forward() * 500 * FrameTime()
+        -- end
 
         local desiredmoveforward = cmd:GetForwardMove()
         local desiredmoveleft = cmd:GetSideMove()
 
-        desiredmoveforward = math.Clamp(desiredmoveforward, -50, 150)
-        desiredmoveleft = math.Clamp(desiredmoveleft, -50, 50)
+        desiredmoveforward = math.Clamp(desiredmoveforward, -100, 300)
+        desiredmoveleft = math.Clamp(desiredmoveleft, -100, 100)
 
         vel = vel + eyeangles:Forward() * desiredmoveforward * FrameTime()
         vel = vel + eyeangles:Right() * desiredmoveleft * FrameTime()
@@ -106,9 +104,11 @@ end)
 hook.Add("PlayerPostThink", "ProfiteersPostPlayerThinkParachute", function(ply)
     if ply:GetNWBool("pt_parachute") and ply:IsOnGround() then
         ply:SetNWBool("pt_parachute", false)
+        ply:SetNWBool("pt_parachute_first", false)
         ply:EmitSound("npc/combine_soldier/gear3.wav", 100, 100)
     end
     if ply:GetNWBool("pt_parachute_pending") and ply:IsOnGround() then
         ply:SetNWBool("pt_parachute_pending", false)
+        ply:SetNWBool("pt_parachute_first", false)
     end
 end)
