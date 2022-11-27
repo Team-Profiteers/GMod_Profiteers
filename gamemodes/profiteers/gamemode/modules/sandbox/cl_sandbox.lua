@@ -1,5 +1,5 @@
 function GM:ContextMenuOpen()
-	return GetConVar("pt_sandbox"):GetBool()
+	return true --GetConVar("pt_sandbox"):GetBool()
 end
 
 SPAWN_Destroy = {
@@ -9,7 +9,7 @@ SPAWN_Destroy = {
 	["#spawnmenu.category.vehicles"] = true,
 	["#spawnmenu.category.entities"] = true,
 	["#spawnmenu.category.postprocess"] = true,
-	// ["#spawnmenu.content_tab"] = true,
+	-- ["#spawnmenu.content_tab"] = true,
 	["simfphys"] = true,
 }
 

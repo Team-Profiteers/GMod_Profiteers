@@ -74,7 +74,7 @@ function Profiteers:SpawnAirdrop()
     end
 end
 
-// spawn airdrops at random
+-- spawn airdrops at random
 
 timer.Create("ProfiteersAirdropTimer", 60, 0, function()
 

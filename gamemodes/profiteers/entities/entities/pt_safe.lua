@@ -38,9 +38,9 @@ if SERVER then
     end
 
     function ENT:OnUse(ply)
-        // if empty, deposit player cash
-        // if not empty, withdraw
-        // if shift held, withdraw 10k
+        -- if empty, deposit player cash
+        -- if not empty, withdraw
+        -- if shift held, withdraw 10k
 
         if self:GetCash() == 0 then
             if ply:GetMoney() > 0 then

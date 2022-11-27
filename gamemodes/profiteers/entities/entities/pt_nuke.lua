@@ -86,7 +86,7 @@ else
     local nukemat = Material("profiteers/nuke.png", "smooth nomips")
 
     function ENT:DrawTranslucent()
-        //  Make the money draw a glowing effect
+        --  Make the money draw a glowing effect
         self:DrawModel()
 
         if self:GetArmed() then

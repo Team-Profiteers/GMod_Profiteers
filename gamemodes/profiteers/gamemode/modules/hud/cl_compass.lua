@@ -7,7 +7,7 @@ local nextstronktime = 0
 local spikes = {}
 
 hook.Add("HUDPaint", "Profiteers Enemy Finder", function()
-    // draw bg
+    -- draw bg
 
     local bgw = ScreenScale(200)
     local bgh = bgw / 2
@@ -21,20 +21,20 @@ hook.Add("HUDPaint", "Profiteers Enemy Finder", function()
     local spikecount = 12
 
     if nextstronktime < CurTime() then
-        // count NPCs in the direction you're looking
+        -- count NPCs in the direction you're looking
 
         local ents = ents.FindInCone(LocalPlayer():GetShootPos(), LocalPlayer():GetAimVector(), 30000, 0.5)
 
         for k, v in pairs(ents) do
             if v:IsNPC() or v:IsPlayer() or (v:GetClass() == "pt_beacon") then
-                // get dot product
+                -- get dot product
                 local dot = LocalPlayer():GetAimVector():Dot((v:GetPos() - LocalPlayer():GetShootPos()):GetNormalized())
 
-                // get dist
+                -- get dist
                 local dist = LocalPlayer():GetShootPos():Distance(v:GetPos())
 
-                // Calculate stronk value based on dot product and distance
-                // The closer we are and the more we're looking at the NPC, the higher the value
+                -- Calculate stronk value based on dot product and distance
+                -- The closer we are and the more we're looking at the NPC, the higher the value
 
                 if v:IsNPC() then
                     stronk = stronk + (dot * (5000 / dist))
@@ -70,15 +70,15 @@ hook.Add("HUDPaint", "Profiteers Enemy Finder", function()
         nextstronktime = CurTime() + 0.1
     end
 
-    // draw stronk
+    -- draw stronk
 
-    // local str = tostring(math.Round(stronk, 2))
-    // surface.SetFont("CGHUD_5")
-    // local strw = surface.GetTextSize(str)
+    -- local str = tostring(math.Round(stronk, 2))
+    -- surface.SetFont("CGHUD_5")
+    -- local strw = surface.GetTextSize(str)
 
-    // surface.SetTextColor(255, 255, 255, 255)
-    // surface.SetTextPos(ScrW() / 2 - strw / 2, ScreenScale(2))
-    // surface.DrawText(str)
+    -- surface.SetTextColor(255, 255, 255, 255)
+    -- surface.SetTextPos(ScrW() / 2 - strw / 2, ScreenScale(2))
+    -- surface.DrawText(str)
 
     for i, sp in ipairs(spikes) do
         surface.SetDrawColor(255, 255, 255, 255)

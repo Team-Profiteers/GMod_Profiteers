@@ -1,4 +1,4 @@
-// Entirely cosmetic parachute entity. Attaches to parachuting players.
+-- Entirely cosmetic parachute entity. Attaches to parachuting players.
 
 AddCSLuaFile()
 ENT.PrintName = "Parachute"
@@ -12,7 +12,7 @@ function ENT:Initialize()
 end
 
 function ENT:Think()
-    if SERVER and (!IsValid(self:GetOwner()) or !self:GetOwner():GetNWBool("pt_parachute")) then
+    if SERVER and (!IsValid(self:GetOwner()) or !self:GetOwner():GetNWBool("pt_parachute") or !self:GetOwner():Alive()) then
         self:Remove()
         return
     end
