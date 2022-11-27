@@ -94,7 +94,8 @@ hook.Add("DoPlayerDeath", "pt_money", function(ply, attacker, dmginfo)
     end
 
     -- Drop money
-    local loss = math.Round((ply:GetMoney() - 5000) * 0.5)
+    local loss = math.Round((ply:GetMoney() - 5000) * 0.2)
+    loss = math.min(loss, 50000)
 
     if loss > 0 then
         ply:AddMoney(-loss)

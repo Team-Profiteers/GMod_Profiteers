@@ -59,6 +59,8 @@ function PLAYER:Spawn()
     end
     self.Player:SetWeaponColor( col )
     self.Player:SetupHands()
+
+    self.Player:SetArmor(50)
 end
 
 --
