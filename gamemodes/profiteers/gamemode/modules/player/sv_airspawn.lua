@@ -29,6 +29,10 @@ hook.Add("PlayerSpawn", "ProfiteersPlayerSpawn", function(ply, trans)
             ply:SetEyeAngles(Angle(0, math.Rand(-180, 180), 0))
 
             ply:SetNWBool("pt_parachute", true)
+
+            local chute = ents.Create("pt_parachute")
+            chute:SetOwner(ply)
+            chute:Spawn()
             return
         end
     end
@@ -52,7 +56,7 @@ hook.Add("SetupMove", "ProfiteersSetupMoveParachute", function(ply, mv, cmd)
     local desiredmoveforward = cmd:GetForwardMove()
     local desiredmoveleft = cmd:GetSideMove()
 
-    desiredmoveforward = math.Clamp(desiredmoveforward, -150, 150)
+    desiredmoveforward = math.Clamp(desiredmoveforward, -50, 150)
     desiredmoveleft = math.Clamp(desiredmoveleft, -50, 50)
 
     vel = vel + eyeangles:Forward() * desiredmoveforward * FrameTime()
