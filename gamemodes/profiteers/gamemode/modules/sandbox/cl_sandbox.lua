@@ -1,5 +1,5 @@
 function GM:ContextMenuOpen()
-	return GetConVar("pt_sandbox"):GetBool()
+	return true --GetConVar("pt_sandbox"):GetBool()
 end
 
 SPAWN_Destroy = {

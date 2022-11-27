@@ -44,30 +44,33 @@ hook.Add("PlayerCheckLimit", "ArcCWTDM_PlayerCheckLimit", function(ply, name, cu
     if Profiteers.DenySpawningCats[name] and not ply:IsAdmin() then return false end
 end)
 
-hook.Add("PlayerGiveSWEP", "BlockPlayerSWEPs", function(ply, class, swep)
+hook.Add("PlayerGiveSWEP", "SWEPBuy", function(ply, class, swep)
     if not ply:IsAdmin() and (not Profiteers:IsSpawnableWeapon(class)) then return false end
+
+    local cost = GetConVar("pt_money_guncost"):GetInt()
+    if not ply:HasWeapon(class) and not Profiteers:HasArsenal(ply) then
+        if not ply.ArsenalWarning then
+            ply.ArsenalWarning = true
+            GAMEMODE:Hint(ply, 1, 15, "Spawning weapons will cost $" .. cost .. " because you do not have an active Arsenal. Spawn again to dismiss this hint.")
+            ply:EmitSound("friends/message.wav", 55)
+            return false
+        end
+        if ply:GetMoney() <= cost then
+            ply:EmitSound("common/wpn_denyselect.wav", 55)
+            GAMEMODE:Hint(ply, 3, "You can't afford to spawn a weapon ($" .. cost .. ").")
+            return false
+        end
+        -- Give our best attempt at ensuring the player got the weapon before charging them (we don't have a post hook)
+        timer.Simple(0, function()
+            if ply:HasWeapon(class) then ply:AddMoney(-cost) end
+        end)
+    elseif Profiteers:HasArsenal(ply) then
+        ply.ArsenalWarning = false
+    end
 end)
 
--- This overwrites the sandbox concommand (hopefully)
-CCGiveSWEP = function(ply, command, arguments)
-    -- We don't support this command from dedicated server console
-    if not IsValid(ply) then return end
-    if arguments[1] == nil then return end
-    if not ply:Alive() then return end
-    -- Make sure this is a SWEP
-    local swep = list.Get("Weapon")[arguments[1]]
-    if swep == nil then return end
-
-    if ply:HasWeapon(swep.ClassName) then
-        ply:SelectWeapon(swep.ClassName)
-        return
-    end
-
-    -- You're not allowed to spawn this!
-    local isAdmin = ply:IsAdmin() or game.SinglePlayer()
-    if (not swep.Spawnable and not isAdmin) or (swep.AdminOnly and not isAdmin) then return end
-    if not ply:IsAdmin() and (not Profiteers:IsSpawnableWeapon(arguments[1])) then return false end
-    if not gamemode.Call("PlayerGiveSWEP", ply, arguments[1], swep) then return end
+hook.Add("PlayerSpawnSWEP", "SWEPBuy", function(ply, class, swep)
+    if not ply:IsAdmin() and (not Profiteers:IsSpawnableWeapon(class)) then return false end
 
     local cost = GetConVar("pt_money_guncost"):GetInt()
     if not Profiteers:HasArsenal(ply) then
@@ -75,95 +78,25 @@ CCGiveSWEP = function(ply, command, arguments)
             ply.ArsenalWarning = true
             GAMEMODE:Hint(ply, 1, 15, "Spawning weapons will cost $" .. cost .. " because you do not have an active Arsenal. Spawn again to dismiss this hint.")
             ply:EmitSound("friends/message.wav", 55)
-            return
+            return false
         end
         if ply:GetMoney() <= cost then
             ply:EmitSound("common/wpn_denyselect.wav", 55)
             GAMEMODE:Hint(ply, 3, "You can't afford to spawn a weapon ($" .. cost .. ").")
-            return
+            return false
         end
-        ply:AddMoney(-cost)
-    else
+        -- Don't have to assume because we have a post hook
+    elseif Profiteers:HasArsenal(ply) then
         ply.ArsenalWarning = false
     end
-
-    MsgAll("Giving " .. ply:Nick() .. " a " .. swep.ClassName .. "\n")
-    ply:Give(swep.ClassName)
-
-    -- And switch to it
-    ply:SelectWeapon(swep.ClassName)
-end
-concommand.Add( "gm_giveswep", CCGiveSWEP )
-function Spawn_Weapon(ply, wepname, tr)
-    -- We don't support this command from dedicated server console
-    if not IsValid(ply) then return end
-    if wepname == nil then return end
-    local swep = list.Get("Weapon")[wepname]
-    -- Make sure this is a SWEP
-    if swep == nil then return end
-    -- You're not allowed to spawn this!
-    local isAdmin = ply:IsAdmin() or game.SinglePlayer()
-    if (not swep.Spawnable and not isAdmin) or (swep.AdminOnly and not isAdmin) then return end
-    if not gamemode.Call("PlayerSpawnSWEP", ply, wepname, swep) then return end
-
-    if not tr then
-        tr = ply:GetEyeTraceNoCursor()
-    end
-    if not tr.Hit then return end
-
-    local entity = ents.Create(swep.ClassName)
-    if not IsValid(entity) then return end
-
-    local cost = GetConVar("pt_money_guncost"):GetInt()
-    if not Profiteers:HasArsenal(ply) then
-        if not ply.ArsenalWarning then
-            ply.ArsenalWarning = true
-            GAMEMODE:Hint(ply, 1, 15, "Spawning weapons will cost $" .. cost .. " because you do not have an active Arsenal. Spawn again to dismiss this hint.")
-            ply:EmitSound("friends/message.wav", 55)
-            entity:Remove()
-            return
-        end
-        if ply:GetMoney() <= cost then
-            ply:EmitSound("common/wpn_denyselect.wav", 55)
-            GAMEMODE:Hint(ply, 3, "You can't afford to spawn a weapon ($" .. cost .. ").")
-            entity:Remove()
-            return
-        end
-        ply:AddMoney(-cost)
-    else
-        ply.ArsenalWarning = false
-    end
-
-
-    DoPropSpawnedEffect(entity)
-    local SpawnPos = tr.HitPos + tr.HitNormal * 32
-
-    -- Make sure the spawn position is not out of bounds
-    local oobTr = util.TraceLine({
-        start = tr.HitPos,
-        endpos = SpawnPos,
-        mask = MASK_SOLID_BRUSHONLY
-    })
-
-    if oobTr.Hit then
-        SpawnPos = oobTr.HitPos + oobTr.HitNormal * (tr.HitPos:Distance(oobTr.HitPos) / 2)
-    end
-
-    entity:SetPos(SpawnPos)
-    entity:Spawn()
-
-    -- Throw it into SENTs category
-    ply:AddCleanup("sents", entity)
-
-    TryFixPropPosition(ply, entity, tr.HitPos)
-
-    gamemode.Call("PlayerSpawnedSWEP", ply, entity)
-end
-
-concommand.Add("gm_spawnswep", function(ply, cmd, args)
-    Spawn_Weapon(ply, args[1])
 end)
 
+hook.Add("PlayerSpawnedSWEP", "SWEPBuy", function(ply, ent)
+    local cost = GetConVar("pt_money_guncost"):GetInt()
+    if not Profiteers:HasArsenal(ply) then
+        ply:AddMoney(-cost)
+    end
+end)
 
 function GM:PlayerNoClip(pl, on)
     -- Admin check this
