@@ -4,7 +4,7 @@ ENT.Type = "anim"
 ENT.RenderGroup = RENDERGROUP_BOTH
 ENT.Model = "models/props_phx/torpedo.mdl"
 ENT.SpawnTime = 0
-ENT.DetonationTime = 300
+ENT.DetonationTime = 5
 
 ENT.TakePropDamage = true
 
@@ -60,7 +60,7 @@ if SERVER then
         Profiteers.GameOver = true
 
         if MapVote then
-            MapVote.Start(60, false)
+            MapVote.Start(60, false, "*")
         end
 
         self:Remove()
@@ -73,7 +73,7 @@ if SERVER then
 
         local ent = ents.Create("pt_money")
         ent:SetPos(self:GetPos())
-        ent:SetAmount(550000)
+        ent:SetAmount(1000000)
         ent:Spawn()
     end
 else

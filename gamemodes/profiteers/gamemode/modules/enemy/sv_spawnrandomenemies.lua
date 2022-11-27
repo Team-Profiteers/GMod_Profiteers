@@ -171,11 +171,14 @@ function GM:OnNPCKilled( npc, atk, inf )
     // Spawn money entity
 
     if npc.bounty and npc.PlayerDamaged then
-        local money = ents.Create("pt_money")
-        money:SetAngles(AngleRand())
-        money:SetPos(npc:GetPos())
-        money:SetAmount(math.Round(npc.bounty * math.Rand(0.9, 1.1)))
-        money:Spawn()
+        // local money = ents.Create("pt_money")
+        // money:SetAngles(AngleRand())
+        // money:SetPos(npc:GetPos())
+        // money:SetAmount(math.Round(npc.bounty * math.Rand(0.9, 1.1)))
+        // money:Spawn()
+        if atk:IsPlayer() then
+            atk:AddMoney(math.Round(npc.bounty * math.Rand(0.9, 1.1)))
+        end
     end
 end
 

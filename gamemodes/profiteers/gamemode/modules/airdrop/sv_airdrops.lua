@@ -69,8 +69,6 @@ function Profiteers:SpawnAirdrop()
             ent:Spawn()
             ent:Activate()
 
-            sound.Play("profiteers/flyby_02.ogg", tr.HitPos, 175, 100, 1)
-
             return
         end
     end

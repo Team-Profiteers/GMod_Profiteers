@@ -12,6 +12,7 @@ ENT.PreferredAngle = Angle(0, 0, 0)
 ENT.AnchorRequiresBeacon = false
 ENT.AllowUnAnchor = false
 ENT.AnchorOffset = Vector(0, 0, 0)
+ENT.AnchorAngle = Angle(0, 0, 0)
 
 function ENT:SetupDataTables()
     self:NetworkVar("Bool", 0, "Anchored")
@@ -33,6 +34,13 @@ if SERVER then
 
         self:SetNWInt("PFPropHealth", self.BaseHealth)
         self:SetNWInt("PFPropMaxHealth", self.BaseHealth)
+
+        self:SetAngles(Angle(0, self:GetAngles().y, 0) + self.PreferredAngle)
+
+        self:OnInitialize()
+    end
+
+    function ENT:OnInitialize()
     end
 
     function ENT:TryAnchor(ply)
@@ -54,7 +62,7 @@ if SERVER then
 
         local tr = util.TraceLine({
             start = self:WorldSpaceCenter(),
-            endpos = self:WorldSpaceCenter() - self:GetUp() * 64,
+            endpos = self:WorldSpaceCenter() - Vector(0, 0, 1) * 64,
             mask = MASK_SOLID_BRUSHONLY,
         })
         local pos = tr.HitPos + self.AnchorOffset
@@ -69,7 +77,7 @@ if SERVER then
         })
         if tr.Hit and !tr2.Hit then
             self:SetPos(pos)
-            self:SetAngles(Angle(0, self:GetAngles().y, 0))
+            self:SetAngles(Angle(0, self:GetAngles().y, 0) + self.AnchorAngle)
             GAMEMODE:FreezeProp(self, true)
             self:SetAnchored(true)
             self:OnAnchor(ply)

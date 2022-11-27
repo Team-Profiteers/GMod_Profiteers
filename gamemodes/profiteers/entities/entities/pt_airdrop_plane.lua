@@ -83,6 +83,10 @@ if SERVER then
         ent:Spawn()
     end
 else
+    function ENT:Initialize()
+        surface.PlaySound("profiteers/flyby_02.ogg")
+    end
+
     function ENT:DrawTranslucent()
         self:DrawModel()
     end

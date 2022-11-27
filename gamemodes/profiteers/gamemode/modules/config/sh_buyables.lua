@@ -126,22 +126,22 @@ Profiteers.Buyables = {
         Category = "Ammunition",
     },
 
-    ["item_healthkit"] = {
-        Name = "Health Kit",
-        EntityClass = "item_healthkit",
-        Price = 250,
+    // ["item_healthkit"] = {
+    //     Name = "Health Kit",
+    //     EntityClass = "item_healthkit",
+    //     Price = 250,
 
-        Description = "Restores 25 health",
-        Category = "Utility",
-    },
-    ["item_healthvial"] = {
-        Name = "Health Vial",
-        EntityClass = "item_healthvial",
-        Price = 100,
+    //     Description = "Restores 25 health",
+    //     Category = "Utility",
+    // },
+    // ["item_healthvial"] = {
+    //     Name = "Health Vial",
+    //     EntityClass = "item_healthvial",
+    //     Price = 100,
 
-        Description = "Restores 10 health",
-        Category = "Utility",
-    },
+    //     Description = "Restores 10 health",
+    //     Category = "Utility",
+    // },
     ["item_battery"] = {
         Name = "Armor Battery",
         EntityClass = "item_battery",
@@ -150,16 +150,16 @@ Profiteers.Buyables = {
         Description = "Provides 15 points of armor",
         Category = "Utility",
     },
-    ["spiderman's_swep"] = {
-        Name = "Spiderman's Gun",
-        EntityClass = "spiderman's_swep",
-        Price = 200,
+    // ["spiderman's_swep"] = {
+    //     Name = "Spiderman's Gun",
+    //     EntityClass = "spiderman's_swep",
+    //     Price = 200,
 
-        Description = "Swing around the map",
-        Description2 = "Critical vertical mobility tool",
+    //     Description = "Swing around the map",
+    //     Description2 = "Critical vertical mobility tool",
 
-        Category = "Utility"
-    },
+    //     Category = "Utility"
+    // },
 
     ["pt_nuke"] = {
         Name = "Nuclear Device",
@@ -194,6 +194,39 @@ Profiteers.Buyables = {
 
         Category = "Construction"
     },
+    ["pt_alarm"] = {
+        Name = "Motion Sensor",
+        EntityClass = "pt_alarm",
+        Price = 1000,
+        PlaceEntity = true,
+
+        Description = "Alerts you when enemies are nearby",
+        Description2 = "Helps stop intruders",
+
+        Category = "Construction"
+    },
+    ["pt_minelayer"] = {
+        Name = "Cluster Mine",
+        EntityClass = "pt_minelayer",
+        Price = 5000,
+        PlaceEntity = true,
+
+        Description = "Creates a field of mines",
+        Description2 = "Tread carefully",
+
+        Category = "Construction"
+    },
+    ["pt_safe"] = {
+        Name = "Safe Storage Box",
+        EntityClass = "pt_safe",
+        Price = 1000,
+        PlaceEntity = true,
+
+        Description = "Stores money safely",
+        Description2 = "Sprint + use to withdraw 10k",
+
+        Category = "Construction"
+    },
 
     ["pt_arsenal"] = {
         Name = "Arsenal",
@@ -206,17 +239,17 @@ Profiteers.Buyables = {
 
         Category = "Construction"
     },
-    ["pt_cart_health"] = {
-        Name = "Health Station",
-        EntityClass = "pt_cart_health",
-        Price = 1500,
-        PlaceEntity = true,
+    // ["pt_cart_health"] = {
+    //     Name = "Health Station",
+    //     EntityClass = "pt_cart_health",
+    //     Price = 1500,
+    //     PlaceEntity = true,
 
-        Description = "Restores your health",
-        Description2 = "Place near Beacon to use",
+    //     Description = "Restores your health",
+    //     Description2 = "Place near Beacon to use",
 
-        Category = "Construction"
-    },
+    //     Category = "Construction"
+    // },
     ["pt_cart_armor"] = {
         Name = "Armor Station",
         EntityClass = "pt_cart_armor",
