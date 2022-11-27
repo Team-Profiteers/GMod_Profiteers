@@ -29,7 +29,7 @@ hook.Add("PlayerSpawn", "ProfiteersPlayerSpawn", function(ply, trans)
             ply:SetEyeAngles(Angle(0, math.Rand(-180, 180), 0))
 
             ply:SetNWBool("pt_parachute_pending", true)
-            timer.Simple(0.1, function() ply:SetNWBool("pt_parachute_first", true) end)
+            timer.Simple(0.1, function() ply:SetNWBool("pt_parachute_auto", true) end)
             return
         end
     end
@@ -44,18 +44,21 @@ hook.Add("SetupMove", "ProfiteersSetupMoveParachute", function(ply, mv, cmd)
     if ply:GetNWBool("pt_parachute_pending") and !ply:GetNWBool("pt_parachute") then
 
         local deploy = mv:KeyPressed(IN_JUMP)
-        if !deploy and ply:GetNWBool("pt_parachute_first") then
+        if !deploy and ply:GetNWBool("pt_parachute_auto") then
             local tr = util.TraceLine({
                 start = ply:GetPos(),
                 endpos = ply:GetPos() - Vector(0, 0, 2048),
                 mask = MASK_SOLID,
                 filter = ply
             })
-            if tr.Hit then deploy = true end
+            if tr.Hit then
+                deploy = true
+                ply:EmitSound("buttons/blip1.wav", 80, 115)
+                ply:SetNWBool("pt_parachute_auto", false)
+            end
         end
         if deploy then
             ply:SetNWBool("pt_parachute", true)
-            ply:SetNWBool("pt_parachute_first", false)
             local chute = ents.Create("pt_parachute")
             chute:SetOwner(ply)
             chute:Spawn()
@@ -86,9 +89,6 @@ hook.Add("SetupMove", "ProfiteersSetupMoveParachute", function(ply, mv, cmd)
         mv:SetVelocity(vel)
     elseif ply:GetNWBool("pt_parachute_pending") then
         vel.z = math.max(-1500, vel.z)
-        -- if vel:Cross(eyeangles:Forward()):Length() <= 1500 then
-        --     vel = vel + eyeangles:Forward() * 500 * FrameTime()
-        -- end
 
         local desiredmoveforward = cmd:GetForwardMove()
         local desiredmoveleft = cmd:GetSideMove()
@@ -106,12 +106,12 @@ end)
 hook.Add("PlayerPostThink", "ProfiteersPostPlayerThinkParachute", function(ply)
     if ply:GetNWBool("pt_parachute") and ply:IsOnGround() then
         ply:SetNWBool("pt_parachute", false)
-        ply:SetNWBool("pt_parachute_first", false)
+        ply:SetNWBool("pt_parachute_auto", false)
         ply:EmitSound("npc/combine_soldier/gear3.wav", 100, 100)
         ply:EmitSound("profiteers/para_close.wav", 110)
     end
     if ply:GetNWBool("pt_parachute_pending") and ply:IsOnGround() then
         ply:SetNWBool("pt_parachute_pending", false)
-        ply:SetNWBool("pt_parachute_first", false)
+        ply:SetNWBool("pt_parachute_auto", false)
     end
 end)
