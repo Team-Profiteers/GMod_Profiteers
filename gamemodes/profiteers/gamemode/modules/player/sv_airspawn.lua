@@ -62,9 +62,7 @@ end)
 
 hook.Add("SetupMove", "ProfiteersSetupMoveParachute", function(ply, mv, cmd)
 
-    local usingspidermangun = ply:GetActiveWeapon():IsValid() and ply:GetActiveWeapon():GetClass() == "spiderman's_swep"
-
-    if ply:GetNWBool("pt_parachute_pending") and !ply:GetNWBool("pt_parachute") and !usingspidermangun then
+    if ply:GetNWBool("pt_parachute_pending") and !ply:GetNWBool("pt_parachute") then
 
         local deploy = mv:KeyPressed(IN_JUMP)
         if !deploy and ply:GetNWBool("pt_parachute_auto") then
@@ -81,6 +79,17 @@ hook.Add("SetupMove", "ProfiteersSetupMoveParachute", function(ply, mv, cmd)
             end
         end
         if deploy then
+
+            local tr = util.TraceHull({
+                start = ply:GetPos(),
+                endpos = ply:GetPos() + (ply:EyeAngles():Forward() * 16),
+                mins = Vector(-16, -16, -16),
+                maxs = Vector(16, 16, 16),
+                filter = ply
+            })
+
+            if tr.Hit and !tr.HitSky then return end
+
             ply:SetNWBool("pt_parachute", true)
             local chute = ents.Create("pt_parachute")
             chute:SetOwner(ply)
@@ -147,7 +156,7 @@ hook.Add("PlayerPostThink", "ProfiteersPostPlayerThinkParachute", function(ply)
     end
 
     if !ply:GetNWBool("pt_parachute_pending") and !ply:IsOnGround() then
-        if ply:GetVelocity():Length() > 500 then
+        if ply:GetVelocity().z < -300 then
             ply:SetNWBool("pt_parachute_pending", true)
         end
     end

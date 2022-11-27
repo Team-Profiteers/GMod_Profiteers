@@ -150,16 +150,16 @@ Profiteers.Buyables = {
         Description = "Provides 15 points of armor",
         Category = "Utility",
     },
-    ["spiderman's_swep"] = {
-        Name = "Spiderman's Gun",
-        EntityClass = "spiderman's_swep",
-        Price = 200,
+    // ["spiderman's_swep"] = {
+    //     Name = "Spiderman's Gun",
+    //     EntityClass = "spiderman's_swep",
+    //     Price = 200,
 
-        Description = "Swing around the map",
-        Description2 = "Critical vertical mobility tool",
+    //     Description = "Swing around the map",
+    //     Description2 = "Critical vertical mobility tool",
 
-        Category = "Utility"
-    },
+    //     Category = "Utility"
+    // },
 
     ["pt_nuke"] = {
         Name = "Nuclear Device",
