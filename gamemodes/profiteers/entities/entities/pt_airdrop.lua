@@ -3,7 +3,6 @@ ENT.PrintName = "Airdrop"
 ENT.Type = "anim"
 ENT.RenderGroup = RENDERGROUP_BOTH
 ENT.Model = "models/props/cs_assault/MoneyPallet.mdl"
-
 ENT.ParachuteOpenTime = 1
 ENT.ParachuteOpen = false
 ENT.ParachuteOpenAmount = 0
@@ -21,7 +20,7 @@ if SERVER then
         self:SetUseType(CONTINUOUS_USE)
         self.SpawnTime = CurTime()
         self:SetAmount(GetConVar("pt_airdrop_amount"):GetInt())
-        self.constraint = constraint.Keepupright( ent, Angle(0, 0, 0), 0, 9000 )
+        self.constraint = constraint.Keepupright(ent, Angle(0, 0, 0), 0, 9000)
         self.NextUse = 0
         self:SetMaxHealth(GetConVar("pt_airdrop_moneyhealth"):GetInt())
         self:SetHealth(self:GetMaxHealth())
@@ -30,46 +29,43 @@ if SERVER then
     end
 
     function ENT:Think()
-        if !self:GetArmed() then
+        if not self:GetArmed() then
             -- local a = self:GetAngles()
             -- a.p = 0
             -- a.r = 0
-
             -- self:SetAngles(a)
-
             local phys = self:GetPhysicsObject()
             -- fall slowly
-            phys:AddVelocity(-physenv.GetGravity() + Vector(0, 0, 500))
+            phys:AddVelocity(-physenv.GetGravity() - Vector(0, 0, 500))
         end
     end
 
     function ENT:PhysicsCollide(colData, collider)
-        if !self:GetArmed() and colData.HitEntity:IsWorld() then
+        if not self:GetArmed() and colData.HitEntity:IsWorld() then
             self:CloseChute()
         end
     end
 
     function ENT:CloseChute()
-        if !self:GetArmed() then
+        if not self:GetArmed() then
             self:SetArmed(true)
             self:EmitSound("profiteers/para_close.wav", 125)
+            self:GetPhysicsObject():SetDragCoefficient(1)
+            self:GetPhysicsObject():SetAngleDragCoefficient(1)
         end
     end
 
     function ENT:Use(activator)
         if self:GetArmed() and self.NextUse < CurTime() then
             self.NextUse = CurTime() + 0.75
-
             local effectdata = EffectData()
             effectdata:SetOrigin(self:GetPos())
             effectdata:SetMagnitude(20)
             effectdata:SetScale(10)
             effectdata:SetRadius(5)
             util.Effect("Sparks", effectdata)
-
             local total = GetConVar("pt_airdrop_amount"):GetInt()
-            local amount = math.random(math.ceil(total / 20), math.ceil(total / 40))
-
+            local amount = math.min(self:GetAmount(), math.Round(math.random(math.ceil(total / 20), math.ceil(total / 40))))
             activator:AddMoney(amount)
             self:SetAmount(self:GetAmount() - amount)
 
@@ -82,7 +78,8 @@ if SERVER then
             end
 
             if self:GetAmount() <= 0 then
-                self:Remove()
+                self.NextUse = CurTime() + 9999
+                SafeRemoveEntityDelayed(self, 1)
             end
         end
     end
@@ -91,17 +88,17 @@ if SERVER then
         self:TakePhysicsDamage(dmginfo)
         if self:GetArmed() then return end
         self:SetHealth(self:Health() - dmginfo:GetDamage())
+
         if self:Health() <= 0 then
+            self:SetAmount(math.ceil(self:GetAmount() * math.Rand(0.75, 0.9)))
             self:CloseChute()
         end
     end
 else
     function ENT:Initialize()
         self.ParachuteModel = ClientsideModel("models/props_survival/parachute/chute.mdl")
-
-        if !self.ParachuteModel then return end
-        if !IsValid(self.ParachuteModel) then return end
-
+        if not self.ParachuteModel then return end
+        if not IsValid(self.ParachuteModel) then return end
         self.ParachuteModel:SetNoDraw(true)
     end
 
@@ -123,18 +120,26 @@ else
         self:DrawModel()
 
         if self.ParachuteModel and IsValid(self.ParachuteModel) then
-            local scale = Vector( self.ParachuteOpenAmount, self.ParachuteOpenAmount, 1 )
-
+            local scale = Vector(self.ParachuteOpenAmount, self.ParachuteOpenAmount, 1)
             local mat = Matrix()
-            mat:Scale( scale )
-
+            mat:Scale(scale)
             local sangle = self:GetAngles()
             self.ParachuteModel:SetPos(self:WorldSpaceCenter() - Vector(0, 0, 64))
             self.ParachuteModel:SetAngles(Angle(0, sangle[2], 0))
             self.ParachuteModel:EnableMatrix("RenderMultiply", mat)
             self.ParachuteModel:DrawModel()
-         end
+        end
 
+        local ang = LocalPlayer():EyeAngles()
+        ang:RotateAroundAxis(LocalPlayer():EyeAngles():Up(), -90)
+        ang:RotateAroundAxis(LocalPlayer():EyeAngles():Right(), 90)
 
+        self.LerpAmount = math.Round(math.Approach(self.LerpAmount or self:GetAmount(), self:GetAmount(), 30000 * FrameTime()))
+        cam.Start3D2D(self:WorldSpaceCenter() + Vector(0, 0, 48), ang, 0.1)
+            --cam.IgnoreZ(true)
+            GAMEMODE:ShadowText("AIRDROP", "CGHUD_2", 0, 0, color_white, Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+            GAMEMODE:ShadowText(GAMEMODE:FormatMoney(self.LerpAmount), "CGHUD_2", 0, 75, Color(150, 255, 80), Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+            --cam.IgnoreZ(false)
+        cam.End3D2D()
     end
 end
