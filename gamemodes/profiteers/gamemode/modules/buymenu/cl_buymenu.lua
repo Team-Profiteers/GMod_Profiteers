@@ -90,7 +90,7 @@ concommand.Add("pt_buy", function(ply, cmd, args, argStr)
         surface.PlaySound("items/medshotno1.wav")
         return
     end
-    if itemtbl.EntityLimit and itemtbl.EntityLimit <= ply:CountBoughtEntities(itemclass) then
+    if itemtbl.EntityLimit and itemtbl.EntityLimit <= ply:CountBoughtEntities(args[1]) then
         surface.PlaySound("items/medshotno1.wav")
         return
     end
@@ -105,6 +105,27 @@ end, function(cmd, args)
     end
     return ret
 end, "Buy the specified item.")
+
+concommand.Add("pt_sell", function(ply, cmd, args, argStr)
+    local itemtbl = Profiteers.Buyables[args[1]]
+    if not itemtbl then return end
+
+    if not itemtbl.PlaceEntity then
+        surface.PlaySound("items/medshotno1.wav")
+        return
+    end
+
+    net.Start("pt_sell")
+        net.WriteString(args[1])
+    net.SendToServer()
+end, function(cmd, args)
+    local ret = {}
+    for k, v in pairs(Profiteers.Buyables) do
+        if not v.PlaceEntity then continue end
+        table.insert(ret, "pt_sell " .. k)
+    end
+    return ret
+end, "Sell all of the specified item.")
 
 net.Receive("pt_buy", function()
     local entindex = net.ReadUInt(16)

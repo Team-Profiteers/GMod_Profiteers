@@ -66,7 +66,7 @@ if SERVER then
         self:EmitSound("npc/manhack/gib.wav", 120, 110, 0.8)
 
         local ent = ents.Create("pt_money")
-        ent:SetPos(ply:GetPos() + Vector(0, 0, 20))
+        ent:SetPos(self:GetPos() + Vector(0, 0, 20))
         ent:SetAmount(self:GetCash())
         ent:Spawn()
     end

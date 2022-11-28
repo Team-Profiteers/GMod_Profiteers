@@ -1,4 +1,5 @@
 util.AddNetworkString("pt_buy")
+util.AddNetworkString("pt_sell")
 util.AddNetworkString("pt_vehicle")
 
 -- A little hacky function to help prevent spawning props partially inside walls
@@ -116,3 +117,30 @@ net.Receive("pt_buy", function(len, ply)
     end
 end)
 
+local Player = FindMetaTable("Player")
+function Player:SellEntities(class)
+    local itemtbl = Profiteers.Buyables[class]
+    if not itemtbl then return end
+    local money = 0
+    self.BoughtEntities = self.BoughtEntities or {}
+    for i, ent in pairs(self.BoughtEntities[class] or {}) do
+        if IsValid(ent) then
+            money = money + itemtbl.Price * 0.75
+            if ent.OnPropDestroyed then
+                ent:OnPropDestroyed(DamageInfo())
+            end
+            ent:Remove()
+        end
+    end
+    if money > 0 then
+        self:AddMoney(money)
+    end
+end
+
+net.Receive("pt_sell", function(len, ply)
+    local itemclass = net.ReadString()
+    local itemtbl = Profiteers.Buyables[itemclass]
+    if not itemtbl or not itemtbl.PlaceEntity then return end
+
+    ply:SellEntities(itemclass)
+end)
