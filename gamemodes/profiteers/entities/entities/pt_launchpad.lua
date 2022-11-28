@@ -45,7 +45,7 @@ if SERVER then
     function ENT:EndTouch(ent)
         if ent:IsPlayer() and !ent:IsOnGround() and self:GetAnchored() and self:WithinBeacon() and (self.NextBoost or 0) < CurTime() then
             ent:SetVelocity(Vector(0, 0, self.ForceModes[self:GetForceMode() + 1]))
-            self.NextBoost = CurTime() + 1
+            self.NextBoost = CurTime() + 0.1
         end
     end
 else
