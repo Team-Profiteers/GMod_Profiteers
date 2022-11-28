@@ -10,7 +10,7 @@ function EFFECT:Init(data)
     self:SetPos(data:GetOrigin())
     self:SetAngles(AngleRand())
 
-    self:PhysicsInitBox(Vector(-1, -1, -0.1), Vector(1, 1, 0.1))
+    self:PhysicsInitBox(Vector(-1, -1, -0.05), Vector(1, 1, 0.05))
     self:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 
     local phys = self:GetPhysicsObject()
@@ -20,7 +20,7 @@ function EFFECT:Init(data)
     phys:SetMaterial("gmod_silent")
 
     phys:SetVelocity(data:GetNormal() * data:GetMagnitude())
-    phys:AddAngleVelocity(VectorRand() * 10)
+    phys:AddAngleVelocity(VectorRand() * data:GetScale())
 
     self.SpawnTime = CurTime()
 end
@@ -32,9 +32,6 @@ end
 function EFFECT:Think()
     if self:GetVelocity():Length() > 20 then self.SpawnTime = CurTime() end
     self:StopSound("Default.ScrapeRough")
-
-    print("hi")
-
     if (self.SpawnTime + self.LifeTime) <= CurTime() then
         if !IsValid(self) then return end
         self:SetRenderFX( kRenderFxFadeFast )
