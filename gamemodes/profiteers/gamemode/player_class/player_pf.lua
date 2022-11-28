@@ -154,33 +154,32 @@ function PLAYER:StartMove( mv, cmd )
         end
 
         -- Wall climb
-        if !done and ply:GetNWFloat("pt_nextclimb", 0) < CurTime() then
-            local tr_climb = util.TraceHull({
-                start = ply:EyePos(),
-                endpos = ply:EyePos() + (ang:Forward() * 16),
-                mins = Vector(-16, -16, 0),
-                maxs = Vector(16, 16, 16),
-                filter = ply
-            })
-            if tr_climb.Hit and !tr_climb.HitSky and tr_climb.HitNormal.z <= 0.75 and tr_climb.HitNormal.z >= -0.75 then
-                local forward = ang:Forward()
+        local tr_climb = util.TraceHull({
+            start = ply:EyePos(),
+            endpos = ply:EyePos() + (ang:Forward() * 16),
+            mins = Vector(-16, -16, 0),
+            maxs = Vector(16, 16, 16),
+            filter = ply
+        })
+        local can_climb = tr_climb.Hit and !tr_climb.HitSky and tr_climb.HitNormal.z <= 0.75 and tr_climb.HitNormal.z >= -0.75
+        if !done and can_climb and ply:GetNWFloat("pt_nextclimb", 0) < CurTime() then
+            local forward = ang:Forward()
 
-                local upforce = 400
-                local forwardforce = 25
+            local upforce = 400
+            local forwardforce = 25
 
-                vel = vel + up * upforce
-                vel = vel + forward * forwardforce
+            vel = vel + up * upforce
+            vel = vel + forward * forwardforce
 
-                vel.x = math.Clamp(vel.x, -150, 150)
-                vel.y = math.Clamp(vel.y, -150, 150)
-                vel.z = math.min(vel.z, 400)
+            vel.x = math.Clamp(vel.x, -150, 150)
+            vel.y = math.Clamp(vel.y, -150, 150)
+            vel.z = math.min(vel.z, 400)
 
-                mv:SetVelocity(vel)
+            mv:SetVelocity(vel)
 
-                ply:SetNWFloat("pt_nextclimb", CurTime() + 0.25)
-                if SERVER then ply:EmitSound(sounds[math.random(#sounds)]) end
-                done = true
-            end
+            ply:SetNWFloat("pt_nextclimb", CurTime() + 0.25)
+            if SERVER then ply:EmitSound(sounds[math.random(#sounds)]) end
+            done = true
         end
 
         -- Wall jump
@@ -204,7 +203,7 @@ function PLAYER:StartMove( mv, cmd )
         end
 
         -- Deploy parachute
-        if !done and (ply:GetNWBool("pt_parachute_manual") or ply:GetNWBool("pt_parachute_pending")) and !ply:GetNWBool("pt_parachute") and ply:GetVelocity().z < -200 then
+        if !done and !can_climb and (ply:GetNWBool("pt_parachute_manual") or ply:GetNWBool("pt_parachute_pending")) and !ply:GetNWBool("pt_parachute") and ply:GetVelocity().z < -200 then
             ply:SetNWBool("pt_parachute", true)
             if SERVER then
                 local chute = ents.Create("pt_parachute")
