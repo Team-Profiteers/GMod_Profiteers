@@ -166,11 +166,13 @@ function PLAYER:StartMove( mv, cmd )
                 local forward = ang:Forward()
 
                 local upforce = 400
-                local forwardforce = 100
+                local forwardforce = 25
 
                 vel = vel + up * upforce
                 vel = vel + forward * forwardforce
 
+                vel.x = math.Clamp(vel.x, -150, 150)
+                vel.y = math.Clamp(vel.y, -150, 150)
                 vel.z = math.min(vel.z, 400)
 
                 mv:SetVelocity(vel)
@@ -192,17 +194,8 @@ function PLAYER:StartMove( mv, cmd )
             })
 
             if tr_walljump.Hit and !tr_walljump.HitSky and tr_walljump.HitNormal.z <= 0.75 and tr_walljump.HitNormal.z >= -0.75 then
-                local forward = eyeangles:Forward()
 
-                local upforce = 250
-                local forwardforce = 400
-
-                vel = vel + up * upforce
-                vel = vel + forward * forwardforce
-
-                vel.z = math.Clamp(vel.z, 0, 200)
-
-                mv:SetVelocity(vel)
+                mv:SetVelocity(ang:Forward() * 400 + up * 300)
 
                 ply:SetNWFloat("pt_nextclimb", CurTime() + 0.5)
                 if SERVER then ply:EmitSound("npc/zombie/zombie_hit.wav", 75, math.Rand(102, 107)) end
