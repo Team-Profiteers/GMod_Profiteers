@@ -21,27 +21,25 @@ hook.Add("HUDPaint", "Profiteers Enemy Finder", function()
     local spikecount = 12
 
     if nextstronktime < CurTime() then
-        -- count NPCs in the direction you're looking
+        -- count stuff (no point in using cone since we're checking for dot and dist anyways)
 
-        local ents = ents.FindInCone(LocalPlayer():GetShootPos(), LocalPlayer():GetAimVector(), 30000, 0.5)
-
-        for k, v in pairs(ents) do
+        for k, v in pairs(ents.GetAll()) do
             if v:IsNPC() or v:IsPlayer() or (v:GetClass() == "pt_beacon") then
                 -- get dot product
                 local dot = LocalPlayer():GetAimVector():Dot((v:GetPos() - LocalPlayer():GetShootPos()):GetNormalized())
 
                 -- get dist
-                local dist = LocalPlayer():GetShootPos():Distance(v:GetPos())
+                local dist = LocalPlayer():GetShootPos():DistToSqr(v:GetPos())
 
                 -- Calculate stronk value based on dot product and distance
                 -- The closer we are and the more we're looking at the NPC, the higher the value
 
                 if v:IsNPC() then
-                    stronk = stronk + (dot * (5000 / dist))
+                    stronk = stronk + (dot * (5000 * 5000 / dist))
                 elseif v:IsPlayer() and v != LocalPlayer() then
-                    strink = strink + (dot * (5000 / dist))
+                    strink = strink + (dot * (5000 * 5000 / dist))
                 elseif v:GetClass() == "pt_beacon" then
-                    strenk = strenk + (dot * (5000 / dist))
+                    strenk = strenk + (dot * (5000 * 5000 / dist))
                 end
             end
         end
@@ -67,7 +65,7 @@ hook.Add("HUDPaint", "Profiteers Enemy Finder", function()
         last_stronk = stronk
         last_strink = strink
         last_strenk = strenk
-        nextstronktime = CurTime() + 0.1
+        nextstronktime = CurTime() + 0.2
     end
 
     -- draw stronk
