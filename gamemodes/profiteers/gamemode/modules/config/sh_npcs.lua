@@ -41,7 +41,7 @@ Profiteers.Enemies["Combine Soldiers"] = {
 	["dmgmult"] = 3
 }
 
-Profiteers.Enemies["Cops"] = { 
+Profiteers.Enemies["Cops"] = {
 	["class_type"] = "npc_metropolice",
 	["hp"] = 100,
 	["prof"] = WEAPON_PROFICIENCY_AVERAGE,
@@ -54,7 +54,7 @@ Profiteers.Enemies["Cops"] = {
 	["dmgmult"] = 3
 }
 
-Profiteers.Enemies["Zombies"] = { 
+Profiteers.Enemies["Zombies"] = {
 	["class_type"] = "npc_zombie",
 	["hp"] = 500,
 	["prof"] = WEAPON_PROFICIENCY_POOR,
@@ -67,7 +67,7 @@ Profiteers.Enemies["Zombies"] = {
 	["dmgmult"] = 5
 }
 
-Profiteers.Enemies["Antlions"] = { 
+Profiteers.Enemies["Antlions"] = {
 	["class_type"] = "npc_antlion",
 	["hp"] = 100,
 	["prof"] = WEAPON_PROFICIENCY_POOR,
@@ -80,16 +80,16 @@ Profiteers.Enemies["Antlions"] = {
 	["dmgmult"] = 2.5
 }
 
-Profiteers.Enemies["Antlion Guard"] = { 
+Profiteers.Enemies["Antlion Guard"] = {
 	["class_type"] = "npc_antlionguard",
-	["hp"] = 1500,
+	["hp"] = 3000,
 	["prof"] = WEAPON_PROFICIENCY_POOR,
 	["wpn"] = nil,
-	["squad"] = 6,
+	["squad"] = 1,
 	["minsize"] = 1,
 	["maxsize"] = 1,
 	["rels"] = {""},
-	["bounty"] = 100000,
-	["dmgmult"] = 1
+	["bounty"] = 30000,
+	["dmgmult"] = 3
 }
 Profiteers.MaxNPCs = 50
