@@ -329,6 +329,17 @@ Profiteers.Buyables = {
 
         Category = "Basebuilding"
     },
+    ["pt_launchpad"] = {
+        Name = "Launchpad",
+        EntityClass = "pt_launchpad",
+        Price = 5500,
+        PlaceEntity = true,
+
+        Description = "Launch yourself into the air",
+        Description2 = "Must be deployed near a Beacon",
+
+        Category = "Basebuilding"
+    },
 }
 
 Profiteers.BuyableEntities = {}
