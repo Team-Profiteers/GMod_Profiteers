@@ -105,6 +105,17 @@ function PLAYER:SetModel()
 end
 
 function PLAYER:Death( inflictor, attacker )
+    -- Drop special weapons
+    for k, v in pairs(self.Player:GetWeapons()) do
+        if Profiteers.BuyableEntities[v:GetClass()] then
+            local ent = ents.Create(v:GetClass())
+            ent:SetPos(self.Player:GetPos() + Vector(0, 0, 20))
+            ent:SetAngles(AngleRand())
+            ent:Spawn()
+
+            self.Player:StripWeapon(v:GetClass())
+        end
+    end
 end
 
 -- Clientside only
