@@ -17,7 +17,6 @@ ENT.AnchorOffset = Vector(0, 0, 0)
 
 ENT.Category = "Profiteers"
 ENT.Spawnable = false
-ENT.Bounty = 0
 
 function ENT:SetupDataTables()
     self:NetworkVar("Bool", 0, "Anchored")
@@ -28,7 +27,7 @@ end
 
 if SERVER then
     function ENT:OnAnchor(ply)
-        GAMEMODE:Hint(ply, 1, "MINE ARMED AND READY TO DEPLOY. STAND CLEAR.")
+        GAMEMODE:Hint(ply, 1, "Deploying mines in 5 seconds. Stand clear.")
         self:SetArmTime(CurTime())
         self:SetArmed(true)
         self:EmitSound("buttons/combine_button5.wav", 110, 100)

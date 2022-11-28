@@ -9,15 +9,13 @@ ENT.Model = "models/props_lab/reciever_cart.mdl"
 
 ENT.PreferredAngle = Angle(0, 180, 0)
 
-ENT.ChargeRate = 0.5
+ENT.ChargeRate = 0.1
 ENT.ThinkDelay = 0.1
 
 ENT.ChargeColor = Color(125, 150, 255, 200)
 ENT.ChargeName = "Armor"
 
-ENT.ChargeRatio = 100
-
-ENT.Bounty = 1500
+ENT.ChargeRatio = 200
 
 if SERVER then
 
@@ -38,7 +36,7 @@ if SERVER then
         util.Effect("explosion", effectdata)
         self:EmitSound("npc/turret_floor/die.wav", 120, 110, 0.8)
 
-        for i = 1, math.floor(self:GetCharge() * self.ChargeRatio / 15) do
+        for i = 1, math.floor(self:GetCharge() * self.ChargeRatio / 20) do
             local ent = ents.Create("item_battery")
             ent:SetPos(self:GetPos() + VectorRand() * 8)
             ent:SetAngles(AngleRand())
@@ -46,10 +44,5 @@ if SERVER then
             ent:GetPhysicsObject():ApplyForceCenter(VectorRand() * 256)
             SafeRemoveEntityDelayed(ent, 120)
         end
-
-        local ent = ents.Create("pt_money")
-        ent:SetPos(self:GetPos() + Vector(0, 0, 20))
-        ent:SetAmount(self.Bounty)
-        ent:Spawn()
     end
 end

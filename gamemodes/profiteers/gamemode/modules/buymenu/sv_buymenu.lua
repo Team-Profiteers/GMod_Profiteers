@@ -85,6 +85,8 @@ net.Receive("pt_buy", function(len, ply)
 
             ent:CPPISetOwner(ply)
 
+            ent.Bounty = itemtbl.Price
+
             ply.BoughtEntities = ply.BoughtEntities or {}
             ply.BoughtEntities[itemclass] = ply.BoughtEntities[itemclass] or {}
             table.insert(ply.BoughtEntities[itemclass], ent)
@@ -125,7 +127,11 @@ function Player:SellEntities(class)
     self.BoughtEntities = self.BoughtEntities or {}
     for i, ent in pairs(self.BoughtEntities[class] or {}) do
         if IsValid(ent) then
-            money = money + itemtbl.Price * 0.75
+            if ent:GetClass() == "pt_nuke" then
+                money = money + itemtbl.Price * GetConVar("pt_money_nukemult"):GetFloat()
+            else
+                money = money + itemtbl.Price * GetConVar("pt_money_sellmult"):GetFloat()
+            end
             if ent.OnPropDestroyed then
                 ent:OnPropDestroyed(DamageInfo())
             end

@@ -31,15 +31,17 @@ if SERVER then
     end
 
     function ENT:Think()
-        if self:GetArmed() then
-            if self:GetArmTime() + self.DetonationTime <= CurTime() then
-                self:Detonate()
-            end
+        if self:GetArmed() and self:GetArmTime() + self.DetonationTime <= CurTime() then
+            self:Detonate()
         end
     end
 
     function ENT:Use(activator)
-        if !self:GetArmed() and !IsValid(Profiteers.ActiveNuke) then
+        if !self:GetArmed() then
+            if IsValid(Profiteers.ActiveNuke) then
+                GAMEMODE:Hint(activator, 1, "There is already an active nuke! Go stop it!")
+                return
+            end
             self.BombOwner = activator
             self:SetOwner(activator)
             self:SetArmed(true)
@@ -70,11 +72,6 @@ if SERVER then
         local effectdata = EffectData()
         effectdata:SetOrigin(self:GetPos())
         util.Effect("explosion", effectdata)
-
-        local ent = ents.Create("pt_money")
-        ent:SetPos(self:GetPos())
-        ent:SetAmount(1000000)
-        ent:Spawn()
     end
 else
     function ENT:Think()

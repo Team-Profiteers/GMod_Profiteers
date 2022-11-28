@@ -19,8 +19,6 @@ ENT.AnchorAngle = Angle(-90, 0, 0)
 ENT.Category = "Profiteers"
 ENT.Spawnable = false
 
-ENT.Bounty = 500
-
 function ENT:SetupDataTables()
     self:NetworkVar("Bool", 0, "Anchored")
     self:NetworkVar("Bool", 1, "Angry")

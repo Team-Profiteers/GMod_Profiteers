@@ -117,6 +117,18 @@ hook.Add("EntityTakeDamage", "Profiteers_PropDamage", function(ent, dmginfo)
             end
         end
 
+        if ent.Bounty then
+            local money = ents.Create("pt_money")
+            money:SetAngles(Angle(0, math.Rand(-180, 180), 0))
+            money:SetPos(ent:GetPos())
+            if ent:GetClass() == "pt_nuke" then
+                money:SetAmount(ent.Bounty * GetConVar("pt_money_nukemult"):GetFloat())
+            else
+                money:SetAmount(ent.Bounty * GetConVar("pt_money_killmult"):GetFloat())
+            end
+            money:Spawn()
+        end
+
         ent:Remove()
     elseif ent:GetClass() == "prop_physics" and IsValid(ent:GetPhysicsObject()) and !ent:GetPhysicsObject():IsMotionEnabled() and ent:GetNWInt("PFPropHealth") <= ent:GetNWInt("PFPropMaxHealth") * 0.15 then
         -- unfreeze

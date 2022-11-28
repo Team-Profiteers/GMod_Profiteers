@@ -22,7 +22,7 @@ if SERVER then
                 self:SetPos(colData.HitPos)
                 self:SetMoveType(MOVETYPE_NONE)
             end
-        elseif !colData.HitEntity:IsWorld() then
+        elseif !colData.HitEntity:IsWorld() and colData.HitEntity:GetPhysicsObject():IsMotionEnabled() then
             self:Detonate()
         end
     end
@@ -38,7 +38,7 @@ if SERVER then
         end
 
         if (self.SpawnTime + 600) < CurTime() then
-            self:Detonate()
+            self:Remove()
         end
     end
 

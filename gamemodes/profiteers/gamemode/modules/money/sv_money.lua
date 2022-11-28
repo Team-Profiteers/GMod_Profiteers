@@ -84,6 +84,7 @@ function Player:AddMoney(amt, no_notify, not_earnings)
 end
 
 hook.Add("DoPlayerDeath", "pt_money", function(ply, attacker, dmginfo)
+    --[[]
     if attacker:IsPlayer() and attacker ~= ply and attacker:Team() ~= ply:Team() and GetConVar("pt_money_per_kill"):GetInt() > 0 then
         local reward = GetConVar("pt_money_per_kill"):GetInt()
         local class = dmginfo:GetInflictor():IsWeapon() and dmginfo:GetInflictor():GetClass() or attacker:GetActiveWeapon():GetClass()
@@ -92,10 +93,12 @@ hook.Add("DoPlayerDeath", "pt_money", function(ply, attacker, dmginfo)
 
         attacker:AddMoney(reward)
     end
+    ]]
 
     -- Drop money
-    local loss = math.Round((ply:GetMoney() - 5000) * 0.2)
-    loss = math.min(loss, 50000)
+    local loss = math.Round((ply:GetMoney() - GetConVar("pt_money_dropondeath_min"):GetInt()) * GetConVar("pt_money_dropondeath"):GetFloat())
+    local max = GetConVar("pt_money_dropondeath_max"):GetInt()
+    loss = math.min(loss, max)
 
     if loss > 0 then
         ply:AddMoney(-loss)
@@ -138,4 +141,25 @@ concommand.Add("pt_admin_addmoney", function(ply, cmd, args, argStr)
         GAMEMODE:Hint(ply, 0, "You took $" .. math.abs(amt) .. " from " .. tgt:GetName() .. ".")
     end
 
+end)
+
+concommand.Add("pt_admin_addmoney_all", function(ply, cmd, args, argStr)
+    if IsValid(ply) and not ply:IsAdmin() then return end
+
+    local amt = tonumber(args[1])
+    if not amt then
+        GAMEMODE:Hint(ply, 1, "Invalid amount!")
+        return
+    end
+    amt = math.Round(amt)
+
+    for _, e in pairs(player.GetAll()) do
+        e:AddMoney(amt)
+    end
+
+    if amt >= 0 then
+        GAMEMODE:Hint(ply, 0, "You gave everyone " .. GAMEMODE:FormatMoney(amt) .. "!")
+    else
+        GAMEMODE:Hint(ply, 0, "You took " .. GAMEMODE:FormatMoney(amt) .. " from everyone!")
+    end
 end)

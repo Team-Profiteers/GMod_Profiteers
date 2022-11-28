@@ -14,8 +14,6 @@ ENT.AllowUnAnchor = false
 ENT.AnchorOffset = Vector(0, 0, 0)
 ENT.AnchorAngle = Angle(0, 0, 0)
 
-ENT.Bounty = 1000
-
 function ENT:SetupDataTables()
     self:NetworkVar("Bool", 0, "Anchored")
 end
@@ -115,13 +113,6 @@ if SERVER then
         effectdata:SetOrigin(self:GetPos())
         util.Effect("explosion", effectdata)
         self:EmitSound("npc/turret_floor/die.wav", 120, 110, 0.8)
-
-        if self.Bounty > 0 then
-            local ent = ents.Create("pt_money")
-            ent:SetPos(self:GetPos() + Vector(0, 0, 20))
-            ent:SetAmount(self.Bounty)
-            ent:Spawn()
-        end
     end
 else
     function ENT:Draw()

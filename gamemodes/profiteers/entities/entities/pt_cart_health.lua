@@ -9,15 +9,13 @@ ENT.Model = "models/props_lab/reciever_cart.mdl"
 
 ENT.PreferredAngle = Angle(0, 180, 0)
 
-ENT.ChargeRate = 0.04
+ENT.ChargeRate = 0.05
 ENT.ThinkDelay = 0.1
 
 ENT.ChargeColor = Color(175, 255, 120, 200)
 ENT.ChargeName = "Health"
 
-ENT.ChargeRatio = 150
-
-ENT.Bounty = 1000
+ENT.ChargeRatio = 200
 
 if SERVER then
 
@@ -46,10 +44,5 @@ if SERVER then
             ent:GetPhysicsObject():ApplyForceCenter(VectorRand() * 256)
             SafeRemoveEntityDelayed(ent, 120)
         end
-
-        local ent = ents.Create("pt_money")
-        ent:SetPos(ply:GetPos() + Vector(0, 0, 20))
-        ent:SetAmount(self.Bounty)
-        ent:Spawn()
     end
 end

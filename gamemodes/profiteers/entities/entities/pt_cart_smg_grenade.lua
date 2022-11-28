@@ -5,7 +5,7 @@ ENT.Base = "pt_base_cart"
 ENT.PrintName = "Grenade Autolathe"
 ENT.Type = "anim"
 ENT.RenderGroup = RENDERGROUP_BOTH
-ENT.Model = "models/props_wasteland/laundry_washer003.mdl"
+ENT.Model = "models/props_lab/reciever_cart.mdl"
 
 ENT.PreferredAngle = Angle(0, 180, 0)
 
@@ -16,8 +16,6 @@ ENT.ChargeColor = Color(255, 255, 25, 200)
 ENT.ChargeName = "Rifle Grenades"
 
 ENT.ChargeRatio = 20
-
-ENT.Bounty = 4000
 
 if SERVER then
 
@@ -45,13 +43,6 @@ if SERVER then
             ent:Spawn()
             ent:GetPhysicsObject():ApplyForceCenter(VectorRand() * 256)
             SafeRemoveEntityDelayed(ent, 120)
-        end
-
-        if self.Bounty > 0 then
-            local ent = ents.Create("pt_money")
-            ent:SetPos(self:GetPos() + Vector(0, 0, 20))
-            ent:SetAmount(self.Bounty)
-            ent:Spawn()
         end
     end
 end

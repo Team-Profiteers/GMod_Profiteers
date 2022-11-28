@@ -18,8 +18,6 @@ ENT.AnchorOffset = Vector(0, 0, 16)
 ENT.Category = "Profiteers"
 ENT.Spawnable = false
 
-ENT.Bounty = 0
-
 function ENT:SetupDataTables()
     self:NetworkVar("Bool", 0, "Anchored")
     self:NetworkVar("Int", 0, "Cash")
@@ -43,6 +41,12 @@ if SERVER then
         -- if empty, deposit player cash
         -- if not empty, withdraw
         -- if shift held, withdraw 10k
+
+        if !self:WithinBeacon() then
+            self:EmitSound("npc/roller/code2.wav", 100, 90)
+            GAMEMODE:Hint(ply, 1, "Cannot use outside of a Beacon.")
+            return
+        end
 
         if self:GetCash() == 0 then
             if ply:GetMoney() > 0 then
@@ -86,8 +90,13 @@ if CLIENT then
 
         cam.Start3D2D(pos, ang, 0.05)
             GAMEMODE:ShadowText("SAFE", "CGHUD_2", 0, 0, color_white, Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-            GAMEMODE:ShadowText(self:WithinBeacon() and "Active" or "Not Active - Place Near Beacon", "CGHUD_5", 0, 60, self:WithinBeacon() and color_white or Color(255, 0, 0), Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-            GAMEMODE:ShadowText("$" .. tostring(self:GetCash()), "CGHUD_2", 0, 120, Color(150, 255, 150), Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+            if self:WithinBeacon() then
+                GAMEMODE:ShadowText("Active", "CGHUD_5", 0, 60, self:WithinBeacon() and color_white or Color(255, 0, 0), Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+            else
+                GAMEMODE:ShadowText("Disabled", "CGHUD_5", 0, 60, self:WithinBeacon() and color_white or Color(255, 0, 0), Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+                GAMEMODE:ShadowText("Place Near Beacon", "CGHUD_5", 0, 105, self:WithinBeacon() and color_white or Color(255, 0, 0), Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+            end
+            GAMEMODE:ShadowText("$" .. tostring(self:GetCash()), "CGHUD_2", 0, 300, Color(150, 255, 150), Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
         cam.End3D2D()
     end
 end

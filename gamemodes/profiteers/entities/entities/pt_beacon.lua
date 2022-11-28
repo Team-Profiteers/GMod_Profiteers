@@ -15,8 +15,6 @@ ENT.PreferredAngle = Angle(0, 0, 0)
 ENT.Category = "Profiteers"
 ENT.Spawnable = false
 
-ENT.Bounty = 650
-
 if SERVER then
     function ENT:OnAnchor(ply)
         self:SetModel("models/props_combine/combine_light001a.mdl")
