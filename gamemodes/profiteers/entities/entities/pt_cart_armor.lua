@@ -17,6 +17,8 @@ ENT.ChargeName = "Armor"
 
 ENT.ChargeRatio = 100
 
+ENT.Bounty = 1500
+
 if SERVER then
 
     function ENT:CanConsume(ply)
@@ -44,5 +46,10 @@ if SERVER then
             ent:GetPhysicsObject():ApplyForceCenter(VectorRand() * 256)
             SafeRemoveEntityDelayed(ent, 120)
         end
+
+        local ent = ents.Create("pt_money")
+        ent:SetPos(ply:GetPos() + Vector(0, 0, 20))
+        ent:SetAmount(self.Bounty)
+        ent:Spawn()
     end
 end

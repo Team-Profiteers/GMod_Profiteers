@@ -15,3 +15,5 @@ ENT.AnchorRequiresBeacon = true
 
 ENT.Category = "Profiteers"
 ENT.Spawnable = false
+
+ENT.Bounty = 1000

@@ -17,6 +17,7 @@ ENT.AnchorOffset = Vector(0, 0, 0)
 
 ENT.Category = "Profiteers"
 ENT.Spawnable = false
+ENT.Bounty = 0
 
 function ENT:SetupDataTables()
     self:NetworkVar("Bool", 0, "Anchored")

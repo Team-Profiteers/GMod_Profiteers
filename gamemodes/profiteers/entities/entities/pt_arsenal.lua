@@ -18,6 +18,8 @@ ENT.AnchorOffset = Vector(0, 0, 16)
 ENT.Category = "Profiteers"
 ENT.Spawnable = false
 
+ENT.Bounty = 2000
+
 if CLIENT then
     function ENT:Draw()
         self:DrawModel()

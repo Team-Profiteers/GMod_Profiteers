@@ -18,6 +18,8 @@ ENT.AnchorOffset = Vector(0, 0, 16)
 ENT.Category = "Profiteers"
 ENT.Spawnable = false
 
+ENT.Bounty = 0
+
 function ENT:SetupDataTables()
     self:NetworkVar("Bool", 0, "Anchored")
     self:NetworkVar("Int", 0, "Cash")
@@ -65,10 +67,12 @@ if SERVER then
         util.Effect("explosion", effectdata)
         self:EmitSound("npc/manhack/gib.wav", 120, 110, 0.8)
 
-        local ent = ents.Create("pt_money")
-        ent:SetPos(ply:GetPos() + Vector(0, 0, 20))
-        ent:SetAmount(self:GetCash())
-        ent:Spawn()
+        if self.Bounty > 0 then
+            local ent = ents.Create("pt_money")
+            ent:SetPos(ply:GetPos() + Vector(0, 0, 20))
+            ent:SetAmount(self.Bounty)
+            ent:Spawn()
+        end
     end
 end
 
