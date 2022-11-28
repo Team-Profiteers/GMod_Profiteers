@@ -76,9 +76,9 @@ end
 
 -- spawn airdrops at random
 
-timer.Create("ProfiteersAirdropTimer", 60, 0, function()
+timer.Create("ProfiteersAirdropTimer", 5, 0, function()
 
-    if math.Rand(0, 1) > 0.8 then
+    if math.Rand(0, 1) > 0 then
         Profiteers:SpawnAirdrop()
     end
 
