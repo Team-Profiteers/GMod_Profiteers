@@ -274,6 +274,17 @@ Profiteers.Buyables = {
 
     --     Category = "Basebuilding"
     -- },
+    ["pt_sentry"] = {
+        Name = "Sentry Turret",
+        EntityClass = "pt_sentry",
+        Price = 12500,
+        PlaceEntity = true,
+
+        Description = "Attacks enemies automatically",
+        Description2 = "Place near Beacon to use",
+
+        Category = "Basebuilding"
+    },
     ["pt_cart_armor"] = {
         Name = "Armor Station",
         EntityClass = "pt_cart_armor",

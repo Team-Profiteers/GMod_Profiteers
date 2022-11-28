@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" 		"models\ace\minisentry\minisentry_d"
+	"$bumpmap" 			"models\ace\minisentry\minisentry_n"
+}
