@@ -20,7 +20,7 @@ end)
 -- Prevent zombies from spawning headcrabs on death
 
 hook.Add("OnEntityCreated", "RemoveNPCHeadcrabs", function(ent)
-    if !ent.ProfiteersSpawned and ent:GetClass() == "npc_headcrab" then
+    if !ent.ProfiteersSpawned and (ent:GetClass() == "npc_headcrab" or ent:GetClass() == "item_ammo_ar2_altfire") then
         ent:Remove()
     end
 end)
