@@ -67,12 +67,10 @@ if SERVER then
         util.Effect("explosion", effectdata)
         self:EmitSound("npc/manhack/gib.wav", 120, 110, 0.8)
 
-        if self.Bounty > 0 then
-            local ent = ents.Create("pt_money")
-            ent:SetPos(ply:GetPos() + Vector(0, 0, 20))
-            ent:SetAmount(self.Bounty)
-            ent:Spawn()
-        end
+        local ent = ents.Create("pt_money")
+        ent:SetPos(self:GetPos() + Vector(0, 0, 20))
+        ent:SetAmount(self:GetCash())
+        ent:Spawn()
     end
 end
 
