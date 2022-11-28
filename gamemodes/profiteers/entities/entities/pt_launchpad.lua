@@ -37,6 +37,7 @@ if SERVER then
     end
 
     function ENT:OnUse(ply)
+        if !(self:GetAnchored() and self:WithinBeacon()) then return end
         self:SetForceMode((self:GetForceMode() + 1) % #self.ForceModes)
         self:EmitSound("buttons/lightswitch2.wav", 70, 95 + 10 * (self:GetForceMode() / #self.ForceModes))
     end
