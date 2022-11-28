@@ -23,7 +23,7 @@ hook.Add("PlayerPostThink", "ProfiteersPostPlayerThinkParachute", function(ply)
         ply:SetNWBool("pt_parachute_manual", false)
     end
 
-    if !ply:GetNWBool("pt_parachute_pending") and !ply:IsOnGround() and ply:GetVelocity().z < -500 then
-        ply:SetNWBool("pt_parachute_manual", true)
-    end
+    -- if !ply:GetNWBool("pt_parachute_pending") and !ply:IsOnGround() and ply:GetVelocity().z < -200 then
+    --     ply:SetNWBool("pt_parachute_manual", true)
+    -- end
 end)

@@ -201,7 +201,7 @@ function PLAYER:StartMove( mv, cmd )
         end
 
         -- Deploy parachute
-        if !done and !can_climb and (ply:GetNWBool("pt_parachute_manual") or ply:GetNWBool("pt_parachute_pending")) and !ply:GetNWBool("pt_parachute") and ply:GetVelocity().z < 0 then
+        if !done and !can_climb and !ply:GetNWBool("pt_parachute") and ply:GetVelocity().z < -300 then
             ply:SetNWBool("pt_parachute", true)
             if SERVER then
                 local chute = ents.Create("pt_parachute")
@@ -215,7 +215,11 @@ function PLAYER:StartMove( mv, cmd )
 
     -- Parachute slow fall
     if ply:GetNWBool("pt_parachute") then
-        vel.z = math.Approach(vel.z, -300, -FrameTime() * 2000)
+        if vel.z < -300 then
+            vel.z = math.Approach(vel.z, -300, -FrameTime() * 2000)
+        else
+            vel.z = math.Approach(vel.z, -300, -FrameTime() * 500)
+        end
 
         vel = vel + eyeangles:Forward() * 100 * FrameTime()
 
