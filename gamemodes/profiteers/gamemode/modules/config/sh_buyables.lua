@@ -1,3 +1,11 @@
+local WarpRequired = function(self, ply)
+    if !ply:WithinBeacon() and !ply:HasBoughtEntity("pt_supply_warp", true, true) then
+        if CLIENT then GAMEMODE:Hint(ply, 1 ,"This can only be bought if you are near a Beacon or own a Supply Warp.") end
+        return false
+    end
+    return true
+end
+
 Profiteers.Buyables = {
     -- ["arccw_ud_m79"] = {
     -- 	Name = nil, -- auto-generate from EntityClass
@@ -70,7 +78,7 @@ Profiteers.Buyables = {
     },
     ["arc9_bo1_law"] = {
         EntityClass = "arc9_bo1_law",
-        Price = 2500,
+        Price = 2000,
 
         Description = "Light Anti-Tank Weapon",
         Description2 = "Inaccurate but cheap",
@@ -94,9 +102,9 @@ Profiteers.Buyables = {
     },
     ["arc9_waw_flamethrower"] = {
         EntityClass = "arc9_waw_flamethrower",
-        Price = 7000,
+        Price = 12500,
 
-        Description = "Flamethrower",
+        Description = "Extreme close range \"fire\"power",
         Description2 = "Napalm sweet as wine",
         Category = "Special Weapons",
     },
@@ -115,7 +123,10 @@ Profiteers.Buyables = {
         Price = 1000,
 
         Description = "For use with rocket launchers",
-        Category = "Ammunition",
+        Description2 = "Requires nearby Beacon or a Warp",
+        Category = "Supplies",
+
+        CanBuy = WarpRequired,
     },
     ["item_ammo_smg1_grenade"] = {
         Name = "Rifle Grenade",
@@ -123,32 +134,44 @@ Profiteers.Buyables = {
         Price = 500,
 
         Description = "For use with grenade launchers",
-        Category = "Ammunition",
+        Description2 = "Requires nearby Beacon or a Warp",
+        Category = "Supplies",
+
+        CanBuy = WarpRequired,
     },
 
-    -- ["item_healthkit"] = {
-    --     Name = "Health Kit",
-    --     EntityClass = "item_healthkit",
-    --     Price = 250,
+    ["item_healthkit"] = {
+        Name = "Health Kit",
+        EntityClass = "item_healthkit",
+        Price = 500,
 
-    --     Description = "Restores 25 health",
-    --     Category = "Utility",
-    -- },
-    -- ["item_healthvial"] = {
-    --     Name = "Health Vial",
-    --     EntityClass = "item_healthvial",
-    --     Price = 100,
+        Description = "Restores 25 health",
+        Description2 = "Requires nearby Beacon or a Warp",
+        Category = "Supplies",
 
-    --     Description = "Restores 10 health",
-    --     Category = "Utility",
-    -- },
+        CanBuy = WarpRequired,
+    },
+    ["item_healthvial"] = {
+        Name = "Health Vial",
+        EntityClass = "item_healthvial",
+        Price = 200,
+
+        Description = "Restores 10 health",
+        Description2 = "Requires nearby Beacon or a Warp",
+        Category = "Supplies",
+
+        CanBuy = WarpRequired,
+    },
     ["item_battery"] = {
         Name = "Armor Battery",
         EntityClass = "item_battery",
-        Price = 500,
+        Price = 750,
 
         Description = "Provides 15 points of armor",
-        Category = "Utility",
+        Description2 = "Requires nearby Beacon or a Warp",
+        Category = "Supplies",
+
+        CanBuy = WarpRequired,
     },
     -- ["spiderman's_swep"] = {
     --     Name = "Spiderman's Gun",
@@ -170,18 +193,19 @@ Profiteers.Buyables = {
         Description = "1.2mt fission bomb",
         Description2 = "End it all and watch it burn",
 
-        Category = "Construction"
+        Category = "Basebuilding"
     },
     ["pt_beacon"] = {
         Name = "Base Beacon",
         EntityClass = "pt_beacon",
         Price = 1000,
+        EntityLimit = 1,
         PlaceEntity = true,
 
         Description = "Reinforces nearby props",
         Description2 = "Required for most buildings",
 
-        Category = "Construction"
+        Category = "Basebuilding"
     },
     ["pt_spawn"] = {
         Name = "Deployable Spawn",
@@ -192,18 +216,18 @@ Profiteers.Buyables = {
         Description = "Respawn at your base",
         Description2 = "Must be deployed near a Beacon",
 
-        Category = "Construction"
+        Category = "Basebuilding"
     },
     ["pt_alarm"] = {
         Name = "Motion Sensor",
         EntityClass = "pt_alarm",
-        Price = 1000,
+        Price = 500,
         PlaceEntity = true,
 
-        Description = "Alerts you when enemies are nearby",
+        Description = "Alarm when enemies get near",
         Description2 = "Helps stop intruders",
 
-        Category = "Construction"
+        Category = "Basebuilding"
     },
     ["pt_minelayer"] = {
         Name = "Cluster Mine",
@@ -214,7 +238,7 @@ Profiteers.Buyables = {
         Description = "Creates a field of mines",
         Description2 = "Tread carefully",
 
-        Category = "Construction"
+        Category = "Basebuilding"
     },
     ["pt_safe"] = {
         Name = "Safe Storage Box",
@@ -225,7 +249,7 @@ Profiteers.Buyables = {
         Description = "Stores money safely",
         Description2 = "Sprint + use to withdraw 10k",
 
-        Category = "Construction"
+        Category = "Basebuilding"
     },
 
     ["pt_arsenal"] = {
@@ -237,7 +261,7 @@ Profiteers.Buyables = {
         Description = "Free global weapon spawning",
         Description2 = "Must be deployed near a Beacon",
 
-        Category = "Construction"
+        Category = "Basebuilding"
     },
     -- ["pt_cart_health"] = {
     --     Name = "Health Station",
@@ -248,7 +272,7 @@ Profiteers.Buyables = {
     --     Description = "Restores your health",
     --     Description2 = "Place near Beacon to use",
 
-    --     Category = "Construction"
+    --     Category = "Basebuilding"
     -- },
     ["pt_cart_armor"] = {
         Name = "Armor Station",
@@ -259,18 +283,18 @@ Profiteers.Buyables = {
         Description = "Grants armor",
         Description2 = "Place near Beacon to use",
 
-        Category = "Construction"
+        Category = "Basebuilding"
     },
     ["pt_cart_smg_grenade"] = {
         Name = "Grenade Autolathe",
         EntityClass = "pt_cart_smg_grenade",
-        Price = 4000,
+        Price = 3000,
         PlaceEntity = true,
 
         Description = "Produces Rifle Grenades",
         Description2 = "Place near Beacon to use",
 
-        Category = "Construction"
+        Category = "Basebuilding"
     },
     ["pt_cart_rpg_rocket"] = {
         Name = "Rocket Autolathe",
@@ -281,7 +305,29 @@ Profiteers.Buyables = {
         Description = "Produces Rockets",
         Description2 = "Place near Beacon to use",
 
-        Category = "Construction"
+        Category = "Basebuilding"
+    },
+    ["pt_regen_boost"] = {
+        Name = "Nanite Booster",
+        EntityClass = "pt_regen_boost",
+        Price = 15000,
+        PlaceEntity = true,
+
+        Description = "Nanomachines improve regen",
+        Description2 = "Must be deployed near a Beacon",
+
+        Category = "Basebuilding"
+    },
+    ["pt_supply_warp"] = {
+        Name = "Supply Warp",
+        EntityClass = "pt_supply_warp",
+        Price = 12000,
+        PlaceEntity = true,
+
+        Description = "Buy supplies outside your base",
+        Description2 = "Must be deployed near a Beacon",
+
+        Category = "Basebuilding"
     },
 }
 

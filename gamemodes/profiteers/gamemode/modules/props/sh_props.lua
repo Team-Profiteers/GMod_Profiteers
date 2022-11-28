@@ -1,7 +1,7 @@
 local Entity = FindMetaTable("Entity")
 
 function Entity:WithinBeacon()
-    local owner = self:CPPIGetOwner()
+    local owner = self:IsPlayer() and self or self:CPPIGetOwner()
     if !IsValid(owner) then return false end
     local radius = GetConVar("pt_prop_beacon_radius"):GetFloat()
     if !self.beaconcache or self.beaconcache[1] ~= CurTime() then

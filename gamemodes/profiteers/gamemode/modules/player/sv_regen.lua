@@ -4,7 +4,10 @@ hook.Add("PlayerTick", "ProfiteersPlayerTickRegen", function(ply)
     if ply:Health() < ply:GetMaxHealth() and (ply:GetNWFloat("pt_lastdamagetime", 0) + 5) <= CurTime() then
         local tps = 1 / engine.TickInterval()
 
-        local healthpersecond = 20
+        local healthpersecond = 5
+        if ply:HasBoughtEntity("pt_regen_boost", true, true) then
+            healthpersecond = 25
+        end
 
         local ticksbetweenheal = tps / healthpersecond
 

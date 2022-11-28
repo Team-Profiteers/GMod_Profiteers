@@ -119,26 +119,39 @@ function PANEL:Paint(w, h)
 	end
 
 	-- Price
+	local textprice
 	if itemtbl.EntityClass and LocalPlayer():HasWeapon(itemtbl.EntityClass) and not itemtbl.AmmoOnRebuy then
-		local owned = "OWNED"
+		textprice = "OWNED"
 		surface.SetFont("PTShopicon2")
 		surface.SetTextPos((128 + 16) + 2, (14 + 32) + 2)
 		surface.SetTextColor(c_s)
-		surface.DrawText(owned)
+		surface.DrawText(textprice)
 		surface.SetTextPos(128 + 16, 14 + 32)
 		surface.SetTextColor(color_white)
-		surface.DrawText(owned)
+		surface.DrawText(textprice)
 	else
-		local price = GAMEMODE:FormatMoney(self:GetPrice() or 0)
+		textprice = GAMEMODE:FormatMoney(self:GetPrice() or 0)
 		surface.SetFont("PTShopicon2")
 		surface.SetTextPos((128 + 16) + 2, (14 + 32) + 2)
 		surface.SetTextColor(c_s)
-		surface.DrawText(price)
+		surface.DrawText(textprice)
 		surface.SetTextPos(128 + 16, 14 + 32)
 		surface.SetTextColor(LocalPlayer():GetMoney() > self:GetPrice() and color_white or c_r)
-		surface.DrawText(price)
+		surface.DrawText(textprice)
 	end
 
+	if itemtbl.EntityLimit then
+		local cur = LocalPlayer():CountBoughtEntities(self:GetSpawnName())
+		local wprice = surface.GetTextSize(textprice)
+		local textlimit = "(Limit " .. cur .. "/" .. itemtbl.EntityLimit .. ")"
+		surface.SetFont("PTShopicon2")
+		surface.SetTextPos((128 + 16) + 2 + wprice + 32, (14 + 32) + 2)
+		surface.SetTextColor(c_s)
+		surface.DrawText(textlimit)
+		surface.SetTextPos(128 + 16 + wprice + 32, 14 + 32)
+		surface.SetTextColor(LocalPlayer():GetMoney() > self:GetPrice() and color_white or c_r)
+		surface.DrawText(textlimit)
+	end
 
 	if self.Description then
 		surface.SetFont("PTShopicon3")
