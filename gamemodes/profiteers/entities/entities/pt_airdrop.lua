@@ -94,6 +94,7 @@ if SERVER then
 
     function ENT:OnTakeDamage(dmginfo)
         self:TakePhysicsDamage(dmginfo)
+
         if self:GetArmed() and self:GetAmount() > 0 then
             local effamt = math.Clamp(math.Round((dmginfo:GetDamage() * 0.25) ^ 0.5), 2, 20)
             for i = 1, effamt do
@@ -124,6 +125,17 @@ if SERVER then
         if self:Health() <= 0 then
             self:SetAmount(math.ceil(self:GetAmount() * math.Rand(0.75, 0.9)))
             self:CloseChute()
+            timer.Create("money_" .. self:EntIndex(), 0.2, 25, function()
+                if !IsValid(self) or self:IsOnGround() then return end
+                for i = 1, 8 do
+                    local eff = EffectData()
+                    eff:SetOrigin(self:WorldSpaceCenter() + VectorRand() * 32)
+                    eff:SetNormal(VectorRand())
+                    eff:SetMagnitude(math.Rand(32, 256))
+                    eff:SetEntity(self)
+                    util.Effect("pt_moneyeff", eff, true)
+                end
+            end)
         end
     end
 else

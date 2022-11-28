@@ -23,6 +23,10 @@ function EFFECT:Init(data)
     phys:SetVelocity(data:GetNormal() * data:GetMagnitude())
     phys:AddAngleVelocity(VectorRand() * data:GetScale())
 
+    if IsValid(data:GetEntity()) then
+        phys:AddVelocity(data:GetEntity():GetVelocity())
+    end
+
     self.SpawnTime = CurTime()
 end
 

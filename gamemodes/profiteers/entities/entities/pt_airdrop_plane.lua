@@ -51,7 +51,6 @@ if SERVER then
     end
 
     function ENT:OnTakeDamage(damage)
-        self:TakePhysicsDamage(damage)
         self:SetHealth(self:Health() - damage:GetDamage())
 
         if self:Health() <= 0 and not self.Dropped then
@@ -67,9 +66,11 @@ if SERVER then
         util.Effect("HelicopterMegaBomb", effectdata)
         local pos = self:GetPos()
         self:Remove()
-        local ent = ents.Create("pt_airdrop")
-        ent:SetPos(pos)
-        ent:Spawn()
+        timer.Simple(0.1, function()
+            local ent = ents.Create("pt_airdrop")
+            ent:SetPos(pos)
+            ent:Spawn()
+        end)
     end
 else
     function ENT:Initialize()
