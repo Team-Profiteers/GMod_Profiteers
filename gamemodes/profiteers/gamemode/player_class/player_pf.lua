@@ -189,10 +189,12 @@ function PLAYER:StartMove( mv, cmd )
                 maxs = Vector(8, 8, 8),
                 filter = ply
             })
+            ply.LastWallJumpNormal = ply.LastWallJumpNormal or Vector(0, 0, 0)
 
-            if tr_walljump.Hit and !tr_walljump.HitSky and tr_walljump.HitNormal.z <= 0.75 and tr_walljump.HitNormal.z >= -0.75 then
+            if tr_walljump.Hit and !tr_walljump.HitSky and tr_walljump.HitNormal.z <= 0.75 and tr_walljump.HitNormal.z >= -0.75 and (ply.LastWallJumpNormal == Vector(0, 0, 0) or ply.LastWallJumpNormal:Dot(tr_walljump.HitNormal) <= 0.5) then
 
                 mv:SetVelocity(ang:Forward() * 400 + up * 300)
+                ply.LastWallJumpNormal = tr_walljump.HitNormal
 
                 ply:SetNWFloat("pt_nextclimb", CurTime() + 0.5)
                 if SERVER then ply:EmitSound("npc/zombie/zombie_hit.wav", 75, math.Rand(102, 107)) end
