@@ -106,3 +106,36 @@ hook.Add("DoPlayerDeath", "pt_money", function(ply, attacker, dmginfo)
         ent:Spawn()
     end
 end)
+
+concommand.Add("pt_admin_addmoney", function(ply, cmd, args, argStr)
+    if IsValid(ply) and not ply:IsAdmin() then return end
+
+    if not args[1] then
+        GAMEMODE:Hint(ply, 1, "You must specify a name and/or an amount!")
+        return
+    end
+
+    local tgt = (tonumber(args[1]) and not args[2]) and ply or GAMEMODE:ParsePlayerName(args[1])
+    if tgt == false then
+        GAMEMODE:Hint(ply, 1, "That name is ambigious!")
+        return
+    elseif tgt == nil then
+        GAMEMODE:Hint(ply, 1, "Can't find that player!")
+        return
+    end
+
+    local amt = (tonumber(args[1]) and not args[2]) and tonumber(args[1]) or tonumber(args[2])
+    if not amt then
+        GAMEMODE:Hint(ply, 1, "Invalid amount!")
+        return
+    end
+    amt = math.Round(amt)
+
+    tgt:AddMoney(amt)
+    if amt >= 0 then
+        GAMEMODE:Hint(ply, 0, "You gave $" .. amt .. " to " .. tgt:GetName() .. ".")
+    else
+        GAMEMODE:Hint(ply, 0, "You took $" .. math.abs(amt) .. " from " .. tgt:GetName() .. ".")
+    end
+
+end)
