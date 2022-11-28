@@ -118,7 +118,7 @@ if SERVER then
 
         if self.Bounty > 0 then
             local ent = ents.Create("pt_money")
-            ent:SetPos(ply:GetPos() + Vector(0, 0, 20))
+            ent:SetPos(self:GetPos() + Vector(0, 0, 20))
             ent:SetAmount(self.Bounty)
             ent:Spawn()
         end
