@@ -19,7 +19,7 @@ ENT.Spawnable = false
 
 ENT.Range = 2048
 ENT.Damage = 20
-ENT.MagSize = 200
+ENT.MagSize = 100
 
 function ENT:SetupDataTables()
     self:NetworkVar("Bool", 0, "Anchored")
@@ -106,6 +106,16 @@ if SERVER then
     function ENT:OnAnchor(ply)
         self:EmitSound("npc/roller/blade_cut.wav", 100, 90)
         self:SetOwner(ply)
+    end
+
+    function ENT:OnUse(ply)
+        if !self:GetAnchored() then return end
+
+        if self:GetAmmo() < self.MagSize then
+            self:SetAmmo(self.MagSize)
+            self:EmitSound("weapons/ar2/npc_ar2_reload.wav")
+            ply:ChatPrint("Sentry gun reloaded.")
+        end
     end
 
     function ENT:FindTarget()
