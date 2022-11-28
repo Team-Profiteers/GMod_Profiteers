@@ -10,6 +10,7 @@ ENT.ParachuteOpenAmount = 0
 
 function ENT:SetupDataTables()
     self:NetworkVar("Bool", 0, "Armed")
+    self:NetworkVar("Int", 0, "Amount")
 end
 
 if SERVER then
@@ -17,33 +18,48 @@ if SERVER then
         self:SetModel(self.Model)
         self:PhysicsInit(SOLID_VPHYSICS)
         self:SetMoveType(MOVETYPE_VPHYSICS)
-        self:SetUseType(SIMPLE_USE)
+        self:SetUseType(CONTINUOUS_USE)
         self.SpawnTime = CurTime()
+        self:SetAmount(GetConVar("pt_airdrop_amount"):GetInt())
+        self.constraint = constraint.Keepupright( ent, Angle(0, 0, 0), 0, 9000 )
+        self.NextUse = 0
+        self:SetMaxHealth(GetConVar("pt_airdrop_moneyhealth"):GetInt())
+        self:SetHealth(self:GetMaxHealth())
+        self:GetPhysicsObject():SetDragCoefficient(100)
+        self:GetPhysicsObject():SetAngleDragCoefficient(100)
     end
 
     function ENT:Think()
         if !self:GetArmed() then
-            local a = self:GetAngles()
-            a.p = 0
-            a.r = 0
+            -- local a = self:GetAngles()
+            -- a.p = 0
+            -- a.r = 0
 
-            self:SetAngles(a)
+            -- self:SetAngles(a)
 
             local phys = self:GetPhysicsObject()
             -- fall slowly
-            phys:SetVelocity(Vector(0, 0, -100))
+            phys:AddVelocity(-physenv.GetGravity() + Vector(0, 0, 500))
         end
     end
 
     function ENT:PhysicsCollide(colData, collider)
         if !self:GetArmed() and colData.HitEntity:IsWorld() then
+            self:CloseChute()
+        end
+    end
+
+    function ENT:CloseChute()
+        if !self:GetArmed() then
             self:SetArmed(true)
             self:EmitSound("profiteers/para_close.wav", 125)
         end
     end
 
     function ENT:Use(activator)
-        if self:GetArmed() then
+        if self:GetArmed() and self.NextUse < CurTime() then
+            self.NextUse = CurTime() + 0.75
+
             local effectdata = EffectData()
             effectdata:SetOrigin(self:GetPos())
             effectdata:SetMagnitude(20)
@@ -51,34 +67,33 @@ if SERVER then
             effectdata:SetRadius(5)
             util.Effect("Sparks", effectdata)
 
-            self:EmitSound("profiteers/para_open.wav", 125)
+            local total = GetConVar("pt_airdrop_amount"):GetInt()
+            local amount = math.random(math.ceil(total / 20), math.ceil(total / 40))
 
-            self:SetArmed(false)
+            activator:AddMoney(amount)
+            self:SetAmount(self:GetAmount() - amount)
 
-            local ent = ents.Create("pt_money")
-            ent:SetPos(self:GetPos())
-            ent:SetAmount(250000)
-            ent:Spawn()
+            for i = 1, math.random(4, 9) do
+                local eff = EffectData()
+                eff:SetOrigin(self:GetPos() + VectorRand() * 32 + Vector(0, 0, 64))
+                eff:SetNormal(VectorRand())
+                eff:SetMagnitude(math.Rand(512, 2048))
+                util.Effect("pt_moneyeff", eff, true)
+            end
 
-            self:Remove()
+            if self:GetAmount() <= 0 then
+                self:Remove()
+            end
         end
     end
 
-    function ENT:Detonate()
-        local nuke = ents.Create("pt_nukeexplosion")
-        nuke:SetPos(self:GetPos())
-        nuke:SetOwner(self:GetOwner())
-        nuke:Spawn()
-        nuke:Activate()
-
-        Profiteers.ActiveNuke = nil
-        Profiteers.GameOver = true
-
-        if MapVote then
-            MapVote.Start(60, false)
+    function ENT:OnTakeDamage(dmginfo)
+        self:TakePhysicsDamage(dmginfo)
+        if self:GetArmed() then return end
+        self:SetHealth(self:Health() - dmginfo:GetDamage())
+        if self:Health() <= 0 then
+            self:CloseChute()
         end
-
-        self:Remove()
     end
 else
     function ENT:Initialize()
@@ -119,5 +134,7 @@ else
             self.ParachuteModel:EnableMatrix("RenderMultiply", mat)
             self.ParachuteModel:DrawModel()
          end
+
+
     end
 end

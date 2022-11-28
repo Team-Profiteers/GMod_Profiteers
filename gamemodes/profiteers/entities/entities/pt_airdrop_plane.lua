@@ -13,11 +13,19 @@ if SERVER then
         self:SetModel(self.Model)
         self:PhysicsInit(SOLID_VPHYSICS)
         self:SetMoveType(MOVETYPE_VPHYSICS)
-        self:SetCollisionGroup(COLLISION_GROUP_NONE)
+
+        if !IsValid(self:GetPhysicsObject()) then
+            self:SetModel("models/props_wasteland/laundry_washer001a.mdl")
+            self:PhysicsInit(SOLID_VPHYSICS)
+            self:SetMoveType(MOVETYPE_VPHYSICS)
+        end
+
         self.SpawnTime = CurTime()
         self:GetPhysicsObject():SetMass(150)
-        self:SetHealth(2000)
-        self:SetMaxHealth(2000)
+
+        self:SetMaxHealth(GetConVar("pt_airdrop_planehealth"):GetInt())
+        self:SetHealth(self:GetMaxHealth())
+
         self.MyAngle = self:GetAngles()
         self:SetOwner(NULL)
         self:SetBodygroup(1, 1)

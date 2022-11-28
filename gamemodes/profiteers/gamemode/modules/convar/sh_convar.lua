@@ -12,6 +12,11 @@ CreateConVar("pt_money_sellmult", 0.75, FCVAR_ARCHIVE, "Price multiplier when yo
 CreateConVar("pt_money_killmult", 0.5, FCVAR_ARCHIVE, "Price multiplier when you destroy something.", 0, 1)
 CreateConVar("pt_money_nukemult", 1, FCVAR_ARCHIVE, "Price multiplier when you destroy or sell the nuke.", 0, 1)
 
+CreateConVar("pt_airdrop_amount", 250000, FCVAR_ARCHIVE, "How much money an airdrop will carry.", 0)
+CreateConVar("pt_airdrop_planehealth", 2000, FCVAR_ARCHIVE, "The durability of the airdrop plane.", 0)
+CreateConVar("pt_airdrop_moneyhealth", 800, FCVAR_ARCHIVE, "The durability of the parachute. If destroyed, it will fall immediately.", 0)
+
+
 CreateConVar("pt_prop_ghost", 1, FCVAR_ARCHIVE, "Ghost props.", 0, 1)
 CreateConVar("pt_prop_beacon_radius", 1024, FCVAR_ARCHIVE, "Protection radius for the Base Beacon.", 512)
 
