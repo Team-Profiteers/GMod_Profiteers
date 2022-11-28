@@ -80,4 +80,16 @@ Profiteers.Enemies["Antlions"] = {
 	["dmgmult"] = 2.5
 }
 
+Profiteers.Enemies["Antlion Guard"] = { 
+	["class_type"] = "npc_antlionguard",
+	["hp"] = 10000,
+	["prof"] = WEAPON_PROFICIENCY_POOR,
+	["wpn"] = nil,
+	["squad"] = 6,
+	["minsize"] = 1,
+	["maxsize"] = 1,
+	["rels"] = {""},
+	["bounty"] = 100000,
+	["dmgmult"] = 1
+}
 Profiteers.MaxNPCs = 50
