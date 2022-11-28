@@ -20,7 +20,6 @@ if SERVER then
         self:SetUseType(CONTINUOUS_USE)
         self.SpawnTime = CurTime()
         self:SetAmount(GetConVar("pt_airdrop_amount"):GetInt())
-        self.constraint = constraint.Keepupright(ent, Angle(0, 0, 0), 0, 9000)
         self.NextUse = 0
         self:SetMaxHealth(GetConVar("pt_airdrop_moneyhealth"):GetInt())
         self:SetHealth(self:GetMaxHealth())
@@ -37,6 +36,7 @@ if SERVER then
             local phys = self:GetPhysicsObject()
             -- fall slowly
             phys:AddVelocity(-physenv.GetGravity() - Vector(0, 0, 500))
+            --phys:AddAngleVelocity()
         end
     end
 
@@ -55,38 +55,68 @@ if SERVER then
         end
     end
 
+    function ENT:OnRemove()
+        for i = 1, math.random(35, 50) do
+            local eff = EffectData()
+            eff:SetOrigin(self:WorldSpaceCenter() + VectorRand() * 32)
+            eff:SetNormal(VectorRand())
+            eff:SetMagnitude(math.Rand(16, 512))
+            util.Effect("pt_moneyeff", eff, true)
+        end
+        self:EmitSound("physics/cardboard/cardboard_box_break1.wav", 100, 85)
+    end
+
     function ENT:Use(activator)
         if self:GetArmed() and self.NextUse < CurTime() then
             self.NextUse = CurTime() + 0.75
-            local effectdata = EffectData()
-            effectdata:SetOrigin(self:GetPos())
-            effectdata:SetMagnitude(20)
-            effectdata:SetScale(10)
-            effectdata:SetRadius(5)
-            util.Effect("Sparks", effectdata)
             local total = GetConVar("pt_airdrop_amount"):GetInt()
             local amount = math.min(self:GetAmount(), math.Round(math.random(math.ceil(total / 20), math.ceil(total / 40))))
             activator:AddMoney(amount)
             self:SetAmount(self:GetAmount() - amount)
 
-            for i = 1, math.random(4, 9) do
-                local eff = EffectData()
-                eff:SetOrigin(self:GetPos() + VectorRand() * 32 + Vector(0, 0, 64))
-                eff:SetNormal(VectorRand())
-                eff:SetMagnitude(math.Rand(512, 2048))
-                util.Effect("pt_moneyeff", eff, true)
-            end
+            timer.Simple(0, function()
+                for i = 1, math.random(4, 12) do
+                    local eff = EffectData()
+                    eff:SetOrigin(self:WorldSpaceCenter() + VectorRand() * 32)
+                    eff:SetNormal((activator:EyePos() - self:WorldSpaceCenter() + VectorRand()):GetNormalized())
+                    eff:SetMagnitude(math.Rand(128, 512))
+                    eff:SetScale(math.Rand(180, 360))
+                    util.Effect("pt_moneyeff", eff, true)
+                end
+            end)
 
             if self:GetAmount() <= 0 then
                 self.NextUse = CurTime() + 9999
-                SafeRemoveEntityDelayed(self, 1)
+                SafeRemoveEntityDelayed(self, 0.25)
             end
         end
     end
 
     function ENT:OnTakeDamage(dmginfo)
         self:TakePhysicsDamage(dmginfo)
-        if self:GetArmed() then return end
+        if self:GetArmed() and self:GetAmount() > 0 then
+            local effamt = math.Clamp(math.Round((dmginfo:GetDamage() * 0.25) ^ 0.5), 2, 20)
+            print(effamt)
+            for i = 1, effamt do
+                local eff = EffectData()
+                eff:SetOrigin(self:WorldSpaceCenter() + VectorRand() * 32)
+                eff:SetNormal((VectorRand() - dmginfo:GetDamageForce():GetNormalized() + Vector(0, 0, 1)):GetNormalized())
+                eff:SetMagnitude(math.Rand(64, 512))
+                util.Effect("pt_moneyeff", eff, true)
+            end
+            local damage = math.min(self:GetAmount(), math.ceil(dmginfo:GetDamage() * 10))
+            self:SetAmount(self:GetAmount() - damage)
+            if not dmginfo:IsDamageType(DMG_BURN) and dmginfo:GetAttacker():IsPlayer() then
+                dmginfo:GetAttacker():AddMoney(math.ceil(damage * math.Rand(0.5, 0.85)))
+            end
+            if self:GetAmount() <= 0 then
+                local effectdata = EffectData()
+                effectdata:SetOrigin(self:GetPos())
+                util.Effect("explosion", effectdata)
+                self:Remove()
+            end
+            return
+        end
         self:SetHealth(self:Health() - dmginfo:GetDamage())
 
         if self:Health() <= 0 then
