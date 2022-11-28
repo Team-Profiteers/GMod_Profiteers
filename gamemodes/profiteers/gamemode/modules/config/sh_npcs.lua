@@ -10,7 +10,7 @@ Profiteers.Enemies["Combine Elites"] = {
 	["minsize"] = 4,
 	["maxsize"] = 6,
 	["rels"] = {"npc_metropolice D_HT 40", "npc_stalker D_HT 50", "npc_manhack D_FR 80", "npc_hunter D_FR 90"},
-	["bounty"] = 2500,
+	["bounty"] = 10000,
 	["dmgmult"] = 3
 }
 
@@ -24,7 +24,7 @@ Profiteers.Enemies["Combine Guards"] = {
 	["minsize"] = 6,
 	["maxsize"] = 10,
 	["rels"] = {"npc_metropolice D_HT 40", "npc_stalker D_HT 50", "npc_manhack D_FR 80", "npc_hunter D_FR 90"},
-	["bounty"] = 1250,
+	["bounty"] = 3000,
 	["dmgmult"] = 3
 }
 
@@ -37,7 +37,7 @@ Profiteers.Enemies["Combine Soldiers"] = {
 	["minsize"] = 6,
 	["maxsize"] = 10,
 	["rels"] = {"npc_metropolice D_HT 40", "npc_stalker D_HT 50", "npc_manhack D_FR 80", "npc_hunter D_FR 90"},
-	["bounty"] = 800,
+	["bounty"] = 2000,
 	["dmgmult"] = 3
 }
 
@@ -50,7 +50,7 @@ Profiteers.Enemies["Cops"] = {
 	["minsize"] = 10,
 	["maxsize"] = 15,
 	["rels"] = {"npc_combine_s D_FR 40", "CombinePrison D_FR 60", "npc_stalker D_HT 50", "npc_manhack D_FR 90", "npc_hunter D_FR 90"},
-	["bounty"] = 600,
+	["bounty"] = 1000,
 	["dmgmult"] = 3
 }
 
@@ -63,7 +63,7 @@ Profiteers.Enemies["Zombies"] = {
 	["minsize"] = 5,
 	["maxsize"] = 10,
 	["rels"] = {""},
-	["bounty"] = 500,
+	["bounty"] = 2000,
 	["dmgmult"] = 5
 }
 
@@ -76,7 +76,7 @@ Profiteers.Enemies["Antlions"] = {
 	["minsize"] = 6,
 	["maxsize"] = 7,
 	["rels"] = {""},
-	["bounty"] = 850,
+	["bounty"] = 1500,
 	["dmgmult"] = 2.5
 }
 
