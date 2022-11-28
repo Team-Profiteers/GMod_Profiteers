@@ -18,6 +18,7 @@ function EFFECT:Init(data)
     phys:SetDamping(0, 0)
     phys:SetMass(1)
     phys:SetMaterial("gmod_silent")
+    phys:SetBuoyancyRatio(1)
 
     phys:SetVelocity(data:GetNormal() * data:GetMagnitude())
     phys:AddAngleVelocity(VectorRand() * data:GetScale())

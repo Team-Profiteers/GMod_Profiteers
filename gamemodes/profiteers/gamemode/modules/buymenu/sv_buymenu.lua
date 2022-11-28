@@ -79,6 +79,8 @@ net.Receive("pt_buy", function(len, ply)
             ang.roll = 0
             ang.pitch = 0
 
+            if ent.PreferredAngle then ang = ang - ent.PreferredAngle end
+
             ent:SetAngles( ang )
             ent:SetPos( tr.HitPos )
             ent:Spawn()
