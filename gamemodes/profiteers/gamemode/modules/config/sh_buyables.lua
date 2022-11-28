@@ -314,7 +314,7 @@ Profiteers.Buyables = {
         PlaceEntity = true,
 
         Description = "Nanomachines improve regen",
-        Description2 = "Must be deployed near a Beacon",
+        Description2 = "Place near Beacon to use",
 
         Category = "Basebuilding"
     },
@@ -325,7 +325,20 @@ Profiteers.Buyables = {
         PlaceEntity = true,
 
         Description = "Buy supplies outside your base",
-        Description2 = "Must be deployed near a Beacon",
+        Description2 = "Place near Beacon to use",
+
+        Category = "Basebuilding"
+    },
+    ["pt_telepad"] = {
+        Name = "Telepad",
+        EntityClass = "pt_telepad",
+        Price = 10000,
+        PlaceEntity = true,
+        EntityLimit = 1,
+
+        Description = "WIP NOT FUNCTIONAL",
+        --Description = "Teleport from anywhere to here",
+        --Description2 = "Must be deployed near a Beacon",
 
         Category = "Basebuilding"
     },
