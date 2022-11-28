@@ -130,7 +130,7 @@ function PLAYER:StartMove( mv, cmd )
     local eyeangles = mv:GetAngles()
     local vel = mv:GetVelocity()
 
-    if !ply:IsOnGround() and mv:KeyPressed(IN_JUMP) then
+    if !ply:IsOnGround() and mv:KeyPressed(IN_JUMP) and ply:GetMoveType() ~= MOVETYPE_NOCLIP then
         local done = false
 
         -- Retract parachute
@@ -170,8 +170,9 @@ function PLAYER:StartMove( mv, cmd )
             end
         end
 
+        print(math.abs(ang:Forward():Dot(up)))
         -- Wall jump
-        if !done and ply:GetNWFloat("pt_nextclimb", 0) < CurTime() then
+        if !done and ply:GetNWFloat("pt_nextclimb", 0) < CurTime() and math.abs(ang:Forward():Dot(up)) <= 0.5 then
             local tr_walljump = util.TraceHull({
                 start = ply:GetPos(),
                 endpos = ply:GetPos() - (ang:Forward() * 48),
@@ -179,6 +180,7 @@ function PLAYER:StartMove( mv, cmd )
                 maxs = Vector(8, 8, 8),
                 filter = ply
             })
+
             if tr_walljump.Hit and !tr_walljump.HitSky and tr_walljump.HitNormal.z <= 0.75 and tr_walljump.HitNormal.z >= -0.75 then
                 local forward = eyeangles:Forward()
 
@@ -188,7 +190,7 @@ function PLAYER:StartMove( mv, cmd )
                 vel = vel + up * upforce
                 vel = vel + forward * forwardforce
 
-                vel.z = math.max(vel.z, 200)
+                vel.z = math.Clamp(vel.z, 0, 200)
 
                 mv:SetVelocity(vel)
 
@@ -199,7 +201,7 @@ function PLAYER:StartMove( mv, cmd )
         end
 
         -- Deploy parachute
-        if !done and (ply:GetNWBool("pt_parachute_manual") or ply:GetNWBool("pt_parachute_pending")) and !ply:GetNWBool("pt_parachute") and ply:GetMoveType() ~= MOVETYPE_NOCLIP and ply:GetVelocity().z < -200 then
+        if !done and (ply:GetNWBool("pt_parachute_manual") or ply:GetNWBool("pt_parachute_pending")) and !ply:GetNWBool("pt_parachute") and ply:GetVelocity().z < -200 then
             ply:SetNWBool("pt_parachute", true)
             if SERVER then
                 local chute = ents.Create("pt_parachute")

@@ -178,6 +178,8 @@ function GM:OnNPCKilled( npc, atk, inf )
         -- money:Spawn()
         if atk:IsPlayer() then
             atk:AddMoney(math.Round(npc.bounty * math.Rand(0.9, 1.1)))
+        elseif npc:IsOnFire() and IsValid(npc.PlayerDamaged) then -- Combine NPCs with fire death logic attribute kills to themselves
+            npc.PlayerDamaged:AddMoney(math.Round(npc.bounty * math.Rand(0.9, 1.1)))
         end
     end
 end

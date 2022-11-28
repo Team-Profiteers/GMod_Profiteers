@@ -2,7 +2,7 @@ local Entity = FindMetaTable("Entity")
 
 GM.PropDamageMultipliers = {
     [DMG_BLAST] = 1,
-    [DMG_BURN] = 10,
+    [DMG_BURN] = 2,
     [DMG_CLUB] = 1,
     [DMG_SLASH] = 1,
     [DMG_AIRBOAT] = 0.5,
@@ -79,7 +79,7 @@ hook.Add("EntityTakeDamage", "Profiteers_PropDamage", function(ent, dmginfo)
         dmginfo:SetDamage(damage)
     elseif dmginfo:GetInflictor():GetClass() == "entityflame" then
         -- Special handling for props on fire
-        local damage = 5 + ent:GetNWInt("PFPropMaxHealth") * 0.01
+        local damage = 5 + ent:GetNWInt("PFPropMaxHealth") * 0.005
         ent:SetNWInt("PFPropHealth", ent:GetNWInt("PFPropHealth") - damage)
     end
 

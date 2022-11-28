@@ -13,7 +13,7 @@ hook.Add("EntityTakeDamage", "NPCDamageMult", function(target, dmginfo)
     if attacker:IsNPC() then
         dmginfo:ScaleDamage(attacker.DamageMult or 1)
     elseif target:IsNPC() and attacker:IsPlayer() then
-        target.PlayerDamaged = true -- mark as damaged so money can drop
+        target.PlayerDamaged = attacker -- mark as damaged so money can drop
     end
 end)
 
