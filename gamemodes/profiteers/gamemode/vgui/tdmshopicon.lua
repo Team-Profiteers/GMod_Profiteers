@@ -154,11 +154,11 @@ function PANEL:Paint(w, h)
         local wprice = surface.GetTextSize(textprice)
         local textlimit = "(Limit " .. cur .. "/" .. itemtbl.EntityLimit .. ")"
         surface.SetFont("PTShopicon2")
-        surface.SetTextPos((128 + 16) + 2 + wprice + 32, (14 + 32) + 2)
+        surface.SetTextPos((128 + 16) + 2 + wprice + 16, (14 + 32) + 2)
         surface.SetTextColor(c_s)
         surface.DrawText(textlimit)
-        surface.SetTextPos(128 + 16 + wprice + 32, 14 + 32)
-        surface.SetTextColor(LocalPlayer():GetMoney() > self:GetPrice() and color_white or c_r)
+        surface.SetTextPos(128 + 16 + wprice + 16, 14 + 32)
+        surface.SetTextColor(cur < itemtbl.EntityLimit and color_white or c_r)
         surface.DrawText(textlimit)
     end
 

@@ -94,7 +94,7 @@ local function createEnemyNPC()
     end
 
     if c > Profiteers.MaxNPCs then return end
-    local a = table.Random(Profiteers.Nodes)
+    local a = Profiteers.Nodes[math.random(#Profiteers.Nodes)]
 
     if not a then
         ParseNodeFile()

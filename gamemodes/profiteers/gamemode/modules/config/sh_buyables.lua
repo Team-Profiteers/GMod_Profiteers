@@ -183,6 +183,14 @@ Profiteers.Buyables = {
 
     --     Category = "Utility"
     -- },
+    ["pt_pocket_tele"] = {
+        EntityClass = "pt_pocket_tele",
+        Price = 5000,
+
+        Description = "Go to Telepad or random spot",
+        Description2 = "Long cooldown after use",
+        Category = "Equipment",
+    },
 
     ["pt_nuke"] = {
         Name = "Nuclear Device",
@@ -347,9 +355,8 @@ Profiteers.Buyables = {
         PlaceEntity = true,
         EntityLimit = 1,
 
-        Description = "WIP NOT FUNCTIONAL",
-        --Description = "Teleport from anywhere to here",
-        --Description2 = "Must be deployed near a Beacon",
+        Description = "Pocket Teleporter destination",
+        Description2 = "Must be deployed near a Beacon",
 
         Category = "Basebuilding"
     },

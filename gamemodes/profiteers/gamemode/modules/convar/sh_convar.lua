@@ -16,6 +16,10 @@ CreateConVar("pt_airdrop_amount", 250000, FCVAR_ARCHIVE, "How much money an aird
 CreateConVar("pt_airdrop_planehealth", 2000, FCVAR_ARCHIVE, "The durability of the airdrop plane.", 0)
 CreateConVar("pt_airdrop_moneyhealth", 800, FCVAR_ARCHIVE, "The durability of the parachute. If destroyed, it will fall immediately.", 0)
 
+CreateConVar("pt_tele_recall_cooldown", 180, FCVAR_ARCHIVE, "Pocket Teleporter cooldown for recall.", 0)
+CreateConVar("pt_tele_recall_delay", 10, FCVAR_ARCHIVE, "Pocket Teleporter delay for recall.", 0)
+CreateConVar("pt_tele_disperse_cooldown", 60, FCVAR_ARCHIVE, "Pocket Teleporter cooldown for disperse.", 0)
+CreateConVar("pt_tele_disperse_delay", 5, FCVAR_ARCHIVE, "Pocket Teleporter delay for disperse.", 0)
 
 CreateConVar("pt_prop_ghost", 1, FCVAR_ARCHIVE, "Ghost props.", 0, 1)
 CreateConVar("pt_prop_beacon_radius", 1024, FCVAR_ARCHIVE, "Protection radius for the Base Beacon.", 512)
