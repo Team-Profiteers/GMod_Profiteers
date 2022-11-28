@@ -163,17 +163,15 @@ function PLAYER:StartMove( mv, cmd )
         })
         local can_climb = tr_climb.Hit and !tr_climb.HitSky and tr_climb.HitNormal.z <= 0.75 and tr_climb.HitNormal.z >= -0.75
         if !done and can_climb and ply:GetNWFloat("pt_nextclimb", 0) < CurTime() then
-            local forward = ang:Forward()
 
-            local upforce = 400
+            local upforce = 300
             local forwardforce = 25
 
-            vel = vel + up * upforce
-            vel = vel + forward * forwardforce
+            vel = vel - tr_climb.HitNormal * forwardforce
 
             vel.x = math.Clamp(vel.x, -150, 150)
             vel.y = math.Clamp(vel.y, -150, 150)
-            vel.z = math.min(vel.z, 400)
+            vel.z = upforce --math.min(vel.z, 400)
 
             mv:SetVelocity(vel)
 
