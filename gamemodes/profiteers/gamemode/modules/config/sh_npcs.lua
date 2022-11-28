@@ -82,7 +82,7 @@ Profiteers.Enemies["Antlions"] = {
 
 Profiteers.Enemies["Antlion Guard"] = { 
 	["class_type"] = "npc_antlionguard",
-	["hp"] = 10000,
+	["hp"] = 1500,
 	["prof"] = WEAPON_PROFICIENCY_POOR,
 	["wpn"] = nil,
 	["squad"] = 6,
