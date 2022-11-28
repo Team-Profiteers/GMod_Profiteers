@@ -49,7 +49,7 @@ Profiteers.Enemies["Cops"] = {
 	["squad"] = 2,
 	["minsize"] = 10,
 	["maxsize"] = 15,
-	["rels"] = {"npc_combine_s D_FR 40", "CombinePrison D_FR 60", "npc_stalker D_HT 50", "npc_manhack D_FR 90", "npc_hunter D_FR 90"},
+	["rels"] = {"npc_combine_s D_FR 40", "npc_stalker D_HT 50", "npc_manhack D_FR 90", "npc_hunter D_FR 90"},
 	["bounty"] = 1000,
 	["dmgmult"] = 3
 }
