@@ -59,8 +59,8 @@ if SERVER then
         for i = 1, math.random(35, 50) do
             local eff = EffectData()
             eff:SetOrigin(self:WorldSpaceCenter() + VectorRand() * 32)
-            eff:SetNormal(VectorRand())
-            eff:SetMagnitude(math.Rand(16, 512))
+            eff:SetNormal((eff:GetOrigin() - self:WorldSpaceCenter() + Vector(0, 0, 1)):GetNormalized())
+            eff:SetMagnitude(math.Rand(64, 256))
             util.Effect("pt_moneyeff", eff, true)
         end
         self:EmitSound("physics/cardboard/cardboard_box_break1.wav", 100, 85)
@@ -68,9 +68,9 @@ if SERVER then
 
     function ENT:Use(activator)
         if self:GetArmed() and self.NextUse < CurTime() then
-            self.NextUse = CurTime() + 0.75
+            self.NextUse = CurTime() + 0.5
             local total = GetConVar("pt_airdrop_amount"):GetInt()
-            local amount = math.min(self:GetAmount(), math.Round(math.random(math.ceil(total / 20), math.ceil(total / 40))))
+            local amount = math.min(self:GetAmount(), math.Round(math.random(math.ceil(total / 30), math.ceil(total / 50))))
             activator:AddMoney(amount)
             self:SetAmount(self:GetAmount() - amount)
 
@@ -96,7 +96,6 @@ if SERVER then
         self:TakePhysicsDamage(dmginfo)
         if self:GetArmed() and self:GetAmount() > 0 then
             local effamt = math.Clamp(math.Round((dmginfo:GetDamage() * 0.25) ^ 0.5), 2, 20)
-            print(effamt)
             for i = 1, effamt do
                 local eff = EffectData()
                 eff:SetOrigin(self:WorldSpaceCenter() + VectorRand() * 32)
@@ -105,6 +104,9 @@ if SERVER then
                 util.Effect("pt_moneyeff", eff, true)
             end
             local damage = math.min(self:GetAmount(), math.ceil(dmginfo:GetDamage() * 10))
+            if dmginfo:GetInflictor():GetClass() == "entityflame" then
+                damage = math.ceil(self:GetAmount() * 0.02)
+            end
             self:SetAmount(self:GetAmount() - damage)
             if not dmginfo:IsDamageType(DMG_BURN) and dmginfo:GetAttacker():IsPlayer() then
                 dmginfo:GetAttacker():AddMoney(math.ceil(damage * math.Rand(0.5, 0.85)))
