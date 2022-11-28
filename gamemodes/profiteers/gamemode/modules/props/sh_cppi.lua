@@ -56,13 +56,21 @@ CPPI.PropertyBlacklist = {
 }
 
 CPPI.ToolBlacklist = {
-    ["dynamite"] = true
+    ["dynamite"] = true,
+    ["duplicator"] = true, -- need to figure out a way to prevent duping entities
+    ["colour"] = true, -- can make invisible
+}
+CPPI.EntityToolBlacklist = {
+    ["remover"] = true,
+    ["material"] = true,
 }
 
 hook.Add("CanProperty", "PropProtection", function(ply, prop, ent)
     if CPPI.PropertyBlacklist[prop] and not ply:IsAdmin() then return false end
 
     if ent:CPPIGetOwner() ~= ply and not ply:IsAdmin() then return false end
+
+    if ent:GetClass() ~= "prop_physics" and not ply:IsAdmin() then return false end
 end)
 
 hook.Add("CanTool", "PropProtection", function(ply, tr, toolname, tool, button)
@@ -70,4 +78,10 @@ hook.Add("CanTool", "PropProtection", function(ply, tr, toolname, tool, button)
 
     local ent = tr.Entity
     if IsValid(ent) and ent:CPPIGetOwner() ~= ply and not ply:IsAdmin() then return false end
+
+    if ent:GetClass() ~= "prop_physics" and CPPI.EntityToolBlacklist[toolname] then return false end
+end)
+
+hook.Add("CanDrive", "PropProtection", function(ply, ent)
+    return false
 end)

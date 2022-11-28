@@ -123,8 +123,8 @@ function SWEP:Think()
         if self:GetTeleMode() == 1 then
             local has, ent = self:GetOwner():HasBoughtEntity("pt_telepad", true, true)
             if has and IsValid(ent) then
+                self:GetOwner():SetAngles(Angle(0, ent:GetAngles().y, 0))
                 self:GetOwner():SetPos(ent:GetPos() + Vector(0, 0, 16))
-                self:GetOwner():SetAngles(Angle(0, ent:GetAngles().y - 90, 0))
                 GAMEMODE:Hint(self:GetOwner(), 0, "Teleport successful. Welcome home.")
                 self:GetOwner():SetNWFloat("PTNextTele", CurTime() + GetConVar("pt_tele_recall_cooldown"):GetFloat())
 
