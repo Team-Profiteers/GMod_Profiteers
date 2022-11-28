@@ -185,7 +185,7 @@ Profiteers.Buyables = {
     -- },
     ["pt_pocket_tele"] = {
         EntityClass = "pt_pocket_tele",
-        Price = 5000,
+        Price = 500,
 
         Description = "Go to Telepad or random spot",
         Description2 = "Long cooldown after use",
@@ -363,7 +363,7 @@ Profiteers.Buyables = {
     ["pt_launchpad"] = {
         Name = "Launchpad",
         EntityClass = "pt_launchpad",
-        Price = 5500,
+        Price = 2000,
         PlaceEntity = true,
 
         Description = "Launch yourself into the air",
