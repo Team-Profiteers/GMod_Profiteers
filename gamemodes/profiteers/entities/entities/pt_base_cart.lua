@@ -79,10 +79,20 @@ else
         self:DrawModel()
 
         local pos, ang = self:GetPos(), self:GetAngles()
-        pos = pos + self:GetUp() * 10.5 + self:GetForward() * 13.25 + self:GetRight() * -4.25
 
-        ang:RotateAroundAxis(self:GetUp(), 90)
-        ang:RotateAroundAxis(self:GetRight(), -90)
+        if self:GetModel() == "models/props_wasteland/laundry_washer003.mdl" then
+            pos = pos + self:GetUp() * 10.5 + self:GetForward() * 17.5 + self:GetRight() * -20
+
+            ang:RotateAroundAxis(self:GetUp(), 90)
+            ang:RotateAroundAxis(self:GetRight(), -90)
+            ang:RotateAroundAxis(self:GetUp(), 90)
+        elseif self:GetModel() == "models/props_lab/reciever_cart.mdl" then
+            pos = pos + self:GetUp() * 10.5 + self:GetForward() * 13.25 + self:GetRight() * -4.25
+
+            ang:RotateAroundAxis(self:GetUp(), 90)
+            ang:RotateAroundAxis(self:GetRight(), -90)
+        end
+
 
         cam.Start3D2D(pos, ang, 0.02)
             surface.SetDrawColor(0, 0, 0, 200)

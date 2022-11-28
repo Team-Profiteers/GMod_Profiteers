@@ -5,11 +5,12 @@ ENT.Base = "pt_base_cart"
 ENT.PrintName = "Grenade Autolathe"
 ENT.Type = "anim"
 ENT.RenderGroup = RENDERGROUP_BOTH
-ENT.Model = "models/props_lab/reciever_cart.mdl"
+ENT.Model = "models/props_wasteland/laundry_washer003.mdl"
 
-ENT.PreferredAngle = Angle(0, 180, 0)
+ENT.PreferredAngle = Angle(0, 90, 0)
+ENT.AnchorOffset = Vector(0, 0, 24)
 
-ENT.ChargeRate = 1 / 5
+ENT.ChargeRate = 1 / 10
 ENT.ThinkDelay = 0.1
 
 ENT.ChargeColor = Color(255, 255, 25, 200)
