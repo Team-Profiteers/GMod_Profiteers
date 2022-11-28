@@ -272,6 +272,10 @@ function PLAYER:StartMove( mv, cmd )
             end
         end
     end
+
+    if ply.LastWallJumpNormal and ply:IsOnGround() then
+        ply.LastWallJumpNormal = nil
+    end
 end
 
 
