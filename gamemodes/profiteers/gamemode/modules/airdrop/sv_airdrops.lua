@@ -83,3 +83,10 @@ timer.Create("ProfiteersAirdropTimer", 60, 0, function()
     end
 
 end)
+
+concommand.Add("pt_admin_airdrop", function(ply, cmd, args, argStr)
+    if IsValid(ply) and !ply:IsAdmin() then return end
+
+    Profiteers:SpawnAirdrop()
+    GAMEMODE:Hint(ply, 0, "Triggered an airdrop.")
+end)

@@ -170,7 +170,6 @@ function PLAYER:StartMove( mv, cmd )
             end
         end
 
-        print(math.abs(ang:Forward():Dot(up)))
         -- Wall jump
         if !done and ply:GetNWFloat("pt_nextclimb", 0) < CurTime() and math.abs(ang:Forward():Dot(up)) <= 0.5 then
             local tr_walljump = util.TraceHull({
