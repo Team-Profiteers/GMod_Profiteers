@@ -30,7 +30,7 @@ Profiteers.Buyables = {
     },
     ["arc9_bo1_chinalake"] = {
         EntityClass = "arc9_bo1_chinalake",
-        Price = 5000,
+        Price = 3000,
 
         Description = "Pump-Action Grenade Launcher",
         Description2 = "Poor firepower but cheap",
@@ -102,7 +102,7 @@ Profiteers.Buyables = {
     },
     ["arc9_waw_flamethrower"] = {
         EntityClass = "arc9_waw_flamethrower",
-        Price = 75000,
+        Price = 50000,
 
         Description = "Extreme close range \"fire\"power",
         Description2 = "Napalm sweet as wine",
