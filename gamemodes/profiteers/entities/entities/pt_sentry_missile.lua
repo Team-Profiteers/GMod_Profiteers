@@ -217,6 +217,9 @@ if SERVER then
 end
 
 if CLIENT then
+
+    local mat_missile = Material("tdm/missile.png", "mips")
+
     function ENT:Draw()
         self:DrawModel()
 
@@ -242,13 +245,22 @@ if CLIENT then
             boneang:RotateAroundAxis(boneang:Up(), 180)
 
             cam.Start3D2D(pos, boneang, 0.05)
-                if self:WithinBeacon() then
+                if self:WithinBeacon() and self:GetAnchored() then
                     GAMEMODE:ShadowText("ONLINE", "CGHUD_5", 0, 0, self:WithinBeacon() and color_white or Color(255, 0, 0), Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
                 else
                     GAMEMODE:ShadowText("OFFLINE", "CGHUD_5", 0, 0, self:WithinBeacon() and color_white or Color(255, 0, 0), Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
                 end
-                GAMEMODE:ShadowText(tostring(self:GetAmmo()) .. "/" .. self.MagSize, "CGHUD_7", 0, 40, self:GetAmmo() > 0 and Color(150, 255, 150) or Color(255, 150, 150), Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+                --GAMEMODE:ShadowText(tostring(self:GetAmmo()) .. "/" .. self.MagSize, "CGHUD_7", 0, 40, self:GetAmmo() > 0 and Color(150, 255, 150) or Color(255, 150, 150), Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+                surface.SetMaterial(mat_missile)
+                surface.SetDrawColor(0, 0, 0, 255)
+                surface.DrawTexturedRectRotated(-48, 50, 64, 64, 90)
+                surface.DrawTexturedRectRotated(48, 50, 64, 64, 90)
 
+                surface.SetDrawColor((self:GetAmmo() > 0 and color_white or Color(255, 150, 150)):Unpack())
+                surface.DrawTexturedRectRotated(-48, 50, 64, 64, 90)
+
+                surface.SetDrawColor((self:GetAmmo() > 1 and color_white or Color(255, 150, 150)):Unpack())
+                surface.DrawTexturedRectRotated(48, 50, 64, 64, 90)
             cam.End3D2D()
         end
     end

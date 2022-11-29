@@ -180,7 +180,7 @@ if CLIENT then
             boneang:RotateAroundAxis(boneang:Up(), 180)
 
             cam.Start3D2D(pos, boneang, 0.05)
-                if self:WithinBeacon() then
+                if self:WithinBeacon() and self:GetAnchored() then
                     GAMEMODE:ShadowText("ONLINE", "CGHUD_5", 0, 0, self:WithinBeacon() and color_white or Color(255, 0, 0), Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
                 else
                     GAMEMODE:ShadowText("OFFLINE", "CGHUD_5", 0, 0, self:WithinBeacon() and color_white or Color(255, 0, 0), Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
