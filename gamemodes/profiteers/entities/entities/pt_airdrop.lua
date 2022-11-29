@@ -17,6 +17,13 @@ if SERVER then
         self:SetModel(self.Model)
         self:PhysicsInit(SOLID_VPHYSICS)
         self:SetMoveType(MOVETYPE_VPHYSICS)
+
+        if !IsValid(self:GetPhysicsObject()) then
+            self:SetModel("models/props_wasteland/laundry_washer001a.mdl")
+            self:PhysicsInit(SOLID_VPHYSICS)
+            self:SetMoveType(MOVETYPE_VPHYSICS)
+        end
+
         self:SetUseType(CONTINUOUS_USE)
         self.SpawnTime = CurTime()
         self:SetAmount(GetConVar("pt_airdrop_amount"):GetInt())
