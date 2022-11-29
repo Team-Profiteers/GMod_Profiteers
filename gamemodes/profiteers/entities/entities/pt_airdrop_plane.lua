@@ -68,8 +68,14 @@ if SERVER then
     function ENT:OnPropDestroyed(dmginfo)
         local effectdata = EffectData()
         effectdata:SetOrigin(self:GetPos())
-        effectdata:SetScale(1000)
-        util.Effect("HelicopterMegaBomb", effectdata)
+        util.Effect("pt_bigboom", effectdata)
+
+        for i = 1, math.random(4, 10) do
+            local effectdata2 = EffectData()
+            effectdata2:SetOrigin(self:GetPos())
+            util.Effect("pt_planewreckage", effectdata2)
+        end
+
         local pos = self:GetPos()
         self:Remove()
         timer.Simple(0.1, function()
