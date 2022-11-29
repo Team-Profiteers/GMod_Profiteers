@@ -22,5 +22,5 @@ CreateConVar("pt_tele_disperse_cooldown", 60, FCVAR_ARCHIVE, "Pocket Teleporter 
 CreateConVar("pt_tele_disperse_delay", 5, FCVAR_ARCHIVE, "Pocket Teleporter delay for disperse.", 0)
 
 CreateConVar("pt_prop_ghost", 1, FCVAR_ARCHIVE, "Ghost props.", 0, 1)
-CreateConVar("pt_prop_beacon_radius", 1024, FCVAR_ARCHIVE, "Protection radius for the Base Beacon.", 512)
+CreateConVar("pt_prop_beacon_radius", 2048, FCVAR_ARCHIVE, "Protection radius for the Base Beacon.", 512)
 
