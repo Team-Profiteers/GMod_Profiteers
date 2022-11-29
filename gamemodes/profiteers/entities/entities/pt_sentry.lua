@@ -42,8 +42,6 @@ if SERVER then
         self:SetNWInt("PFPropHealth", self.BaseHealth)
         self:SetNWInt("PFPropMaxHealth", self.BaseHealth)
         self:SetAmmo(self.MagSize)
-
-        self:SetOwner(self:CPPIGetOwner())
     end
 
     function ENT:Think()
@@ -110,7 +108,6 @@ if SERVER then
 
     function ENT:OnAnchor(ply)
         self:EmitSound("npc/roller/blade_cut.wav", 100, 90)
-        self:SetOwner(ply)
     end
 
     function ENT:OnUse(ply)

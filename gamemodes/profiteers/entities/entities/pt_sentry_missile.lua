@@ -38,7 +38,7 @@ if SERVER then
 
     function ENT:Initialize()
         self:SetModel(self.Model)
-        self:PhysicsInitBox(Vector(-28, -30, 0), Vector(28, 30, 56))
+        self:PhysicsInitBox(Vector(-24, -24, 0), Vector(24, 24, 56))
         self:SetCollisionGroup(COLLISION_GROUP_NONE)
         self:SetUseType(SIMPLE_USE)
         self:GetPhysicsObject():SetMass(50)
@@ -47,7 +47,7 @@ if SERVER then
         self:SetNWInt("PFPropMaxHealth", self.BaseHealth)
         self:SetAmmo(self.MagSize)
 
-        self:SetOwner(self:CPPIGetOwner())
+        -- self:SetOwner(self:CPPIGetOwner())
 
         self.NextFire = 0
     end
@@ -74,7 +74,8 @@ if SERVER then
             local tgtpos = self.Target:EyePos()
             targetang = self:WorldToLocalAngles((tgtpos - (self:GetPos() + Vector(0, 0, 32))):Angle())
         else
-            targetang = self:GetAimAngle() + Angle(0, math.sin(CurTime()) * engine.TickInterval() * 360, 0)
+            --targetang = self:GetAimAngle() + Angle(0, math.sin(CurTime()) * engine.TickInterval() * 360, 0)
+            targetang = Angle(0, self:WorldToLocalAngles(self:GetAngles()).y + math.sin(CurTime()) * 180, 0)
         end
 
         self:SetAimAngle(Angle(
@@ -118,8 +119,8 @@ if SERVER then
         rocket:SetAngles(targetang)
         rocket.ShootEntData.Target = self.Target
         rocket:Spawn()
-        rocket.Owner = self:GetOwner()
-        rocket:SetOwner(self:GetOwner())
+        rocket.Owner = self:CPPIGetOwner()
+        rocket:SetOwner(self:CPPIGetOwner())
         self.LastMissile = rocket
 
         local phys = rocket:GetPhysicsObject()
