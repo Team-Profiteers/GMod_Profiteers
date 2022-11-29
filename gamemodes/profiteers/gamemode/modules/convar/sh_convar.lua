@@ -7,6 +7,9 @@ CreateConVar("pt_money_dropondeath", 0.2, FCVAR_ARCHIVE, "Fraction of your curre
 CreateConVar("pt_money_dropondeath_min", 5000, FCVAR_ARCHIVE, "Amount of money that won't be dropped on death.", 0)
 CreateConVar("pt_money_dropondeath_max", 100000, FCVAR_ARCHIVE, "Maximum amount of money you can drop. 0 - infinite.", 0)
 
+CreateConVar("pt_nuke_time", 180, FCVAR_ARCHIVE, "Nuke arm duration.", 60)
+
+
 CreateConVar("pt_money_guncost", 1000, FCVAR_ARCHIVE, "Weapon cost when you don't have an Arsenal.", 0)
 CreateConVar("pt_money_sellmult", 0.75, FCVAR_ARCHIVE, "Price multiplier when you sell something.", 0, 1)
 CreateConVar("pt_money_killmult", 0.5, FCVAR_ARCHIVE, "Price multiplier when you destroy something.", 0, 1)

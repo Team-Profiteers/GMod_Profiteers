@@ -48,6 +48,7 @@ if SERVER then
             self:SetArmTime(CurTime())
             Profiteers.ActiveNuke = self
             self:EmitSound("ambient/machines/thumper_startup1.wav", 125)
+            Profiteers:SyncNuke()
         end
     end
 
@@ -60,6 +61,7 @@ if SERVER then
 
         Profiteers.ActiveNuke = nil
         Profiteers.GameOver = true
+        Profiteers:SyncNuke()
 
         if MapVote then
             MapVote.Start(60, false, "*")
@@ -73,19 +75,16 @@ if SERVER then
         effectdata:SetOrigin(self:GetPos())
         util.Effect("explosion", effectdata)
     end
-else
-    function ENT:Think()
-        if self:GetArmed() then
-            Profiteers.ActiveNuke = self
-        end
+
+    function ENT:OnRemove()
+        Profiteers.ActiveNuke = nil
+        Profiteers:SyncNuke()
     end
-
-    local nukemat = Material("profiteers/nuke.png", "smooth nomips")
-
+else
     function ENT:DrawTranslucent()
-        --  Make the money draw a glowing effect
         self:DrawModel()
 
+        --[[]
         if self:GetArmed() then
             local toscreen = self:GetPos():ToScreen()
 
@@ -98,5 +97,6 @@ else
                 surface.DrawTexturedRect(x - (s / 2), y - (s / 2), s, s)
             cam.End2D()
         end
+        ]]
     end
 end
