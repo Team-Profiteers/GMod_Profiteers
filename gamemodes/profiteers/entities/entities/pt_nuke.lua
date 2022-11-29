@@ -63,9 +63,16 @@ if SERVER then
         Profiteers.GameOver = true
         Profiteers:SyncNuke()
 
-        if MapVote then
-            MapVote.Start(60, false, "*")
-        end
+        timer.Simple(15, function()
+            if MapVote then
+                MapVote.Start(60, true, 4, "*")
+            else
+                game.CleanUpMap()
+                for _, ply in pairs(player.GetAll()) do
+                    ply:Spawn()
+                end
+            end
+        end)
 
         self:Remove()
     end
