@@ -61,6 +61,8 @@ if SERVER then
             self.Dropped = true
             self:OnPropDestroyed(damage)
         end
+
+        return damage:GetDamage()
     end
 
     function ENT:OnPropDestroyed(dmginfo)
