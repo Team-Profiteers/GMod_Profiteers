@@ -15,7 +15,7 @@ CreateConVar("pt_money_killmult", 0.5, FCVAR_ARCHIVE + FCVAR_REPLICATED, "Price 
 CreateConVar("pt_money_nukemult", 1, FCVAR_ARCHIVE + FCVAR_REPLICATED, "Price multiplier when you destroy or sell the nuke.", 0, 1)
 
 CreateConVar("pt_airdrop_amount", 250000, FCVAR_ARCHIVE + FCVAR_REPLICATED, "How much money an airdrop will carry.", 0)
-CreateConVar("pt_airdrop_planehealth", 1000, FCVAR_ARCHIVE + FCVAR_REPLICATED, "The durability of the airdrop plane.", 0)
+CreateConVar("pt_airdrop_planehealth", 2500, FCVAR_ARCHIVE + FCVAR_REPLICATED, "The durability of the airdrop plane.", 0)
 CreateConVar("pt_airdrop_moneyhealth", 800, FCVAR_ARCHIVE + FCVAR_REPLICATED, "The durability of the parachute. If destroyed, it will fall immediately.", 0)
 
 CreateConVar("pt_tele_recall_cooldown", 180, FCVAR_ARCHIVE + FCVAR_REPLICATED, "Pocket Teleporter cooldown for recall.", 0)

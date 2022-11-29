@@ -51,6 +51,10 @@ if SERVER then
     end
 
     function ENT:OnTakeDamage(damage)
+        if damage:GetDamageType() != DMG_BLAST and damage:GetDamageType() != DMG_AIRBOAT then
+            return
+        end
+
         self:SetHealth(self:Health() - damage:GetDamage())
 
         if self:Health() <= 0 and not self.Dropped then
@@ -77,12 +81,45 @@ else
         surface.PlaySound("profiteers/flyby_02.ogg")
     end
 
+    function ENT:Draw()
+        self:DrawModel()
+    end
+
     function ENT:DrawTranslucent()
         self:DrawModel()
     end
 
+    ENT.Ticks = 0
+
     function ENT:Think()
         -- advance animation sequence
+        if self:Health() < (self:GetMaxHealth() * 0.5) then
+            // generate smoke particles
+
+            if self.Ticks % 5 == 0 then
+                local emitter = ParticleEmitter(self:GetPos())
+
+                local particle = emitter:Add("particles/smokey", self:GetPos() + self:GetForward() * 150 + self:GetRight() * 215 + self:GetUp() * 150)
+                particle:SetVelocity(-self:GetForward() * 500 + VectorRand() * 100)
+                particle:SetDieTime(math.Rand(2, 2.5))
+                particle:SetStartAlpha(100)
+                particle:SetEndAlpha(0)
+                particle:SetStartSize(32)
+                particle:SetEndSize(math.random(100, 200))
+                particle:SetRoll(math.Rand(0, 360))
+                particle:SetRollDelta(math.Rand(-1, 1))
+                particle:SetColor(100, 100, 100)
+                particle:SetAirResistance(100)
+                particle:SetGravity(Vector(0, 0, 0))
+                particle:SetCollide(true)
+                particle:SetBounce(0.5)
+
+                emitter:Finish()
+            end
+        end
+
+        self.Ticks = self.Ticks + 1
+
         self:FrameAdvance(FrameTime())
     end
 end
