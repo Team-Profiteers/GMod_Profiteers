@@ -43,6 +43,10 @@ if SERVER then
     function ENT:OnInitialize()
     end
 
+    function ENT:OnTakeDamage(damage)
+        return 1
+    end
+
     function ENT:TryAnchor(ply)
 
         if self:GetAnchored() then
