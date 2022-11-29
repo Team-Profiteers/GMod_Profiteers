@@ -70,8 +70,8 @@ if SERVER then
         local tr2 = util.TraceHull({
             start = pos,
             endpos = pos,
-            mins = mins - Vector(4, 4, 4),
-            maxs = maxs + Vector(4, 4, 4),
+            mins = mins,
+            maxs = maxs,
             filter = self,
             ignoreworld = true
         })
