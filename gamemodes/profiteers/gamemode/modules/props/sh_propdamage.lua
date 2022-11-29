@@ -41,8 +41,8 @@ local explosionSounds = {
 local lasteffecttick = 0
 hook.Add("EntityTakeDamage", "___Profiteers_PropDamage", function(ent, dmginfo)
     if !ent:CanTakePropDamage() then return end
-    print(ent)
-    if ent:GetNWInt("PFPropHealth", -1) == -1 then
+
+    if ent:GetNWInt("PFPropMaxHealth", -1) == -1 then
         ent:CalculatePropHealth()
     end
 

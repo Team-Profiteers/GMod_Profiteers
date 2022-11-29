@@ -120,5 +120,6 @@ hook.Add("PlayerAuthed", "PropProtection", function(ply, steamid, uniqueid)
                 ent:CPPISetOwner(ply)
             end
         end
+        ply:RecalcPropQuota()
     end
 end)
