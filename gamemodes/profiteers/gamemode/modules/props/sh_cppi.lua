@@ -41,6 +41,10 @@ function Entity:CPPIGetOwnerName()
     end
 end
 
+function Entity:CPPICanPhysgun(ply)
+    return (self:CPPIGetOwner() == ply or ply:IsSuperAdmin()) and (self:GetClass() == "prop_physics" or self.AllowPhysgun)
+end
+
 if SERVER then
     function Entity:CPPISetOwner(ply)
         local id = ply:UniqueID()
@@ -64,10 +68,6 @@ if SERVER then
         return true
     end
 
-    function Entity:CPPICanPhysgun(ply)
-        return (self:CPPIGetOwner() == ply or ply:IsSuperAdmin()) and (self:GetClass() == "prop_physics" or self.AllowPhysgun)
-    end
-
     function Entity:CPPICanPickup(ply)
         return true
     end
@@ -89,6 +89,11 @@ CPPI.EntityToolBlacklist = {
     ["remover"] = true,
     ["material"] = true,
 }
+
+
+hook.Add("PhysgunPickup", "PropProtection", function(ply, ent)
+    if not ent:CPPICanPhysgun(ply) then return false end
+end)
 
 hook.Add("CanProperty", "PropProtection", function(ply, prop, ent)
     if CPPI.PropertyBlacklist[prop] and not ply:IsAdmin() then return false end
