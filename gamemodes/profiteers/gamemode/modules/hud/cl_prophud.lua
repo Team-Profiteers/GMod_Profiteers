@@ -53,7 +53,7 @@ hook.Add("HUDPaint", "PropHud", function()
             surface.SetDrawColor(clr_w2)
             surface.DrawOutlinedRect(ox + shift + (c * 16), h / 2 - (c * 200), c * 24, c * 400, c * 4)
             surface.SetDrawColor(clr_w2)
-            surface.DrawRect(ox + shift + (c * 18), h / 2 + (c * 200) - (c * 398 * math.Clamp(quota_mult, 0, 1)), c * 18, c * 398 * math.Clamp(quota_mult, 0, 1))
+            surface.DrawRect(ox + shift + (c * 18), h / 2 + (c * 200) - (c * 396 * math.Clamp(quota_mult, 0, 1)), c * 18, c * 396 * math.Clamp(quota_mult, 0, 1))
 
             --GAMEMODE:ShadowText("PROP", "CGHUD_6", ox + shift + (c * 16) + c * 12, h / 2 - (c * 200) - c * 16, clr_w2, clr_shadow2, TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM)
             --GAMEMODE:ShadowText("QUOTA", "CGHUD_6", ox + shift + (c * 16) + c * 12, h / 2 - (c * 200) - c * 20, clr_w2, clr_shadow2, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
