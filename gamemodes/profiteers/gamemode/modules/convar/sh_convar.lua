@@ -26,3 +26,4 @@ CreateConVar("pt_tele_disperse_delay", 5, FCVAR_ARCHIVE + FCVAR_REPLICATED, "Poc
 CreateConVar("pt_prop_ghost", 1, FCVAR_ARCHIVE + FCVAR_REPLICATED, "Ghost props.", 0, 1)
 CreateConVar("pt_prop_beacon_radius", 2048, FCVAR_ARCHIVE + FCVAR_REPLICATED, "Protection radius for the Base Beacon.", 512)
 
+CreateConVar("pt_prop_quota", 50000, FCVAR_ARCHIVE + FCVAR_REPLICATED, "Total amount of health a player's props can have. 0 - infinite.", 0)
