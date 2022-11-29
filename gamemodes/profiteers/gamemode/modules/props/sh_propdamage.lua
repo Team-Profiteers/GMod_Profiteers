@@ -117,7 +117,7 @@ hook.Add("EntityTakeDamage", "___Profiteers_PropDamage", function(ent, dmginfo)
             end
         end
 
-        if ent.Bounty then
+        if ent.Bounty and ent.Bounty > 0 then
             local money = ents.Create("pt_money")
             money:SetAngles(Angle(0, math.Rand(-180, 180), 0))
             money:SetPos(ent:GetPos())
