@@ -141,8 +141,8 @@ local function createEnemyNPC()
             enemy:SetModel(squad["model"])
         end
 
-        squad.lootchance = squad.lootchance or 0.5
-        squad.loot = squad.loot or {}
+        enemy.lootchance = squad.lootchance or 0.5
+        enemy.loot = squad.loot or {}
 
         enemy:Spawn()
 

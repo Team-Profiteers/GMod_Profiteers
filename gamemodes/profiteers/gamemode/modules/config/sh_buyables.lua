@@ -375,6 +375,18 @@ Profiteers.Buyables = {
 
         Category = "Basebuilding"
     },
+    ["pt_c4"] = {
+        Name = "C4",
+        EntityClass = "pt_c4",
+        Price = 10000,
+        PlaceEntity = true,
+        EntityLimit = 1,
+
+        Description = "Long-fuse explosive charge",
+        Description2 = "Extremely good against bases",
+
+        Category = "Explosives"
+    },
 }
 
 Profiteers.BuyableEntities = {}
