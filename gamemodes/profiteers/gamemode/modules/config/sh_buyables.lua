@@ -197,6 +197,8 @@ Profiteers.Buyables = {
         EntityClass = "pt_nuke",
         Price = 1000000,
         PlaceEntity = true,
+        CannotSell = true,
+        EntityLimit = 1,
 
         Description = "1.2mt fission bomb",
         Description2 = "End it all and watch it burn",

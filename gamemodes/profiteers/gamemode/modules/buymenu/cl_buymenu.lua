@@ -110,7 +110,7 @@ concommand.Add("pt_sell", function(ply, cmd, args, argStr)
     local itemtbl = Profiteers.Buyables[args[1]]
     if not itemtbl then return end
 
-    if not itemtbl.PlaceEntity then
+    if not itemtbl.PlaceEntity or itemtbl.CannotSell then
         surface.PlaySound("items/medshotno1.wav")
         return
     end
@@ -121,7 +121,7 @@ concommand.Add("pt_sell", function(ply, cmd, args, argStr)
 end, function(cmd, args)
     local ret = {}
     for k, v in pairs(Profiteers.Buyables) do
-        if not v.PlaceEntity then continue end
+        if not v.PlaceEntity or itemtbl.CannotSell then continue end
         table.insert(ret, "pt_sell " .. k)
     end
     return ret
