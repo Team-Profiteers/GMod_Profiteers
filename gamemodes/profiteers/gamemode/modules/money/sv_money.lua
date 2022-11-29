@@ -11,31 +11,40 @@ end)
 
 local Player = FindMetaTable("Player")
 
-function Player:SaveMoney()
-    local sid64 = tostring(self:SteamID64() or 0)
-    local amt = math.floor(self:GetNWInt("pt_money", 0))
-    local earnings = math.floor(self:GetNWInt("pt_earnings", 0))
+// function Player:SaveMoney()
+//     local sid64 = tostring(self:SteamID64() or 0)
+//     local amt = math.floor(self:GetNWInt("pt_money", 0))
+//     local earnings = math.floor(self:GetNWInt("pt_earnings", 0))
 
-    local data = sql.Query("SELECT * FROM pt_money WHERE sid64 = " .. sid64 .. ";")
-    if data then
-        sql.Query("UPDATE pt_money SET balance = " .. amt .. ", earnings = " .. earnings .. " WHERE sid64 = " .. sid64 .. ";")
-    else
-        sql.Query("INSERT INTO pt_money ( sid64, balance, earnings ) VALUES ( " .. sid64 .. ", " .. amt .. "," .. earnings .. " )")
-    end
+//     local data = sql.Query("SELECT * FROM pt_money WHERE sid64 = " .. sid64 .. ";")
+//     if data then
+//         sql.Query("UPDATE pt_money SET balance = " .. amt .. ", earnings = " .. earnings .. " WHERE sid64 = " .. sid64 .. ";")
+//     else
+//         sql.Query("INSERT INTO pt_money ( sid64, balance, earnings ) VALUES ( " .. sid64 .. ", " .. amt .. "," .. earnings .. " )")
+//     end
+// end
+
+// function Player:LoadMoney()
+//     local sid64 = tostring(self:SteamID64() or 0)
+
+//     local data = sql.QueryRow("SELECT * FROM pt_money WHERE sid64 = " .. sid64 .. ";")
+//     if data then
+//         self:SetNWInt("pt_money", tonumber(data.balance))
+//         self:SetNWInt("pt_earnings", tonumber(data.earnings))
+//     else
+//         self:SetNWInt("pt_money", GetConVar("pt_money_starting"):GetInt())
+//         self:SetNWInt("pt_earnings", 0)
+//         sql.Query("INSERT INTO pt_money ( sid64, balance, earnings ) VALUES ( " .. sid64 .. ", " .. self:GetNWInt("pt_money", 0) .. "," .. "0" .. " )")
+//     end
+// end
+
+function Player:SaveMoney()
+    return
 end
 
 function Player:LoadMoney()
-    local sid64 = tostring(self:SteamID64() or 0)
-
-    local data = sql.QueryRow("SELECT * FROM pt_money WHERE sid64 = " .. sid64 .. ";")
-    if data then
-        self:SetNWInt("pt_money", tonumber(data.balance))
-        self:SetNWInt("pt_earnings", tonumber(data.earnings))
-    else
-        self:SetNWInt("pt_money", GetConVar("pt_money_starting"):GetInt())
-        self:SetNWInt("pt_earnings", 0)
-        sql.Query("INSERT INTO pt_money ( sid64, balance, earnings ) VALUES ( " .. sid64 .. ", " .. self:GetNWInt("pt_money", 0) .. "," .. "0" .. " )")
-    end
+    self:SetNWInt("pt_money", GetConVar("pt_money_starting"):GetInt())
+    self:SetNWInt("pt_earnings", 0)
 end
 
 hook.Add("PlayerInitialSpawn", "pt_money", function(ply)
