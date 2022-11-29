@@ -493,6 +493,7 @@ hook.Add("HUDPaint", "HUDPaint_DrawABox", function()
     end
     ply.BoughtEntities = ply.BoughtEntities or {}
     for _, e in pairs(ply.BoughtEntities["pt_beacon"] or {}) do
+        if not IsValid(e) then return end
         table.insert(beacon_positions, {e, (e:GetPos() + Vector(0, 0, 48)):ToScreen()})
     end
     cam.End3D()
