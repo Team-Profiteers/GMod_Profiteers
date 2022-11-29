@@ -52,7 +52,7 @@ if SERVER then
 
     function ENT:OnTakeDamage(damage)
         if damage:GetDamageType() != DMG_BLAST and damage:GetDamageType() != DMG_AIRBOAT then
-            return
+            damage:ScaleDamage(0.25)
         end
 
         self:SetHealth(self:Health() - damage:GetDamage())
@@ -81,6 +81,9 @@ if SERVER then
 else
     function ENT:Initialize()
         surface.PlaySound("profiteers/flyby_02.ogg")
+
+        self:SetColor(Color(255, 255, 255, 0))
+        self:SetRenderFX(kRenderFxSolidSlow)
     end
 
     function ENT:Draw()
@@ -117,6 +120,19 @@ else
                 particle:SetBounce(0.5)
 
                 emitter:Finish()
+            end
+        end
+
+        if self.Ticks % 5 == 0 then
+            local tr = util.TraceLine({
+                start = self:GetPos(),
+                endpos = self:GetPos() + self:GetForward() * 2000,
+                filter = self,
+                mask = MASK_NPCWORLDSTATIC
+            })
+
+            if tr.Hit and tr.HitWorld then
+                self:SetRenderFX(kRenderFxFadeSlow)
             end
         end
 
