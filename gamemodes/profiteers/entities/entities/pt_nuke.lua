@@ -4,7 +4,6 @@ ENT.Type = "anim"
 ENT.RenderGroup = RENDERGROUP_BOTH
 ENT.Model = "models/props_phx/torpedo.mdl"
 ENT.SpawnTime = 0
-ENT.DetonationTime = 180
 
 ENT.TakePropDamage = true
 
@@ -12,7 +11,6 @@ ENT.BombOwner = nil
 
 function ENT:SetupDataTables()
     self:NetworkVar("Float", 0, "ArmTime")
-
     self:NetworkVar("Bool", 0, "Armed")
 end
 
@@ -31,19 +29,18 @@ if SERVER then
     end
 
     function ENT:Think()
-        if self:GetArmed() and self:GetArmTime() + self.DetonationTime <= CurTime() then
+        if self:GetArmed() and self:GetArmTime() + GetConVar("pt_nuke_time"):GetFloat() <= CurTime() then
             self:Detonate()
         end
     end
 
     function ENT:Use(activator)
-        if !self:GetArmed() then
+        if !self:GetArmed() and activator == self:CPPIGetOwner() then
             if IsValid(Profiteers.ActiveNuke) then
                 GAMEMODE:Hint(activator, 1, "There is already an active nuke! Go stop it!")
                 return
             end
             self.BombOwner = activator
-            self:SetOwner(activator)
             self:SetArmed(true)
             self:SetArmTime(CurTime())
             Profiteers.ActiveNuke = self
@@ -55,17 +52,15 @@ if SERVER then
     function ENT:Detonate()
         local nuke = ents.Create("pt_nukeexplosion")
         nuke:SetPos(self:GetPos())
-        nuke:SetOwner(self:GetOwner())
+        nuke:SetOwner(self:CPPIGetOwner())
         nuke:Spawn()
         nuke:Activate()
 
-        Profiteers.ActiveNuke = nil
-        Profiteers.GameOver = true
-        Profiteers:SyncNuke()
+        Profiteers:GameOver()
 
         timer.Simple(15, function()
             if MapVote then
-                MapVote.Start(60, true, 4, "*")
+                MapVote.Start(60, true, 4, "")
             else
                 game.CleanUpMap()
                 for _, ply in pairs(player.GetAll()) do

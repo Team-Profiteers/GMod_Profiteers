@@ -1,4 +1,5 @@
 util.AddNetworkString("pt_nuke")
+util.AddNetworkString("pt_gameover")
 
 hook.Add("PlayerDeathThink", "ProfiteersPlayerDeathThinkEndgame", function(ply)
     if Profiteers.GameOver then return false end
@@ -14,6 +15,14 @@ function Profiteers:SyncNuke()
             net.WriteVector(Profiteers.ActiveNuke:GetPos())
             net.WriteFloat(Profiteers.ActiveNuke:GetArmTime())
         end
+    net.Broadcast()
+end
+
+
+function Profiteers:GameOver()
+    Profiteers.GameOver = true
+    net.Start("pt_gameover")
+        net.WriteBool(true)
     net.Broadcast()
 end
 
