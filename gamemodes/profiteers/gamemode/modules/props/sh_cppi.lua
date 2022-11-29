@@ -107,8 +107,8 @@ hook.Add("CanDrive", "PropProtection", function(ply, ent)
     return false
 end)
 
-hook.Add("PlayerConnect", "PropProtection", function(ply)
-    local id = ply:UniqueID()
+hook.Add("PlayerAuthed", "PropProtection", function(ply, steamid, uniqueid)
+    local id = uniqueid
     if CPPI.UIDEntities[id] then
         -- Give back ownership of previous entities
         for _, ent in pairs(CPPI.UIDEntities[id]) do
