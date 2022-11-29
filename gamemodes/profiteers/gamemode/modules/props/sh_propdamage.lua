@@ -36,12 +36,12 @@ local explosionSounds = {
     "phx/explode04.wav",
     "phx/explode05.wav",
     "phx/explode06.wav",
- }
+}
 
 local lasteffecttick = 0
-hook.Add("EntityTakeDamage", "Profiteers_PropDamage", function(ent, dmginfo)
+hook.Add("EntityTakeDamage", "___Profiteers_PropDamage", function(ent, dmginfo)
     if !ent:CanTakePropDamage() then return end
-
+    print(ent)
     if ent:GetNWInt("PFPropHealth", -1) == -1 then
         ent:CalculatePropHealth()
     end
@@ -144,5 +144,6 @@ hook.Add("EntityTakeDamage", "Profiteers_PropDamage", function(ent, dmginfo)
         ent:GetPhysicsObject():ApplyForceOffset(dmginfo:GetDamageForce():GetNormalized() * ent:GetPhysicsObject():GetMass() ^ 0.6 * 2000, dmginfo:GetDamagePosition())
     end
 
-    return true
+    dmginfo:SetDamage(0)
+    --return true
 end)
