@@ -131,16 +131,6 @@ if SERVER then
                 return
             end
 
-            if target == self:GetOwner() then
-                self.Target = nil
-                return
-            end
-
-            if target == self:CPPIGetOwner() then
-                self.Target = nil
-                return
-            end
-
             if self:GetPos():DistToSqr(target:GetPos()) > self.Range * self.Range then
                 self.Target = nil
                 return
@@ -151,12 +141,16 @@ if SERVER then
                 return
             end
 
+            if target:IsPlayer() and target:OwnsBoughtEntity(self) then
+                self.Target = nil
+                return
+            end
+
             return
         else
             local targets = ents.FindInSphere(self:GetPos(), self.Range)
             for k, v in pairs(targets) do
-                if v == self:GetOwner() then continue end
-                if target == self:CPPIGetOwner() then continue end
+                if (v:IsPlayer() and v:OwnsBoughtEntity(self)) then continue end
                 if (v:IsPlayer() and v:Alive()) or (v:IsNPC() and v:Health() > 0) then
                     if v:Visible(self) then
                         self.Target = v
@@ -171,7 +165,6 @@ end
 if CLIENT then
     function ENT:Draw()
         self:DrawModel()
-
 
         local bonename = "yaw"
 

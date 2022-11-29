@@ -25,3 +25,17 @@ function Player:CountBoughtEntities(class)
     end
     return count
 end
+
+function Player:OwnsBoughtEntity(ent)
+    self.BoughtEntities = self.BoughtEntities or {}
+    for i, e in pairs(self.BoughtEntities[ent:GetClass()] or {}) do
+        if not IsValid(e) then
+            table.remove(self.BoughtEntities[ent:GetClass()], i)
+            continue
+        end
+        if e == ent then
+            return true
+        end
+    end
+    return false
+end
