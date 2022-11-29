@@ -100,7 +100,10 @@ end)
 
 hook.Add("CanTool", "PropProtection", function(ply, tr, toolname, tool, button)
     if CPPI.ToolBlacklist[toolname] and not ply:IsAdmin() then return false end
-    if IsValid(tr.Entity) and not tr.Entity:CPPICanTool(ply, toolname) then return false end
+    if not IsValid(tr.Entity) then return end
+
+    if tr.Entity:CPPIGetOwner() ~= ply and not ply:IsAdmin() then return false end
+    if tr.Entity:GetClass() ~= "prop_physics" and CPPI.EntityToolBlacklist[toolname] then return false end
 end)
 
 hook.Add("CanDrive", "PropProtection", function(ply, ent)
