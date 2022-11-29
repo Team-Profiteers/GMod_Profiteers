@@ -16,6 +16,7 @@ Profiteers.Enemies["Combine Elites"] = {
 	["loot"] = {
 		["item_rpg_round"] = 1,
 		["item_ammo_smg1_grenade"] = 1,
+		["item_battery"] = 1,
 	}
 }
 
@@ -35,6 +36,7 @@ Profiteers.Enemies["Combine Guards"] = {
 	["loot"] = {
 		["item_rpg_round"] = 1,
 		["item_ammo_smg1_grenade"] = 1,
+		["item_battery"] = 1,
 	}
 }
 
