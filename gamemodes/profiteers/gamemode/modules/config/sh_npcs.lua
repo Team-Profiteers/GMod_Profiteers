@@ -11,7 +11,12 @@ Profiteers.Enemies["Combine Elites"] = {
 	["maxsize"] = 6,
 	["rels"] = {"npc_metropolice D_HT 40", "npc_stalker D_HT 50", "npc_manhack D_FR 80", "npc_hunter D_FR 90"},
 	["bounty"] = 10000,
-	["dmgmult"] = 3
+	["dmgmult"] = 3,
+	["lootchance"] = 1,
+	["loot"] = {
+		["item_rpg_round"] = 1,
+		["item_ammo_smg1_grenade"] = 1,
+	}
 }
 
 Profiteers.Enemies["Combine Guards"] = {
@@ -25,7 +30,12 @@ Profiteers.Enemies["Combine Guards"] = {
 	["maxsize"] = 10,
 	["rels"] = {"npc_metropolice D_HT 40", "npc_stalker D_HT 50", "npc_manhack D_FR 80", "npc_hunter D_FR 90"},
 	["bounty"] = 3000,
-	["dmgmult"] = 3
+	["dmgmult"] = 3,
+	["lootchance"] = 0.5,
+	["loot"] = {
+		["item_rpg_round"] = 1,
+		["item_ammo_smg1_grenade"] = 1,
+	}
 }
 
 Profiteers.Enemies["Combine Soldiers"] = {
@@ -38,7 +48,12 @@ Profiteers.Enemies["Combine Soldiers"] = {
 	["maxsize"] = 10,
 	["rels"] = {"npc_metropolice D_HT 40", "npc_stalker D_HT 50", "npc_manhack D_FR 80", "npc_hunter D_FR 90"},
 	["bounty"] = 2000,
-	["dmgmult"] = 3
+	["dmgmult"] = 3,
+	["lootchance"] = 0.25,
+	["loot"] = {
+		["item_rpg_round"] = 1,
+		["item_ammo_smg1_grenade"] = 1,
+	}
 }
 
 Profiteers.Enemies["Cops"] = {
@@ -51,8 +66,12 @@ Profiteers.Enemies["Cops"] = {
 	["maxsize"] = 15,
 	["rels"] = {"npc_combine_s D_FR 40", "npc_stalker D_HT 50", "npc_manhack D_FR 90", "npc_hunter D_FR 90"},
 	["bounty"] = 1000,
-	["dmgmult"] = 3
-}
+	["dmgmult"] = 3,
+	["lootchance"] = 0.34,
+	["loot"] = {
+		["item_battery"] = 1,
+	}
+},
 
 Profiteers.Enemies["Zombies"] = {
 	["class_type"] = "npc_zombie",

@@ -141,6 +141,9 @@ local function createEnemyNPC()
             enemy:SetModel(squad["model"])
         end
 
+        squad.lootchance = squad.lootchance or 0.5
+        squad.loot = squad.loot or {}
+
         enemy:Spawn()
 
         if wp then
@@ -178,11 +181,35 @@ function GM:OnNPCKilled(npc, atk, inf)
         -- money:SetPos(npc:GetPos())
         -- money:SetAmount(math.Round(npc.bounty * math.Rand(0.9, 1.1)))
         -- money:Spawn()
+        local wasplayer = false
+
         if atk:IsPlayer() then
             atk:AddMoney(math.Round(npc.bounty * math.Rand(0.9, 1.1)))
+            wasplayer = true
         elseif npc:IsOnFire() and IsValid(npc.PlayerDamaged) then
             -- Combine NPCs with fire death logic attribute kills to themselves
             npc.PlayerDamaged:AddMoney(math.Round(npc.bounty * math.Rand(0.9, 1.1)))
+            wasplayer = true
+        end
+
+        if wasplayer then
+            local lootchance = npc.lootchance or 0
+            local loot = npc.loot
+
+            if loot then
+                if math.random() <= lootchance then
+                    local lootent = table.Random(table.GetKeys(loot))
+
+                    if lootent then
+                        for i = 1, loot[lootent] do
+                            local ent = ents.Create(lootent)
+                            ent:SetPos(npc:GetPos() + Vector(0, 0, 32) + (VectorRand() * 4))
+                            ent:SetAngles(AngleRand())
+                            ent:Spawn()
+                        end
+                    end
+                end
+            end
         end
     end
 end
