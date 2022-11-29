@@ -11,6 +11,8 @@ local lastquotachange = 0
 local last_quota_mult = 0
 local c = CGSS(1)
 
+local prop_mat = Material("profiteers/barrel.png", "mips smooth")
+
 hook.Add("HUDPaint", "PropHud", function()
     local dzx, dzy = GetConVar("pt_hud_deadzone_x"):GetFloat() * 0.25, GetConVar("pt_hud_deadzone_y"):GetFloat() * 0.25
     local w, h = ScrW() * (1 - dzx * 2), ScrH() * (1 - dzy * 2)
@@ -18,7 +20,6 @@ hook.Add("HUDPaint", "PropHud", function()
 
     if !GetConVar("pt_prop_quota_disable"):GetBool() and LocalPlayer():GetMaxPropQuota() > 0 then
         local quota_mult = LocalPlayer():GetPropQuota() / LocalPlayer():GetMaxPropQuota()
-        if quota_mult > 0 and quota_mult < 1 then quota_mult = math.Clamp(quota_mult, 0.01, 0.99) end
 
         if last_quota_mult ~= quota_mult then
             last_quota_mult = quota_mult
@@ -44,20 +45,24 @@ hook.Add("HUDPaint", "PropHud", function()
             clr_w.b = (clr_w.b * 0.5) + (255 * 0.5)
 
             local clr_w2 = Color(clr_w.r, clr_w.g, clr_w.b)
-            if quota_mult == 1 then
-                clr_w2.g = Lerp(math.abs(math.sin(SysTime() * 10)), 0, 255)
-                clr_w2.b = Lerp(math.abs(math.sin(SysTime() * 10)), 0, 255)
+            if quota_mult >= 1 then
+                clr_w2.g = Lerp(math.abs(math.sin(SysTime() * 5)), clr_w.g, 50)
+                clr_w2.b = Lerp(math.abs(math.sin(SysTime() * 5)), clr_w.b, 50)
             end
 
-            surface.SetDrawColor(clr_w)
+            surface.SetDrawColor(clr_w2)
             surface.DrawOutlinedRect(ox + shift + (c * 16), h / 2 - (c * 200), c * 24, c * 400, c * 4)
             surface.SetDrawColor(clr_w2)
-            surface.DrawRect(ox + shift + (c * 18), h / 2 + (c * 200) - (c * 400 * math.Clamp(quota_mult, 0, 1)), c * 18, c * 400 * math.Clamp(quota_mult, 0, 1))
+            surface.DrawRect(ox + shift + (c * 18), h / 2 + (c * 200) - (c * 398 * math.Clamp(quota_mult, 0, 1)), c * 18, c * 398 * math.Clamp(quota_mult, 0, 1))
 
-            GAMEMODE:ShadowText("PROP", "CGHUD_6", ox + shift + (c * 16) + c * 12, h / 2 - (c * 200) - c * 16, clr_w2, clr_shadow2, TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM)
-            GAMEMODE:ShadowText("QUOTA", "CGHUD_6", ox + shift + (c * 16) + c * 12, h / 2 - (c * 200) - c * 20, clr_w2, clr_shadow2, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
-            GAMEMODE:ShadowText(math.floor(quota_mult * 100) .. "%", "CGHUD_5", ox + shift + (c * 16) + c * 12, h / 2 + (c * 200) + c * 4, clr_w2, clr_shadow2, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+            --GAMEMODE:ShadowText("PROP", "CGHUD_6", ox + shift + (c * 16) + c * 12, h / 2 - (c * 200) - c * 16, clr_w2, clr_shadow2, TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM)
+            --GAMEMODE:ShadowText("QUOTA", "CGHUD_6", ox + shift + (c * 16) + c * 12, h / 2 - (c * 200) - c * 20, clr_w2, clr_shadow2, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+            GAMEMODE:ShadowText(math.floor(quota_mult * 100) .. "%", "CGHUD_5", ox + shift + (c * 16) + c * 12, h / 2 + (c * 200) + c * 4, clr_w, clr_shadow2, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 
+            local s = c * 28
+            surface.SetDrawColor(clr_w)
+            surface.SetMaterial(prop_mat)
+            surface.DrawTexturedRect(ox + shift + (c * 16) + c * 12 - s / 2, h / 2 - (c * 200) - c * 18 - s / 2, s, s)
             --surface.SetAlphaMultiplier(a)
         end
     end

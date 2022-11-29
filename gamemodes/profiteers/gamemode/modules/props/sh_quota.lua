@@ -34,6 +34,8 @@ function Player:TrackPropQuota(ent)
     end
     ent._trackedmaxhealth = ent:GetNWInt("PFPropMaxHealth", 0)
     self:SetPropQuota(self:GetPropQuota() + ent._trackedmaxhealth)
+    GAMEMODE:HintOneTime(self, 0, "Spawning props fill up your quota depending on its health. If you fill your quota, you can't spawn any more.")
+
 end
 
 function Player:UnTrackPropQuota(ent)
