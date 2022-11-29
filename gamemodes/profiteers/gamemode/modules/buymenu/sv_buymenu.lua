@@ -149,6 +149,7 @@ net.Receive("pt_sell", function(len, ply)
     local itemclass = net.ReadString()
     local itemtbl = Profiteers.Buyables[itemclass]
     if not itemtbl or not itemtbl.PlaceEntity then return end
+    if itemtbl.CannotSell then return end
 
     ply:SellEntities(itemclass)
 end)
