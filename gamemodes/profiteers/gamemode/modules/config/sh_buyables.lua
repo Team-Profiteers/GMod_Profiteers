@@ -8,16 +8,18 @@ end
 
 Profiteers.Buyables = {
     -- ["arccw_ud_m79"] = {
-    -- 	Name = nil, -- auto-generate from EntityClass
-    -- 	EntityClass = "arccw_ud_m79",
-    -- 	Price = 750,
+    --  Name = nil, -- auto-generate from EntityClass
+    --  EntityClass = "arccw_ud_m79",
+    --  Price = 750,
+    --  EntityLimit = nil,
+    --  CannotSell = false,
 
     -- 	Description = "Break action grenade launcher",
-    -- 	Description2 = "Multiple payload types",
-    -- 	Category = "Explosives",
-    -- 	Icon = nil, -- taken from EntityClass
-    -- 	CanBuy = nil, -- function(self, ply)
-    -- 	OnBuy = nil, -- function(self, ply)
+    --  Description2 = "Multiple payload types",
+    --  Category = "Explosives",
+    --  Icon = nil, -- taken from EntityClass
+    --  CanBuy = nil, -- function(self, ply)
+    --  OnBuy = nil, -- function(self, ply)
     -- },
 
     ["arc9_bo2_stinger"] = {
@@ -197,6 +199,8 @@ Profiteers.Buyables = {
         EntityClass = "pt_nuke",
         Price = 1000000,
         PlaceEntity = true,
+        CannotSell = true,
+        EntityLimit = 1,
 
         Description = "1.2mt fission bomb",
         Description2 = "End it all and watch it burn",

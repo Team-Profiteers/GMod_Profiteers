@@ -13,7 +13,7 @@ AccessorFunc(PANEL, "m_Price", "Price", FORCE_NUMBER)
 
 function PANEL:Init()
     self:SetPaintBackground( false )
-    local sw, sh = self:GetParent():GetParent():GetParent():GetSize()
+    -- local sw, sh = self:GetParent():GetParent():GetParent():GetSize()
     self:SetSize( 400, 128 ) -- TODO: get real long n har. nvm
     self:SetText( "" )
     self:SetDoubleClickingEnabled( false )
@@ -81,7 +81,7 @@ end
 function PANEL:OpenMenu()
 
     local itemtbl = self:GetItemTable()
-    if itemtbl.PlaceEntity then
+    if itemtbl.PlaceEntity and not itemtbl.CannotSell then
         local m = DermaMenu()
         m:AddOption( "Sell All", function()
             RunConsoleCommand("pt_sell", self:GetSpawnName())
