@@ -125,7 +125,7 @@ if SERVER then
                 util.Effect("explosion", effectdata)
                 self:Remove()
             end
-            return
+            return dmginfo:GetDamage()
         end
         self:SetHealth(self:Health() - dmginfo:GetDamage())
 
@@ -144,6 +144,8 @@ if SERVER then
                 end
             end)
         end
+
+        return dmginfo:GetDamage()
     end
 else
     function ENT:Initialize()

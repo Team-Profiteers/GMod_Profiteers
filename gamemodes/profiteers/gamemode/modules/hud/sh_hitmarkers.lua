@@ -17,7 +17,7 @@ if SERVER then
             net.WriteUInt(dmginfo:GetDamage(), 16)
             net.WriteBool(ent:IsPlayer() or ent:IsNPC())
             net.WriteBool((ent:IsPlayer() and ent:LastHitGroup() == HITGROUP_HEAD) or (ent:IsNPC() and npcheadshotted) or false)
-            net.WriteBool(((ent:IsPlayer() or ent:IsNPC()) and ent:Health() <= 0) or false)
+            net.WriteBool(((ent:IsPlayer() or ent:IsNPC()) and ent:Health() <= 0) or (ent:GetNWInt("PFPropHealth", 1) <= 0) or false)
             net.WriteBool((ent:IsPlayer() and ent:Armor() > 0) or false)
             net.WriteUInt(distance, 16)
             net.Send(attacker)

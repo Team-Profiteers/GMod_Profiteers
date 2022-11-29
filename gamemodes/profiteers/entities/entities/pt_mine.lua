@@ -60,6 +60,8 @@ if SERVER then
     function ENT:OnTakeDamage(damage)
         if damage:GetInflictor():GetClass() == "pt_mine" then return end
         self:Detonate()
+
+        return damage:GetDamage()
     end
 end
 
