@@ -13,6 +13,7 @@ function Player:GetMaxPropQuota()
 end
 
 function Player:RecalcPropQuota()
+    if GetConVar("pt_prop_quota_disable"):GetBool() then return 0 end
     local quota = 0
     for _, ent in pairs(ents.FindByClass("prop_physics")) do
         if ent:CPPIGetOwner() == self then
@@ -44,12 +45,14 @@ function Player:UnTrackPropQuota(ent)
 end
 
 hook.Add("EntityRemoved", "PropQuota", function(ent)
+    if GetConVar("pt_prop_quota_disable"):GetBool() then return end
     if ent:GetClass() == "prop_physics" and IsValid(ent:CPPIGetOwner()) then
         ent:CPPIGetOwner():UnTrackPropQuota(ent)
     end
 end)
 
 hook.Add("PlayerSpawnProp", "PropQuota", function(ply, model)
+    if GetConVar("pt_prop_quota_disable"):GetBool() then return end
     if ply:GetMaxPropQuota() > 0 and ply:GetPropQuota() >= ply:GetMaxPropQuota() then
         GAMEMODE:Hint(ply, 1, "You hit your prop quota! Remove some props and try again.")
         return false
@@ -57,5 +60,6 @@ hook.Add("PlayerSpawnProp", "PropQuota", function(ply, model)
 end)
 
 hook.Add("PlayerSpawnedProp", "PropQuota", function(ply, model, ent)
+    if GetConVar("pt_prop_quota_disable"):GetBool() then return end
     ply:TrackPropQuota(ent)
 end)

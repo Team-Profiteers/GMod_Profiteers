@@ -16,7 +16,7 @@ hook.Add("HUDPaint", "PropHud", function()
     local w, h = ScrW() * (1 - dzx * 2), ScrH() * (1 - dzy * 2)
     local ox, oy = ScrW() * dzx, ScrW() * dzy
 
-    if LocalPlayer():GetMaxPropQuota() > 0 then
+    if !GetConVar("pt_prop_quota_disable"):GetBool() and LocalPlayer():GetMaxPropQuota() > 0 then
         local quota_mult = LocalPlayer():GetPropQuota() / LocalPlayer():GetMaxPropQuota()
         if quota_mult > 0 and quota_mult < 1 then quota_mult = math.Clamp(quota_mult, 0.01, 0.99) end
 
