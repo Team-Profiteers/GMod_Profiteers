@@ -73,7 +73,7 @@ Profiteers.Enemies["Cops"] = {
 	["loot"] = {
 		["item_battery"] = 1,
 	}
-},
+}
 
 Profiteers.Enemies["Zombies"] = {
 	["class_type"] = "npc_zombie",
@@ -85,7 +85,11 @@ Profiteers.Enemies["Zombies"] = {
 	["maxsize"] = 10,
 	["rels"] = {""},
 	["bounty"] = 2000,
-	["dmgmult"] = 5
+	["dmgmult"] = 5,
+	["lootchance"] = 0.1,
+	["loot"] = {
+		["item_battery"] = 1,
+	}
 }
 
 Profiteers.Enemies["Antlions"] = {
