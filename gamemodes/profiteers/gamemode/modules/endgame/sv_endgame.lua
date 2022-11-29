@@ -19,7 +19,7 @@ function Profiteers:SyncNuke()
 end
 
 
-function Profiteers:GameOver()
+function Profiteers:SetGameOver()
     Profiteers.GameOver = true
     net.Start("pt_gameover")
         net.WriteBool(true)

@@ -56,7 +56,7 @@ if SERVER then
         nuke:Spawn()
         nuke:Activate()
 
-        Profiteers:GameOver()
+        Profiteers:SetGameOver()
 
         timer.Simple(15, function()
             if MapVote then
