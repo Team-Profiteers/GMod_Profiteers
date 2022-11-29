@@ -30,6 +30,7 @@ function Profiteers:SpawnAirdrop()
             local winner = angle
             local entertrace = nil
             local winningdist = 0
+            local winningenterpos = nil
 
             for j = 0, 359 do
                 local vec = Vector(math.cos(math.rad(angle + j)), math.sin(math.rad(angle + j)), 0)
@@ -55,14 +56,15 @@ function Profiteers:SpawnAirdrop()
                 if nowdist > winningdist then
                     winner = angle + j
                     winningdist = nowdist
+                    winningenterpos = entertrace.HitPos
                 end
             end
 
-            local enterpos = entertrace.HitPos
+            local enterpos = winningenterpos
 
             local ent = ents.Create("pt_airdrop_plane")
 
-            local ang = Angle(0, winner, 0)
+            local ang = Angle(0, winner + 180, 0)
 
             ent:SetPos(enterpos - Vector(0, 0, 512) + ang:Forward() * 1024)
             ent:SetAngles(ang)
