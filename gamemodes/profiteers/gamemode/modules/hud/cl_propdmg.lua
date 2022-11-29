@@ -74,17 +74,15 @@ hook.Add("HUDPaint", "PT PropDMG", function()
             surface.DrawLine(inner.x, inner.y, outer.x, outer.y)
         end
 
-        if IsValid(ent:CPPIGetOwner()) then
-            local text2 = ent:CPPIGetOwner():GetName()
-            x = ScrW() / 2 - (surface.GetTextSize(text2) / 2)
-            y = y + ScreenScale(12)
-            surface.SetTextColor(clr_shadow)
-            surface.SetTextPos(x + 1, y + 1)
-            surface.DrawText(text2)
+        local text2 = ent:CPPIGetOwnerName()
+        x = ScrW() / 2 - (surface.GetTextSize(text2) / 2)
+        y = y + ScreenScale(12)
+        surface.SetTextColor(clr_shadow)
+        surface.SetTextPos(x + 1, y + 1)
+        surface.DrawText(text2)
 
-            surface.SetTextColor(clr)
-            surface.SetTextPos(x, y)
-            surface.DrawText(text2)
-        end
+        surface.SetTextColor(clr)
+        surface.SetTextPos(x, y)
+        surface.DrawText(text2)
     end
 end)
