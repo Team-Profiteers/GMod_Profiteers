@@ -13,6 +13,7 @@ ENT.BaseHealth = 350
 ENT.PreferredAngle = Angle(0, 0, 0)
 ENT.AnchorOffset = Vector(0, 0, -0.2)
 ENT.AnchorRequiresBeacon = true
+ENT.AllowUnAnchor = true
 
 ENT.Category = "Profiteers"
 ENT.Spawnable = false
@@ -21,7 +22,10 @@ ENT.ForceModes = {
     400,
     750,
     1000,
-    2500,
+    1500,
+    2000,
+    3000,
+    4000,
     5000
 }
 
@@ -39,13 +43,14 @@ if SERVER then
     function ENT:OnUse(ply)
         if !(self:GetAnchored() and self:WithinBeacon()) then return end
         self:SetForceMode((self:GetForceMode() + 1) % #self.ForceModes)
-        self:EmitSound("buttons/lightswitch2.wav", 70, 95 + 10 * (self:GetForceMode() / #self.ForceModes))
+        self:EmitSound("buttons/lightswitch2.wav", 70, 80 + 40 * (self:GetForceMode() / #self.ForceModes))
     end
 
     function ENT:EndTouch(ent)
         if ent:IsPlayer() and !ent:IsOnGround() and self:GetAnchored() and self:WithinBeacon() and (self.NextBoost or 0) < CurTime() then
             ent:SetVelocity(Vector(0, 0, self.ForceModes[self:GetForceMode() + 1]))
             self.NextBoost = CurTime() + 0.1
+            self:EmitSound("ambient/machines/catapult_throw.wav", 70, 80 + 40 * (self:GetForceMode() / #self.ForceModes))
         end
     end
 else
