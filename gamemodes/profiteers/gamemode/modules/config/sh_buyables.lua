@@ -291,9 +291,21 @@ Profiteers.Buyables = {
         EntityClass = "pt_sentry",
         Price = 12500,
         PlaceEntity = true,
+        EntityLimit = 3,
 
         Description = "Attacks enemies automatically",
-        Description2 = "Place near Beacon to use",
+        Description2 = "Must be deployed near a Beacon",
+
+        Category = "Basebuilding"
+    },
+    ["pt_sentry_missile"] = {
+        Name = "Missile Turret",
+        EntityClass = "pt_sentry_missile",
+        Price = 25000,
+        PlaceEntity = true,
+
+        Description = "Locks onto planes and enemies",
+        Description2 = "Must be deployed near a Beacon",
 
         Category = "Basebuilding"
     },

@@ -13,6 +13,7 @@ ENT.BaseHealth = 100
 ENT.PreferredAngle = Angle(0, 0, 0)
 ENT.AnchorRequiresBeacon = true
 ENT.AnchorOffset = Vector(0, 0, 1)
+ENT.AllowUnAnchor = true
 
 ENT.Category = "Profiteers"
 ENT.Spawnable = false
