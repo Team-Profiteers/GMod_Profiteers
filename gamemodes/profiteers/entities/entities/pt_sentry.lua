@@ -60,7 +60,10 @@ if SERVER then
 
     function ENT:ShootTarget()
         if !IsValid(self.Target) then return end
-        if self:GetAmmo() <= 0 then return end
+        if self:GetAmmo() <= 0 then
+            self:EmitSound("weapons/ar2/ar2_empty.wav")
+            return
+        end
 
         local targetang = ((self.Target:EyePos() + Vector(0, 0, -8)) - (self:GetPos() + Vector(0, 0, 8))):Angle()
 
@@ -100,6 +103,7 @@ if SERVER then
         muzzle:SetAngles(ang)
         muzzle:SetEntity(self)
         muzzle:SetAttachment(1)
+        muzzle:SetScale(2)
         util.Effect("MuzzleEffect", muzzle)
     end
 
@@ -132,6 +136,11 @@ if SERVER then
                 return
             end
 
+            if target == self:CPPIGetOwner() then
+                self.Target = nil
+                return
+            end
+
             if self:GetPos():DistToSqr(target:GetPos()) > self.Range * self.Range then
                 self.Target = nil
                 return
@@ -147,6 +156,7 @@ if SERVER then
             local targets = ents.FindInSphere(self:GetPos(), self.Range)
             for k, v in pairs(targets) do
                 if v == self:GetOwner() then continue end
+                if target == self:CPPIGetOwner() then continue end
                 if (v:IsPlayer() and v:Alive()) or (v:IsNPC() and v:Health() > 0) then
                     if v:Visible(self) then
                         self.Target = v
