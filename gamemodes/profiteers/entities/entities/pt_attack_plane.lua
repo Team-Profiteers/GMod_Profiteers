@@ -37,24 +37,26 @@ if SERVER then
         self:SetAngles(self.MyAngle)
         self:FrameAdvance(FrameTime())
 
-        local ents = ents.FindInSphere(self:GetPos(), 15000)
+        if self.Rockets > 0 then
+            local ents = ents.FindInSphere(self:GetPos(), 15000)
 
-        local found_tgt = nil
+            local found_tgt = nil
 
-        if self.NextMissileTime < CurTime() then
-            for k, v in pairs(ents) do
-                if !IsValid(self.LaunchedMissileAt[v]) and v != self and v != self:GetOwner() and ((v:IsPlayer() and v:Alive() and v:IsOnGround()) or (v:IsNPC() and v:Health() > 0)) and v:Visible(self) then
-                    found_tgt = v
+            if self.NextMissileTime < CurTime() then
+                for k, v in pairs(ents) do
+                    if !IsValid(self.LaunchedMissileAt[v]) and v != self and v != self:GetOwner() and ((v:IsPlayer() and v:Alive() and v:IsOnGround()) or (v:IsNPC() and v:Health() > 0)) and v:Visible(self) then
+                        found_tgt = v
 
-                    if v:IsPlayer() then
-                        break
+                        if v:IsPlayer() then
+                            break
+                        end
                     end
                 end
             end
-        end
 
-        if found_tgt then
-            self:LaunchMissile(found_tgt)
+            if found_tgt then
+                self:LaunchMissile(found_tgt)
+            end
         end
     end
 
