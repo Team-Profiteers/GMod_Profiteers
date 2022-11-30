@@ -424,7 +424,7 @@ Profiteers.Buyables = {
     },
     ["pt_attacker"] = {
         Name = "ATGM Strike",
-        Price = 90000,
+        Price = 25000,
 
         Description = "Call in an attack jet",
         Description2 = "Fires missiles at targets",
@@ -432,7 +432,7 @@ Profiteers.Buyables = {
         Category = "Air Strikes",
 
         OnBuy = function(self, ply)
-            Profiteers:SpawnAttackPlane(ply)
+            Profiteers:SpawnAttackerPlane(ply)
         end
     },
     ["pt_fighter"] = {

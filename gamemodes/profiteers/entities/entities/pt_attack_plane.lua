@@ -8,7 +8,7 @@ ENT.MyAngle = Angle(0, 0, 0)
 
 ENT.IsAirAsset = true
 
-ENT.Rockets = 64
+ENT.Rockets = 4
 
 ENT.LaunchedMissileAt = {}
 ENT.NextMissileTime = 0
@@ -62,10 +62,10 @@ if SERVER then
         local targetang = self:GetAngles()
 
         local rocket = ents.Create("pt_missile")
-        rocket:SetPos(self:GetPos() + self:GetForward() * 250)
+        rocket:SetPos(self:GetPos() + self:GetForward() * 250 + self:GetUp() * -32)
         rocket:SetAngles(targetang)
         rocket.ShootEntData.Target = target
-        rocket.ImpactDamage = 100
+        rocket.ImpactDamage = 2500
         rocket.SteerSpeed = 1500
         rocket.SeekerAngle = math.cos(math.rad(90))
         rocket.LifeTime = 15
@@ -80,7 +80,7 @@ if SERVER then
         self:EmitSound("weapons/stinger_fire1.wav", 140, 120)
 
         self.LaunchedMissileAt[target] = rocket
-        self.NextMissileTime = CurTime() + 0.5
+        self.NextMissileTime = CurTime() + 1
         self.Rockets = self.Rockets - 1
     end
 
