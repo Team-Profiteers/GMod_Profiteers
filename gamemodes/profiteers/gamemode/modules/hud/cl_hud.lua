@@ -484,12 +484,12 @@ hook.Add("HUDPaint", "HUDPaint_DrawABox", function()
     local beacon_positions = {}
     local npc_positions = {}
     cam.Start3D()
-    for _, p in pairs(player.GetAll()) do
+    for _, p in ipairs(player.GetAll()) do
         if p ~= ply and ((p:Team() == ply:Team() and p:Team() != TEAM_UNASSIGNED) or owns_uav) then
             table.insert(ally_positions, {p, (p:GetPos() + Vector(0, 0, 80)):ToScreen()})
         end
     end
-    for _, t in pairs(GAMEMODE.SpawnedVehicles or {}) do
+    for _, t in ipairs(GAMEMODE.SpawnedVehicles or {}) do
         local v = t.Entity
         if not IsValid(v) then continue end
         if ply:GetSimfphys() == v then continue end
@@ -501,13 +501,13 @@ hook.Add("HUDPaint", "HUDPaint_DrawABox", function()
         end
     end
     ply.BoughtEntities = ply.BoughtEntities or {}
-    for _, e in pairs(ply.BoughtEntities["pt_beacon"] or {}) do
+    for _, e in ipairs(ply.BoughtEntities["pt_beacon"] or {}) do
         if not IsValid(e) then continue end
         table.insert(beacon_positions, {e, (e:GetPos() + Vector(0, 0, 48)):ToScreen()})
     end
 
     if owns_uav then
-        for _, e in pairs(ents.GetAll()) do
+        for _, e in ipairs(ents.GetAll()) do
             if not IsValid(e) then continue end
 
             if e:IsNPC() then
@@ -519,7 +519,7 @@ hook.Add("HUDPaint", "HUDPaint_DrawABox", function()
     end
     cam.End3D()
 
-    for k, v in pairs(ally_positions) do
+    for k, v in ipairs(ally_positions) do
         local ply_dist = EyePos():DistToSqr(v[1]:GetPos() + Vector(0, 0, 80))
         local s = math.Clamp(1 - ply_dist / 4096 ^ 2, 0.5, 1) * 32
         local x, y = v[2].x, v[2].y
@@ -535,7 +535,7 @@ hook.Add("HUDPaint", "HUDPaint_DrawABox", function()
         surface.DrawTexturedRect(x - s * 0.5, y - s * 0.5, s, s)
     end
 
-    for k, v in pairs(vehicle_positions) do
+    for k, v in ipairs(vehicle_positions) do
         local ply_dist = EyePos():DistToSqr(v[1]:GetPos() + Vector(0, 0, 80))
         local s = math.Clamp(1 - ply_dist / 4096 ^ 2, 0.5, 1) * 64
         local x, y = v[2].x, v[2].y
@@ -550,7 +550,7 @@ hook.Add("HUDPaint", "HUDPaint_DrawABox", function()
         surface.DrawTexturedRect(x - s * 0.5, y - s * 0.5, s, s)
     end
 
-    for k, v in pairs(beacon_positions) do
+    for k, v in ipairs(beacon_positions) do
         local ply_dist = EyePos():DistToSqr(v[1]:GetPos() + Vector(0, 0, 80))
         local s = math.Clamp(1 - ply_dist / 2048 ^ 2, 0.5, 1) * 64
         local x, y = v[2].x, v[2].y
@@ -570,7 +570,7 @@ hook.Add("HUDPaint", "HUDPaint_DrawABox", function()
         surface.DrawTexturedRect(x - s * 0.5, y - s * 0.5, s, s)
     end
 
-    for k, v in pairs(npc_positions) do
+    for k, v in ipairs(npc_positions) do
         local ply_dist = EyePos():DistToSqr(v[1]:GetPos() + Vector(0, 0, 80))
         local s = math.Clamp(1 - ply_dist / 4096 ^ 2, 0.5, 1) * 32
         local x, y = v[2].x, v[2].y
@@ -581,7 +581,7 @@ hook.Add("HUDPaint", "HUDPaint_DrawABox", function()
     end
 
     local display_money
-    for k, v in pairs(money_updates) do
+    for k, v in ipairs(money_updates) do
         if v[1] + 2 > CurTime() then
             if not display_money then display_money = v[3] end
             local f = 1 - math.Clamp((CurTime() - v[1] - 0.5) / 1.5, 0, 1)
@@ -602,6 +602,15 @@ hook.Add("HUDPaint", "HUDPaint_DrawABox", function()
 
     CLR_W.a = 255
     CLR_B2.a = 127
+
+
+    if !ply:GetNWBool("pt_parachute") and ply:GetVelocity().z < -300 then -- parachuting
+        GAMEMODE:ShadowText("Open parachute", "CGHUD_24_Unscaled", ScrW()/2, ScrH()/1.5, CLR_W, CLR_B2, TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, true)
+        GAMEMODE:ShadowText("[ " .. ARC9.GetBindKey("+jump") .. " ]", "CGHUD_24_Unscaled", ScrW()/2, ScrH()/1.5 + 40, CLR_W, CLR_B2, TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, true)
+    elseif ply:GetNWBool("pt_parachute") then
+        GAMEMODE:ShadowText("Cut the cord", "CGHUD_24_Unscaled", ScrW()/2, ScrH()/1.5, CLR_W, CLR_B2, TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, true)
+        GAMEMODE:ShadowText("[ " .. ARC9.GetBindKey("+jump") .. " ]", "CGHUD_24_Unscaled", ScrW()/2, ScrH()/1.5 + 40, CLR_W, CLR_B2, TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, true)       
+    end
 end)
 
 net.Receive("pt_updatemoney", function()

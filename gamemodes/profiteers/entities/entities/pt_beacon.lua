@@ -35,12 +35,16 @@ else
                     if !ent:GetAnchored() or ent:CPPIGetOwner() ~= LocalPlayer() then continue end
                     table.insert(beaconcache, ent)
                 end
+                for _, ent in pairs(ents.FindByClass("pt_beacon_mobile")) do
+                    if  ent:CPPIGetOwner() ~= LocalPlayer() then continue end
+                    table.insert(beaconcache, ent)
+                end
             end
 
-
             for _, ent in pairs(beaconcache) do
-                local clr = IsValid(LocalPlayer().PhysgunProp) and ((LocalPlayer().PhysgunProp:GetPos():Distance(ent:GetPos()) <= 1024) and color_ok or color_bad) or color_white
-                render.DrawWireframeSphere(ent:GetPos(), 1024, 16, 16, clr, true)
+                local dist = ent:GetClass() == "pt_beacon" and GetConVar("pt_beacon_radius"):GetFloat() or GetConVar("pt_beacon_mobile_radius"):GetFloat()
+                local clr = IsValid(LocalPlayer().PhysgunProp) and ((LocalPlayer().PhysgunProp:GetPos():Distance(ent:GetPos()) <= dist) and color_ok or color_bad) or color_white
+                render.DrawWireframeSphere(ent:GetPos(), dist, 16, 16, clr, true)
             end
         else
             beaconcache = nil

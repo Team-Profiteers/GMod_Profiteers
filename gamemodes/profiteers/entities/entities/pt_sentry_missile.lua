@@ -11,7 +11,7 @@ ENT.TakePropDamage = true
 ENT.BaseHealth = 400
 
 ENT.PreferredAngle = Angle(0, 0, 0)
-ENT.AnchorRequiresBeacon = true
+ENT.AnchorRequiresBeacon = false
 ENT.AllowUnAnchor = true
 
 ENT.AnchorOffset = Vector(0, 0, 0)
@@ -33,6 +33,10 @@ function ENT:SetupDataTables()
 end
 
 
+function ENT:CanFunction()
+    return self:WithinBeacon() and self:GetAngles():Up():Dot(Vector(0, 0, 1)) > 0.6 and self:WaterLevel() == 0
+end
+
 if SERVER then
     ENT.Target = nil
 
@@ -53,8 +57,7 @@ if SERVER then
     end
 
     function ENT:Think()
-        if !self:GetAnchored() then return end
-        if !self:WithinBeacon() then return end
+        if !self:CanFunction() then return end
         if IsValid(self.LastMissile) then return end
         if (self.NextFire or 0) > CurTime() then return end
 
@@ -92,12 +95,12 @@ if SERVER then
                     self:SetLockonTime(CurTime() + 2)
                 end
                 self:EmitSound("buttons/button3.wav", 120, 110)
-                self.NextBeep = CurTime() + 0.5
+                self.NextBeep = CurTime() + 0.55
             elseif self:GetLockonTime() < CurTime() then
                 self:ShootTarget()
                 self.Target = nil
-            elseif (self.NextBeep or 0) < CurTime() then
-                self.NextBeep = CurTime() + 0.15
+            elseif (self.NextBeep or 0) <= CurTime() then
+                self.NextBeep = CurTime() + 0.19
                 self:EmitSound("buttons/blip1.wav", 120, 100)
             end
         elseif self:GetLockonTime() > 0 and dot <= 0.75 then
@@ -105,6 +108,9 @@ if SERVER then
             self:SetLockonTime(0)
             self:EmitSound("buttons/combine_button2.wav", 120, 110)
         end
+
+        self:NextThink(CurTime() + 0.2)
+        return true
     end
 
     function ENT:ShootTarget()
@@ -113,6 +119,7 @@ if SERVER then
         if (self.NextFire or 0) > CurTime() then return end
         if self:GetAmmo() <= 0 then
             self:EmitSound("weapons/ar2/ar2_empty.wav")
+            self.NextFire = CurTime() + 3
             return
         end
         self.NextFire = CurTime() + 1
@@ -160,7 +167,7 @@ if SERVER then
     end
 
     function ENT:OnUse(ply)
-        if !self:GetAnchored() then return end
+        if !self:CanFunction() then return end
 
         if self:GetAmmo() < self.MagSize then
             self:SetAmmo(self.MagSize)
@@ -216,27 +223,6 @@ if SERVER then
 
             return
         else
-            --[[]
-            local targets = ents.FindInSphere(self:GetPos(), self.Range)
-            for k, v in pairs(targets) do
-                if (v:IsPlayer() and v:OwnsBoughtEntity(self)) then continue end
-                if (v:IsPlayer() and v:Alive()) or (v:IsNPC() and v:Health() > 0) then
-                    if v:Visible(self) then
-                        self.Target = v
-                        return
-                    end
-                end
-            end
-
-            if !IsValid(self.Target) then
-                for _, v in pairs(ents.GetAll()) do
-                    if self:Visible(v) then
-                        self.Target = v
-                        return
-                    end
-                end
-            end
-            ]]
             local r = self.Range * self.Range
             local plane = nil
             for _, v in pairs(ents.GetAll()) do
@@ -282,10 +268,10 @@ if CLIENT then
             boneang:RotateAroundAxis(boneang:Up(), 180)
 
             cam.Start3D2D(pos, boneang, 0.05)
-                if self:WithinBeacon() and self:GetAnchored() then
-                    GAMEMODE:ShadowText("ONLINE", "CGHUD_5", 0, 0, self:WithinBeacon() and color_white or Color(255, 0, 0), Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+                if self:CanFunction() then
+                    GAMEMODE:ShadowText("ONLINE", "CGHUD_5", 0, 0, color_white, Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
                 else
-                    GAMEMODE:ShadowText("OFFLINE", "CGHUD_5", 0, 0, self:WithinBeacon() and color_white or Color(255, 0, 0), Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+                    GAMEMODE:ShadowText("OFFLINE", "CGHUD_5", 0, 0, Color(255, 0, 0), Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
                 end
 
                 surface.SetMaterial(mat_missile)
