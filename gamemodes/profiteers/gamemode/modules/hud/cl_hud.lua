@@ -602,6 +602,15 @@ hook.Add("HUDPaint", "HUDPaint_DrawABox", function()
 
     CLR_W.a = 255
     CLR_B2.a = 127
+
+
+    if !ply:GetNWBool("pt_parachute") and ply:GetVelocity().z < -300 then -- parachuting
+        GAMEMODE:ShadowText("Open parachute", "CGHUD_24_Unscaled", ScrW()/2, ScrH()/1.5, CLR_W, CLR_B2, TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, true)
+        GAMEMODE:ShadowText("[ " .. ARC9.GetBindKey("+jump") .. " ]", "CGHUD_24_Unscaled", ScrW()/2, ScrH()/1.5 + 40, CLR_W, CLR_B2, TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, true)
+    elseif ply:GetNWBool("pt_parachute") then
+        GAMEMODE:ShadowText("Cut the cord", "CGHUD_24_Unscaled", ScrW()/2, ScrH()/1.5, CLR_W, CLR_B2, TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, true)
+        GAMEMODE:ShadowText("[ " .. ARC9.GetBindKey("+jump") .. " ]", "CGHUD_24_Unscaled", ScrW()/2, ScrH()/1.5 + 40, CLR_W, CLR_B2, TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, true)       
+    end
 end)
 
 net.Receive("pt_updatemoney", function()
