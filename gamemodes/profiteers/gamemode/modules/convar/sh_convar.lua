@@ -30,4 +30,6 @@ CreateConVar("pt_beacon_mobile_radius", 256, FCVAR_ARCHIVE + FCVAR_REPLICATED, "
 CreateConVar("pt_prop_quota_disable", 0, FCVAR_ARCHIVE + FCVAR_REPLICATED, "Disable prop quota entirely (for testing).", 0, 1)
 CreateConVar("pt_prop_quota", 50000, FCVAR_ARCHIVE + FCVAR_REPLICATED, "Total amount of health a player's props can have. 0 - infinite.", 0)
 
+CreateConVar("pt_npc_max", 60, FCVAR_REPLICATED, "Total amount of NPCs that can be spawned at once.", 0)
+
 CreateConVar("pt_dev_airffa", 0, FCVAR_REPLICATED, "Make aircraft and anti-air engage everything.", 0, 1)

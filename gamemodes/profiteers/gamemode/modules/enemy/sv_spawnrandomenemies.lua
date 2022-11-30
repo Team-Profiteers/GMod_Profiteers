@@ -93,7 +93,7 @@ local function createEnemyNPC()
         end
     end
 
-    if c > Profiteers.MaxNPCs then return end
+    if c >= GetConVar("pt_npc_max"):GetInt() then return end
     local a = Profiteers.Nodes[math.random(#Profiteers.Nodes)]
 
     if not a then
@@ -154,6 +154,10 @@ local function createEnemyNPC()
             enemy:AddRelationship(k)
         end
 
+        if enemy:GetClass() == "npc_stalker" then
+            enemy:SetSaveValue("m_iPlayerAggression", 1)
+        end
+
         -- for i, k in pairs(defaultrels) do
         --     enemy:AddRelationship(k)
         -- end
@@ -196,17 +200,15 @@ function GM:OnNPCKilled(npc, atk, inf)
             local lootchance = npc.lootchance or 0
             local loot = npc.loot
 
-            if loot then
-                if math.random() <= lootchance then
-                    local lootent = table.Random(table.GetKeys(loot))
+            if loot and math.random() <= lootchance then
+                local lootent = table.Random(table.GetKeys(loot))
 
-                    if lootent then
-                        for i = 1, loot[lootent] do
-                            local ent = ents.Create(lootent)
-                            ent:SetPos(npc:GetPos() + Vector(0, 0, 32) + (VectorRand() * 4))
-                            ent:SetAngles(AngleRand())
-                            ent:Spawn()
-                        end
+                if lootent then
+                    for i = 1, loot[lootent] do
+                        local ent = ents.Create(lootent)
+                        ent:SetPos(npc:GetPos() + Vector(0, 0, 32) + (VectorRand() * 4))
+                        ent:SetAngles(AngleRand())
+                        ent:Spawn()
                     end
                 end
             end

@@ -75,6 +75,19 @@ Profiteers.Enemies["Cops"] = {
 	}
 }
 
+Profiteers.Enemies["Stalkers"] = {
+	["class_type"] = "npc_stalker",
+	["hp"] = 150,
+	["prof"] = WEAPON_PROFICIENCY_AVERAGE,
+	["wpn"] = nil,
+	["squad"] = 2,
+	["minsize"] = 8,
+	["maxsize"] = 12,
+	["rels"] = {"player D_HT 90", "npc_combine_s D_HT 50", "npc_metropolice D_HT 50", "npc_zombie D_HT 50", "npc_antlion D_HT 50", "npc_antlionguard D_HT 50"},
+	["bounty"] = 1000,
+	["dmgmult"] = 5,
+}
+
 Profiteers.Enemies["Zombies"] = {
 	["class_type"] = "npc_zombie",
 	["hp"] = 500,
@@ -117,4 +130,5 @@ Profiteers.Enemies["Antlion Guard"] = {
 	["bounty"] = 30000,
 	["dmgmult"] = 3
 }
+
 Profiteers.MaxNPCs = 50
