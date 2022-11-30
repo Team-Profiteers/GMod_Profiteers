@@ -53,7 +53,7 @@ if SERVER then
             local bullet = {
                 Attacker = self:GetOwner(),
                 Inflictor = self,
-                Damage = 1,
+                Damage = 40,
                 Force = 10,
                 Num = 4,
                 Dir = shootang,
