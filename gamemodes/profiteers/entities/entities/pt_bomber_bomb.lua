@@ -16,9 +16,6 @@ if SERVER then
         self:SetCollisionGroup(COLLISION_GROUP_PROJECTILE)
         self:DrawShadow(false)
 
-        local phys = self:GetPhysicsObject()
-        phys:SetMass(250)
-
         self.SpawnTime = CurTime()
     end
 
@@ -29,16 +26,16 @@ if SERVER then
     function ENT:Think()
         // guide bomb towards target
 
-        local phys = self:GetPhysicsObject()
-        phys:EnableGravity(true)
-        phys:SetDragCoefficient(0)
-
         local targetpos = self.TargetPos
         local selfpos = self:GetPos()
 
+        targetpos.z = 0
+        selfpos.z = 0
+
         local dir = (targetpos - selfpos):GetNormalized()
-        dir.z = 0
-        phys:ApplyForceCenter(dir * FrameTime() * 1500)
+        local dist = (targetpos - selfpos):Length()
+        local phys = self:GetPhysicsObject()
+        phys:ApplyForceCenter(Vector(0, 0, -600) + (dir * 20000 * dist / 1000))
     end
 
     function ENT:Detonate()
@@ -51,15 +48,28 @@ if SERVER then
 
         self:EmitSound("ambient/explosions/explode_4.wav", 125)
 
-        util.BlastDamage(self, self:GetOwner(), self:GetPos(), 512, 200)
+        util.BlastDamage(self, self:GetOwner(), self:GetPos(), 1024, 200)
+
+        local mypos = self:GetPos()
+        local owner = self:GetOwner()
+
+        for i = 1, 50 do
+            local blastpos = mypos - Vector(0, 0, i * 256)
+
+            if util.IsInWorld(blastpos) then
+                local effectdata2 = EffectData()
+                effectdata2:SetOrigin(blastpos)
+                util.Effect("Explosion", effectdata2)
+
+                util.BlastDamage(self, owner, blastpos, 1024, 200)
+            end
+        end
 
         self:Remove()
     end
 
     function ENT:OnTakeDamage(damage)
-        self:Detonate()
-
-        return damage:GetDamage()
+        return 0
     end
 end
 

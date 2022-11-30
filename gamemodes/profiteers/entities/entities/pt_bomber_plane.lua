@@ -32,7 +32,7 @@ if SERVER then
         local phys = self:GetPhysicsObject()
         phys:EnableGravity(false)
         phys:SetDragCoefficient(0)
-        phys:ApplyForceCenter(self:GetAngles():Forward() * FrameTime() * 5000000)
+        phys:ApplyForceCenter(self:GetAngles():Forward() * FrameTime() * 50000000)
         self:SetAngles(self.MyAngle)
 
         // when we get close to the drop pos, drop a bomb
@@ -43,15 +43,16 @@ if SERVER then
         selfpos2d.z = 0
         droppos2d.z = 0
 
-        if selfpos2d:Distance(droppos2d) < 1000 and not self.BombDropped then
+        if selfpos2d:Distance(droppos2d) < 500 and not self.BombDropped then
             self.BombDropped = true
             local bomb = ents.Create("pt_bomber_bomb")
             bomb:SetPos(self:GetPos() - Vector(0, 0, 32))
             bomb:SetAngles(self:GetAngles())
             bomb:SetOwner(self:GetOwner())
+            bomb.TargetPos = self.DropPos
             bomb:Spawn()
 
-            bomb.TargetPos = self.DropPos
+            bomb:SetVelocity(self:GetVelocity())
         end
 
         self:FrameAdvance(FrameTime())
@@ -93,6 +94,8 @@ if SERVER then
     end
 else
     function ENT:Initialize()
+        surface.PlaySound("profiteers/flyby_01.ogg")
+
         self:SetColor(Color(255, 255, 255, 0))
         self:SetRenderFX(kRenderFxSolidSlow)
     end
