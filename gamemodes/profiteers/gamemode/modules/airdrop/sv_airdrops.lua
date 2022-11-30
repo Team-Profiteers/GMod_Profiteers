@@ -1,20 +1,22 @@
-function Profiteers:SpawnAirdrop()
-    if trans then return end
-
-    if !Profiteers.Nodes or table.Count(Profiteers.Nodes) == 0 then
+function Profiteers:GetPlaneEnterPosAng(droppos)
+    if !droppos and !Profiteers.Nodes or table.Count(Profiteers.Nodes) == 0 then
         ParseNodeFile()
     end
 
     local montecarlotries = {}
 
-    for i = 1, table.Count(Profiteers.Nodes) do
-        table.insert(montecarlotries, i)
+    if droppos then
+        table.insert(montecarlotries, droppos)
+    else
+        for i = 1, table.Count(Profiteers.Nodes) do
+            table.insert(montecarlotries, i)
+        end
+
+        table.Shuffle(montecarlotries)
     end
 
-    table.Shuffle(montecarlotries)
-
     for i, k in pairs(montecarlotries) do
-        local pos = Profiteers.Nodes[k]
+        local pos = droppos or Profiteers.Nodes[k]
 
         local tr = util.TraceHull({
             start = pos + Vector(0, 0, 32),
@@ -62,18 +64,25 @@ function Profiteers:SpawnAirdrop()
 
             local enterpos = winningenterpos
 
-            local ent = ents.Create("pt_airdrop_plane")
-
             local ang = Angle(0, winner + 180, 0)
 
-            ent:SetPos(enterpos - Vector(0, 0, 512) + ang:Forward() * 1024)
-            ent:SetAngles(ang)
-            ent:Spawn()
-            ent:Activate()
+            local pos = enterpos - Vector(0, 0, 512) + ang:Forward() * 1024
 
-            return
+            return pos, ang
         end
     end
+end
+
+function Profiteers:SpawnAirdrop()
+    local pos, ang = Profiteers:GetPlaneEnterPosAng()
+
+    if !pos then return end
+
+    local airdrop = ents.Create("pt_airdrop_plane")
+    airdrop:SetPos(pos)
+    airdrop:SetAngles(ang)
+    airdrop:Spawn()
+    airdrop:Activate()
 end
 
 -- spawn airdrops at random

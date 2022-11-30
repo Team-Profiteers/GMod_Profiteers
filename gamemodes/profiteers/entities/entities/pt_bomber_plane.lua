@@ -1,10 +1,12 @@
 AddCSLuaFile()
-ENT.PrintName = "UAV"
+ENT.PrintName = "Heavy Bomber"
 ENT.Type = "anim"
 ENT.RenderGroup = RENDERGROUP_BOTH
-ENT.Model = "models/profiteers/c130.mdl"
+ENT.Model = "models/profiteers/vehicles/bo1_rolling_thunder.mdl"
 ENT.Dropped = false
 ENT.MyAngle = Angle(0, 0, 0)
+
+ENT.DropPos = Vector(0, 0, 0)
 
 ENT.IsAirAsset = true
 
@@ -17,11 +19,13 @@ if SERVER then
         self.SpawnTime = CurTime()
         self:GetPhysicsObject():SetMass(150)
 
-        self:SetMaxHealth(1500)
+        self:SetMaxHealth(3000)
         self:SetHealth(self:GetMaxHealth())
 
         self.MyAngle = self:GetAngles()
         self:ResetSequence(self:LookupSequence("idle"))
+
+        self.BombDropped = false
     end
 
     function ENT:Think()
@@ -30,6 +34,26 @@ if SERVER then
         phys:SetDragCoefficient(0)
         phys:ApplyForceCenter(self:GetAngles():Forward() * FrameTime() * 5000000)
         self:SetAngles(self.MyAngle)
+
+        // when we get close to the drop pos, drop a bomb
+
+        local selfpos2d = self:GetPos()
+        local droppos2d = self.DropPos
+
+        selfpos2d.z = 0
+        droppos2d.z = 0
+
+        if selfpos2d:Distance(droppos2d) < 1000 and not self.BombDropped then
+            self.BombDropped = true
+            local bomb = ents.Create("pt_bomber_bomb")
+            bomb:SetPos(self:GetPos() - Vector(0, 0, 32))
+            bomb:SetAngles(self:GetAngles())
+            bomb:SetOwner(self:GetOwner())
+            bomb:Spawn()
+
+            bomb.TargetPos = self.DropPos
+        end
+
         self:FrameAdvance(FrameTime())
     end
 
@@ -50,6 +74,7 @@ if SERVER then
         if self:Health() <= 0 and not self.Dropped then
             self.Dropped = true
             self:OnPropDestroyed(damage)
+            self:Remove()
         end
 
         return damage:GetDamage()
@@ -60,7 +85,7 @@ if SERVER then
         effectdata:SetOrigin(self:GetPos())
         util.Effect("pt_bigboom", effectdata)
 
-        for i = 1, 3 do
+        for i = 1, 10 do
             local effectdata2 = EffectData()
             effectdata2:SetOrigin(self:GetPos())
             util.Effect("pt_planewreckage", effectdata2)
@@ -90,7 +115,7 @@ else
             if self.Ticks % 5 == 0 then
                 local emitter = ParticleEmitter(self:GetPos())
 
-                local particle = emitter:Add("particles/smokey", self:GetPos() + self:GetForward() * -100)
+                local particle = emitter:Add("particles/smokey", self:GetPos() + self:GetForward() * 150 + self:GetRight() * 215 + self:GetUp() * 150)
                 particle:SetVelocity(-self:GetForward() * 500 + VectorRand() * 100)
                 particle:SetDieTime(math.Rand(2, 2.5))
                 particle:SetStartAlpha(100)

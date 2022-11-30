@@ -268,15 +268,9 @@ if CLIENT then
 
         if bone then
             local bonepos, boneang = self:GetBonePosition(bone)
-            self.AimAng = self.AimAng or Angle(0, 0, 0)
-            -- self.AimAng = Angle(
-            --     math.ApproachAngle(self.AimAng.p, self:GetAimAngle().p, 18 * FrameTime()),
-            --     math.ApproachAngle(self.AimAng.y, self:GetAimAngle().y, 18 * FrameTime()), 0)
-            self.AimAng = LerpAngle(FrameTime() * 3, self.AimAng, self:GetAimAngle())
+            self.AimAng = LerpAngle(FrameTime() * 3, self.AimAng or Angle(0, 0, 0), self:GetAimAngle())
 
             self:ManipulateBoneAngles(bone, self.AimAng, false)
-            -- debugoverlay.Line(self:GetPos(), self:GetPos() + self:LocalToWorldAngles(self.AimAng):Forward() * 512, 1, Color(0, 0, 255))
-            -- debugoverlay.Line(self:GetPos(), self:GetPos() + self:LocalToWorldAngles(self:GetAimAngle()):Forward() * 128, 1, Color(0, 255, 255))
 
             local pos = bonepos + boneang:Up() * 4 + boneang:Forward() * 6 + boneang:Right() * -13
 
@@ -289,7 +283,7 @@ if CLIENT then
                 else
                     GAMEMODE:ShadowText("OFFLINE", "CGHUD_5", 0, 0, self:WithinBeacon() and color_white or Color(255, 0, 0), Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
                 end
-                --GAMEMODE:ShadowText(tostring(self:GetAmmo()) .. "/" .. self.MagSize, "CGHUD_7", 0, 40, self:GetAmmo() > 0 and Color(150, 255, 150) or Color(255, 150, 150), Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+
                 surface.SetMaterial(mat_missile)
                 surface.SetDrawColor(0, 0, 0, 255)
                 surface.DrawTexturedRectRotated(-48, 50, 64, 64, 90)
