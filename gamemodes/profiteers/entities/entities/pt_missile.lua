@@ -210,7 +210,7 @@ if SERVER then
         if self.BoostTime + self.SpawnTime > CurTime() then
             local vel = self:GetVelocity():Length()
             if !self.BoostTarget or vel < self.BoostTarget then
-                self:GetPhysicsObject():AddVelocity(self:GetForward() * self.Boost)
+                self:GetPhysicsObject():AddVelocity(self:GetForward() * (self.Boost or 0))
             end
             self:GetPhysicsObject():AddVelocity(Vector(0, 0, self.Lift))
         end
