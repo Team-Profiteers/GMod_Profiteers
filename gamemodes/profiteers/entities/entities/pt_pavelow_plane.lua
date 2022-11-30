@@ -9,7 +9,7 @@ ENT.IsAirAsset = true
 
 ENT.LeavingArea = false
 
-ENT.Rockets = 64
+ENT.Rockets = 32
 
 ENT.LaunchedMissileAt = {}
 ENT.NextMissileTime = 0
@@ -58,8 +58,16 @@ if SERVER then
 
         local targetang = (targetpos - self:GetPos()):Angle()
         targetang.p = 0
+        targetang.r = 0
 
-        self:SetAngles(targetang)
+        local ang = self:GetAngles()
+
+        local angdiff = math.AngleDifference(ang.y, targetang.y)
+
+        ang.y = math.ApproachAngle(ang.y, targetang.y, FrameTime() * 100 * math.Clamp(angdiff, -100, 100))
+        ang.r = 0
+
+        self:SetAngles(ang)
 
         local phys = self:GetPhysicsObject()
         phys:EnableGravity(false)
@@ -78,7 +86,7 @@ if SERVER then
 
             if self.NextMissileTime < CurTime() then
                 for k, v in pairs(ents) do
-                    if !IsValid(self.LaunchedMissileAt[v]) and v != self and v != self:GetOwner() and ((v:IsPlayer() and v:Alive()) or (v:IsNPC() and v:Health() > 0)) and v:Visible(self) then
+                    if !IsValid(self.LaunchedMissileAt[v]) and v != self and v != self:GetOwner() and ((v:IsPlayer() and v:Alive() and v:IsOnGround()) or (v:IsNPC() and v:Health() > 0)) and v:Visible(self) then
                         found_tgt = v
 
                         if v:IsPlayer() then
@@ -97,21 +105,22 @@ if SERVER then
     end
 
     function ENT:LaunchMissile(target)
-        local targetang = (target:GetPos() - self:GetPos()):Angle()
+        local targetang = self:GetAngles() + AngleRand() * 10
 
-        local rocket = ents.Create("arc9_bo1_rocket_rpg")
-        rocket:SetPos(self:GetPos() - Vector(0, 0, 100))
+        local rocket = ents.Create("arc9_bo1_rocket_stinger")
+        rocket:SetPos(self:GetPos())
         rocket:SetAngles(targetang)
         rocket.ShootEntData.Target = target
-        rocket.ImpactDamage = 10000
+        rocket.ImpactDamage = 100
+        rocket.SteerSpeed = 1500
+        rocket.SeekerAngle = math.cos(math.rad(90))
+        rocket.LifeTime = 5
         rocket:Spawn()
         rocket.Owner = self:GetOwner()
         rocket:SetOwner(self:GetOwner())
+        rocket:SetVelocity(targetang:Forward() * 1000000)
 
-        local phys = rocket:GetPhysicsObject()
-        if phys:IsValid() then
-            phys:AddVelocity(targetang:Forward() * 10000)
-        end
+        constraint.NoCollide(self, rocket)
 
         self:EmitSound("weapons/stinger_fire1.wav", 140, 120)
 
@@ -217,8 +226,8 @@ else
         local rotorboneid2 = self:LookupBone(rotorbone2)
 
         if rotorboneid and rotorboneid2 then
-            self:ManipulateBoneAngles(rotorboneid, Angle(0, math.fmod(CurTime() * 100, 360, 0)))
-            self:ManipulateBoneAngles(rotorboneid2, Angle(math.fmod(CurTime() * 10, 360), 0, 0))
+            self:ManipulateBoneAngles(rotorboneid, Angle(0, math.fmod(CurTime() * 200, 360, 0)))
+            self:ManipulateBoneAngles(rotorboneid2, Angle(math.fmod(CurTime() * 200, 360), 0, 0))
         end
 
         self.Ticks = self.Ticks + 1
