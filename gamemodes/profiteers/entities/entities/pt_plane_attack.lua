@@ -61,6 +61,12 @@ if SERVER then
                 bomb.TargetPos = self.DropPos
             end
 
+            if self.Bounty then
+                bomb.Bounty = self.Bounty * 0.25
+                bomb2.Bounty = self.Bounty * 0.25
+                self.Bounty = self.Bounty - bomb.Bounty - bomb2.Bounty
+            end
+
             constraint.NoCollide(bomb, bomb2, 0, 0)
             self.AirAssetWeight = -1
         end

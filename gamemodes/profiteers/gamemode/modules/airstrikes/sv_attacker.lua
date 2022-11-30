@@ -28,6 +28,7 @@ function Profiteers:SpawnAttackerPlane(ply, droppos)
     airdrop:SetPos(pos)
     airdrop:SetAngles(ang)
     airdrop:SetOwner(ply)
+    airdrop.Bounty = Profiteers.Buyables.pt_attacker.Price
 
     airdrop.DropPos = droppos
     if !diagonal.Hit then
@@ -45,7 +46,7 @@ function Profiteers:SpawnGunRunPlane(ply, droppos)
     local pos, ang = Profiteers:GetPlaneEnterPosAng(droppos, 200, ply:GetAngles().y + 90)
 
     if !pos then
-        ply:AddMoney(Profiteers.Buyables.pt_attacker.Price)
+        ply:AddMoney(Profiteers.Buyables.pt_gunrun.Price)
         return
     end
 
@@ -55,11 +56,11 @@ function Profiteers:SpawnGunRunPlane(ply, droppos)
     airdrop:SetPos(pos)
     airdrop:SetAngles(ang)
     airdrop:SetOwner(ply)
-
     airdrop.DropPos = droppos
-
     airdrop:Spawn()
     airdrop:Activate()
+
+    airdrop.Bounty = Profiteers.Buyables.pt_gunrun.Price
 
     --[[]
     local done = false

@@ -12,4 +12,6 @@ function Profiteers:SpawnUAVPlane(ply)
     airdrop:SetOwner(ply)
     airdrop:Spawn()
     airdrop:Activate()
+
+    airdrop.Bounty = Profiteers.Buyables.pt_uav.Price
 end

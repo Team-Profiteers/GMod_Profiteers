@@ -227,7 +227,8 @@ if SERVER then
                 if !v.IsAirAsset and !self:TestPVS(v) then continue end
                 if !isbool(v.MissileAlreadyFired) and IsValid(v.MissileAlreadyFired) then continue end
                 if !(((v:IsPlayer() and v:Alive() and v ~= self:CPPIGetOwner()) or (v:IsNPC() and v:Health() > 0)) and v:GetPos():DistToSqr(self:GetPos()) <= r)
-                        and !(v.IsAirAsset and (v.AirAssetWeight or 1) > 0 and (GetConVar("pt_dev_airffa"):GetBool() or v:GetOwner() ~= self:CPPIGetOwner())) then continue end
+                        and !(v.IsAirAsset and (v.AirAssetWeight or 1) > 0 and (GetConVar("pt_dev_airffa"):GetBool() or v:GetOwner() ~= self:CPPIGetOwner()))
+                        and v:GetClass() ~= "pt_missile" then continue end
                 if self:HasLineOfSight(v) then
                     if v.IsAirAsset then
                         table.insert(planes, {v, v.AirAssetWeight or 1})

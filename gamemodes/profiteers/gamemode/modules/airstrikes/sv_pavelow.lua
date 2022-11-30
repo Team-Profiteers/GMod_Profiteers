@@ -13,4 +13,6 @@ function Profiteers:SpawnPaveLowPlane(ply)
     airdrop.LoiterPos = Vector(ply:GetPos().x, ply:GetPos().y, pos.z)
     airdrop:Spawn()
     airdrop:Activate()
+
+    airdrop.Bounty = Profiteers.Buyables.pt_pavelow.Price
 end

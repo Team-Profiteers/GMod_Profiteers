@@ -13,6 +13,7 @@ CreateConVar("pt_money_guncost", 1000, FCVAR_ARCHIVE + FCVAR_REPLICATED, "Weapon
 CreateConVar("pt_money_sellmult", 0.75, FCVAR_ARCHIVE + FCVAR_REPLICATED, "Price multiplier when you sell something.", 0, 1)
 CreateConVar("pt_money_killmult", 0.5, FCVAR_ARCHIVE + FCVAR_REPLICATED, "Price multiplier when you destroy something.", 0, 1)
 CreateConVar("pt_money_nukemult", 1, FCVAR_ARCHIVE + FCVAR_REPLICATED, "Price multiplier when you destroy or sell the nuke.", 0, 1)
+CreateConVar("pt_money_airmult", 0.5, FCVAR_ARCHIVE + FCVAR_REPLICATED, "Price multiplier when you destroy enemy aircraft.", 0, 1)
 
 CreateConVar("pt_airdrop_amount", 250000, FCVAR_ARCHIVE + FCVAR_REPLICATED, "How much money an airdrop will carry.", 0)
 CreateConVar("pt_airdrop_planehealth", 2500, FCVAR_ARCHIVE + FCVAR_REPLICATED, "The durability of the airdrop plane.", 0)

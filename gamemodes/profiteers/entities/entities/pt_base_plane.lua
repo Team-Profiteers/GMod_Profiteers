@@ -33,32 +33,38 @@ if SERVER then
         end
     end
 
-    function ENT:OnTakeDamage(damage)
-        if damage:GetDamageType() != DMG_BLAST and damage:GetDamageType() != DMG_AIRBOAT then
-            damage:ScaleDamage(0.25)
+    function ENT:OnTakeDamage(dmginfo)
+        if dmginfo:GetDamageType() != DMG_BLAST and dmginfo:GetDamageType() != DMG_AIRBOAT then
+            dmginfo:ScaleDamage(0.25)
         end
 
-        self:SetHealth(self:Health() - damage:GetDamage())
+        self:SetHealth(self:Health() - dmginfo:GetDamage())
 
         if self:Health() <= 0 and not self.Dropped then
             self.Dropped = true
-            self:OnPropDestroyed(damage)
+
+            local effectdata = EffectData()
+            effectdata:SetOrigin(self:GetPos())
+            util.Effect("pt_bigboom", effectdata)
+
+            for i = 1, 3 do
+                local effectdata2 = EffectData()
+                effectdata2:SetOrigin(self:GetPos())
+                util.Effect("pt_planewreckage", effectdata2)
+            end
+
+            if self.Bounty and IsValid(dmginfo:GetAttacker()) and dmginfo:GetAttacker():IsPlayer() and (dmginfo:GetAttacker() != self:GetOwner() or GetConVar("pt_dev_airffa"):GetBool()) then
+                dmginfo:GetAttacker():AddMoney(self.Bounty * GetConVar("pt_money_airmult"):GetFloat())
+            end
+
+            self:OnDestroyed(dmginfo)
             self:Remove()
         end
 
-        return damage:GetDamage()
+        return dmginfo:GetDamage()
     end
 
-    function ENT:OnPropDestroyed(dmginfo)
-        local effectdata = EffectData()
-        effectdata:SetOrigin(self:GetPos())
-        util.Effect("pt_bigboom", effectdata)
-
-        for i = 1, 3 do
-            local effectdata2 = EffectData()
-            effectdata2:SetOrigin(self:GetPos())
-            util.Effect("pt_planewreckage", effectdata2)
-        end
+    function ENT:OnDestroyed(dmginfo)
     end
 else
     function ENT:Initialize()

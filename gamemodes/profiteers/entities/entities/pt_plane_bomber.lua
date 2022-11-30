@@ -40,6 +40,11 @@ if SERVER then
             bomb.TargetPos = self.DropPos
             bomb:Spawn()
 
+            if self.Bounty then
+                bomb.Bounty = self.Bounty * 0.5
+                self.Bounty = self.Bounty - bomb.Bounty
+            end
+
             bomb:SetVelocity(self:GetVelocity())
 
             self.AirAssetWeight = -1

@@ -13,4 +13,6 @@ function Profiteers:SpawnBunkerBusterPlane(droppos, ply)
     airdrop.DropPos = droppos
     airdrop:Spawn()
     airdrop:Activate()
+
+    airdrop.Bounty = Profiteers.Buyables.pt_bomb_marker.Price
 end

@@ -38,19 +38,8 @@ if SERVER then
         self:FrameAdvance(FrameTime())
     end
 
-    function ENT:OnPropDestroyed(dmginfo)
-        local effectdata = EffectData()
-        effectdata:SetOrigin(self:GetPos())
-        util.Effect("pt_bigboom", effectdata)
-
-        for i = 1, math.random(4, 10) do
-            local effectdata2 = EffectData()
-            effectdata2:SetOrigin(self:GetPos())
-            util.Effect("pt_planewreckage", effectdata2)
-        end
-
+    function ENT:OnDestroyed(dmginfo)
         local pos = self:GetPos()
-        self:Remove()
         timer.Simple(0.1, function()
             local ent = ents.Create("pt_airdrop")
             ent:SetPos(pos)

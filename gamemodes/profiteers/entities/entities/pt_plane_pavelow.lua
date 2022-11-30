@@ -85,8 +85,9 @@ if SERVER then
             if self.NextMissileTime < CurTime() then
                 for k, v in pairs(ents) do
                     if !IsValid(self.LaunchedMissileAt[v]) and
-                    v != self and v != self:GetOwner() and
-                    ((v:IsPlayer() and v:Alive() and v:IsOnGround()) or (v:IsNPC() and v:Health() > 0)) and
+                    v != self and (v != self:GetOwner() or GetConVar("pt_dev_airffa"):GetBool()) and
+                    ((v:IsPlayer() and v:Alive() and v:IsOnGround()) or (v:IsNPC() and v:Health() > 0)
+                    or scripted_ents.IsBasedOn(v:GetClass(), "pt_base_anchorable") and (v:CPPIGetOwner() != self:GetOwner() or GetConVar("pt_dev_airffa"):GetBool())) and
                     v:Visible(self) then
                         local mypos2d = self:GetPos()
                         local tgtpos2d = v:GetPos()
@@ -140,34 +141,9 @@ if SERVER then
         self.Rockets = self.Rockets - 1
     end
 
-    function ENT:PhysicsCollide(colData, collider)
-        -- if it hits world make it remove itself
-        // if colData.HitEntity:IsWorld() then
-        //     self:Remove()
-        // end
-    end
-
-    function ENT:OnTakeDamage(damage)
-        if damage:GetDamageType() != DMG_BLAST and damage:GetDamageType() != DMG_AIRBOAT then
-            damage:ScaleDamage(0.25)
-        end
-
-        self:SetHealth(self:Health() - damage:GetDamage())
-
-        if self:Health() <= 0 and not self.Dropped then
-            self.Dropped = true
-            self:OnPropDestroyed(damage)
-            self:Remove()
-        end
-
-        return damage:GetDamage()
-    end
-
 else
     function ENT:Think()
-        -- advance animation sequence
         if self:Health() < (self:GetMaxHealth() * 0.5) and self.Ticks % 5 == 0 then
-            // generate smoke particles
             local emitter = ParticleEmitter(self:GetPos())
 
             local particle = emitter:Add("particles/smokey", self:GetPos() + self:GetForward() * -100)
