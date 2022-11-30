@@ -74,6 +74,7 @@ end
 hook.Add("PhysgunDrop", "Profiteers", function(ply, ent)
     if !GetConVar("pt_prop_ghost"):GetBool() then return end
     GAMEMODE:FreezeProp(ent, true)
+    ply:AddFrozenPhysicsObject(ent, ent:GetPhysicsObject())
     GAMEMODE:StartUnGhost(ent)
 end)
 
@@ -91,6 +92,7 @@ hook.Add("PlayerSpawnedProp", "Profiteers", function(ply, model, ent)
     ent:CPPISetOwner(ply)
     GAMEMODE:GhostProp(ent)
     GAMEMODE:FreezeProp(ent, true)
+    ply:AddFrozenPhysicsObject(ent, ent:GetPhysicsObject())
     GAMEMODE:StartUnGhost(ent)
 end)
 
