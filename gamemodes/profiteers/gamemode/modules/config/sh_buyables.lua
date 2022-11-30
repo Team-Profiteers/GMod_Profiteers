@@ -205,7 +205,7 @@ Profiteers.Buyables = {
         Description = "1.2mt fission bomb",
         Description2 = "End it all and watch it burn",
 
-        Category = "Basebuilding"
+        Category = "Construction"
     },
     ["pt_beacon"] = {
         Name = "Base Beacon",
@@ -217,7 +217,7 @@ Profiteers.Buyables = {
         Description = "Reinforces nearby props",
         Description2 = "Required for most buildings",
 
-        Category = "Basebuilding"
+        Category = "Construction"
     },
     ["pt_spawn"] = {
         Name = "Deployable Spawn",
@@ -228,7 +228,7 @@ Profiteers.Buyables = {
         Description = "Respawn at your base",
         Description2 = "Must be deployed near a Beacon",
 
-        Category = "Basebuilding"
+        Category = "Construction"
     },
     ["pt_alarm"] = {
         Name = "Motion Sensor",
@@ -239,7 +239,7 @@ Profiteers.Buyables = {
         Description = "Alarm when enemies get near",
         Description2 = "Helps stop intruders",
 
-        Category = "Basebuilding"
+        Category = "Construction"
     },
     ["pt_minelayer"] = {
         Name = "Cluster Mine",
@@ -250,7 +250,7 @@ Profiteers.Buyables = {
         Description = "Creates a field of mines",
         Description2 = "Tread carefully",
 
-        Category = "Basebuilding"
+        Category = "Construction"
     },
     ["pt_safe"] = {
         Name = "Safe Storage Box",
@@ -261,7 +261,7 @@ Profiteers.Buyables = {
         Description = "Stores money safely",
         Description2 = "Sprint + use to withdraw 10k",
 
-        Category = "Basebuilding"
+        Category = "Construction"
     },
 
     ["pt_arsenal"] = {
@@ -273,7 +273,7 @@ Profiteers.Buyables = {
         Description = "Free global weapon spawning",
         Description2 = "Must be deployed near a Beacon",
 
-        Category = "Basebuilding"
+        Category = "Construction"
     },
     -- ["pt_cart_health"] = {
     --     Name = "Health Station",
@@ -284,7 +284,7 @@ Profiteers.Buyables = {
     --     Description = "Restores your health",
     --     Description2 = "Place near Beacon to use",
 
-    --     Category = "Basebuilding"
+    --     Category = "Construction"
     -- },
     ["pt_sentry"] = {
         Name = "Sentry Turret",
@@ -296,7 +296,7 @@ Profiteers.Buyables = {
         Description = "Attacks enemies automatically",
         Description2 = "Must be deployed near a Beacon",
 
-        Category = "Basebuilding"
+        Category = "Construction"
     },
     ["pt_sentry_missile"] = {
         Name = "Missile Turret",
@@ -307,7 +307,7 @@ Profiteers.Buyables = {
         Description = "Locks onto planes and enemies",
         Description2 = "Must be deployed near a Beacon",
 
-        Category = "Basebuilding"
+        Category = "Construction"
     },
     ["pt_cart_armor"] = {
         Name = "Armor Station",
@@ -318,7 +318,7 @@ Profiteers.Buyables = {
         Description = "Grants armor",
         Description2 = "Place near Beacon to use",
 
-        Category = "Basebuilding"
+        Category = "Construction"
     },
     ["pt_cart_smg_grenade"] = {
         Name = "Grenade Autolathe",
@@ -329,7 +329,7 @@ Profiteers.Buyables = {
         Description = "Produces Rifle Grenades",
         Description2 = "Place near Beacon to use",
 
-        Category = "Basebuilding"
+        Category = "Construction"
     },
     ["pt_cart_rpg_rocket"] = {
         Name = "Rocket Autolathe",
@@ -340,7 +340,7 @@ Profiteers.Buyables = {
         Description = "Produces Rockets",
         Description2 = "Place near Beacon to use",
 
-        Category = "Basebuilding"
+        Category = "Construction"
     },
     ["pt_regen_boost"] = {
         Name = "Nanite Booster",
@@ -351,7 +351,7 @@ Profiteers.Buyables = {
         Description = "Nanomachines improve regen",
         Description2 = "Place near Beacon to use",
 
-        Category = "Basebuilding"
+        Category = "Construction"
     },
     ["pt_supply_warp"] = {
         Name = "Supply Warp",
@@ -362,7 +362,7 @@ Profiteers.Buyables = {
         Description = "Buy supplies outside your base",
         Description2 = "Place near Beacon to use",
 
-        Category = "Basebuilding"
+        Category = "Construction"
     },
     ["pt_telepad"] = {
         Name = "Telepad",
@@ -374,7 +374,7 @@ Profiteers.Buyables = {
         Description = "Pocket Teleporter destination",
         Description2 = "Must be deployed near a Beacon",
 
-        Category = "Basebuilding"
+        Category = "Construction"
     },
     ["pt_launchpad"] = {
         Name = "Launchpad",
@@ -385,7 +385,19 @@ Profiteers.Buyables = {
         Description = "Launch yourself into the air",
         Description2 = "Must be deployed near a Beacon",
 
-        Category = "Basebuilding"
+        Category = "Construction"
+    },
+    ["pt_beacon_mobile"] = {
+        Name = "Mobile Beacon",
+        EntityClass = "pt_beacon_mobile",
+        Price = 10000,
+        EntityLimit = 1,
+        PlaceEntity = true,
+
+        Description = "Provides beacon effect without anchoring",
+        Description2 = "Significantly smaller radius",
+
+        Category = "Construction"
     },
     ["pt_c4"] = {
         Name = "C4",
