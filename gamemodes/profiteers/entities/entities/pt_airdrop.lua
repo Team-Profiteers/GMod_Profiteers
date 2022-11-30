@@ -7,6 +7,8 @@ ENT.ParachuteOpenTime = 1
 ENT.ParachuteOpen = false
 ENT.ParachuteOpenAmount = 0
 
+ENT.IsAirAsset = true
+
 function ENT:SetupDataTables()
     self:NetworkVar("Bool", 0, "Armed")
     self:NetworkVar("Int", 0, "Amount")
@@ -125,7 +127,7 @@ if SERVER then
                 util.Effect("explosion", effectdata)
                 self:Remove()
             end
-            return
+            return dmginfo:GetDamage()
         end
         self:SetHealth(self:Health() - dmginfo:GetDamage())
 
@@ -144,6 +146,8 @@ if SERVER then
                 end
             end)
         end
+
+        return dmginfo:GetDamage()
     end
 else
     function ENT:Initialize()

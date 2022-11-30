@@ -77,10 +77,6 @@ hook.Add("PhysgunDrop", "Profiteers", function(ply, ent)
     GAMEMODE:StartUnGhost(ent)
 end)
 
-hook.Add("PhysgunPickup", "ProfiteersPhysgunPickupDisallowNonProps", function(ply, ent)
-    if !ent:CPPICanPhysgun(ply) then return false end
-end)
-
 
 hook.Add("OnPhysgunPickup", "ProfiteersOnPhysgunPickupGhostProps", function(ply, ent)
     if !GetConVar("pt_prop_ghost"):GetBool() then return end

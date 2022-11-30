@@ -13,6 +13,7 @@ ENT.BaseHealth = 100
 ENT.PreferredAngle = Angle(0, 0, 0)
 ENT.AnchorRequiresBeacon = true
 ENT.AnchorOffset = Vector(0, 0, 1)
+ENT.AllowUnAnchor = true
 
 ENT.Category = "Profiteers"
 ENT.Spawnable = false
@@ -41,8 +42,6 @@ if SERVER then
         self:SetNWInt("PFPropHealth", self.BaseHealth)
         self:SetNWInt("PFPropMaxHealth", self.BaseHealth)
         self:SetAmmo(self.MagSize)
-
-        self:SetOwner(self:CPPIGetOwner())
     end
 
     function ENT:Think()
@@ -109,7 +108,6 @@ if SERVER then
 
     function ENT:OnAnchor(ply)
         self:EmitSound("npc/roller/blade_cut.wav", 100, 90)
-        self:SetOwner(ply)
     end
 
     function ENT:OnUse(ply)
@@ -131,16 +129,6 @@ if SERVER then
                 return
             end
 
-            if target == self:GetOwner() then
-                self.Target = nil
-                return
-            end
-
-            if target == self:CPPIGetOwner() then
-                self.Target = nil
-                return
-            end
-
             if self:GetPos():DistToSqr(target:GetPos()) > self.Range * self.Range then
                 self.Target = nil
                 return
@@ -151,12 +139,16 @@ if SERVER then
                 return
             end
 
+            if target:IsPlayer() and target:OwnsBoughtEntity(self) then
+                self.Target = nil
+                return
+            end
+
             return
         else
             local targets = ents.FindInSphere(self:GetPos(), self.Range)
             for k, v in pairs(targets) do
-                if v == self:GetOwner() then continue end
-                if target == self:CPPIGetOwner() then continue end
+                if (v:IsPlayer() and v:OwnsBoughtEntity(self)) then continue end
                 if (v:IsPlayer() and v:Alive()) or (v:IsNPC() and v:Health() > 0) then
                     if v:Visible(self) then
                         self.Target = v
@@ -172,7 +164,6 @@ if CLIENT then
     function ENT:Draw()
         self:DrawModel()
 
-
         local bonename = "yaw"
 
         local bone = self:LookupBone(bonename)
@@ -186,7 +177,7 @@ if CLIENT then
             boneang:RotateAroundAxis(boneang:Up(), 180)
 
             cam.Start3D2D(pos, boneang, 0.05)
-                if self:WithinBeacon() then
+                if self:WithinBeacon() and self:GetAnchored() then
                     GAMEMODE:ShadowText("ONLINE", "CGHUD_5", 0, 0, self:WithinBeacon() and color_white or Color(255, 0, 0), Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
                 else
                     GAMEMODE:ShadowText("OFFLINE", "CGHUD_5", 0, 0, self:WithinBeacon() and color_white or Color(255, 0, 0), Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)

@@ -87,7 +87,7 @@ net.Receive("pt_buy", function(len, ply)
 
             ent:CPPISetOwner(ply)
 
-            ent.Bounty = itemtbl.Price
+            ent.Bounty = ent.Bounty or itemtbl.Price
 
             ply.BoughtEntities = ply.BoughtEntities or {}
             ply.BoughtEntities[itemclass] = ply.BoughtEntities[itemclass] or {}

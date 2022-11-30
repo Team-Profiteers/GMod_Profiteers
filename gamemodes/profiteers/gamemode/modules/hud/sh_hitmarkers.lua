@@ -1,140 +1,145 @@
 -- if engine.ActiveGamemode() != "sandbox" then return end
-
 local longrangeshot = 3937 -- 100m
-local extralongrangeshot = 3937*2.5 -- 250m
+local extralongrangeshot = 3937 * 2.5 -- 250m
 
 if SERVER then
     util.AddNetworkString("profiteers_hitmark")
-
-	local npcheadshotted = false  -- fuck you garry
+    local npcheadshotted = false -- fuck you garry
 
     local function hitmark(ent, dmginfo, took)
-		local attacker = dmginfo:GetAttacker()
+        local attacker = dmginfo:GetAttacker()
 
         if took and IsValid(ent) and IsValid(attacker) and attacker:IsPlayer() then
-			local distance = ent:GetPos():Distance(attacker:GetPos())
-			
-			-- if distance > longrangeshot blabla give more moneys                     btw and check if ent is player because everyone can kill static npcs on long range
-			-- if distance > extralongrangeshot blabla give more more moneys and type something in chat about attacker's crazy sniper skills
-
+            local distance = ent:GetPos():Distance(attacker:GetPos())
+            -- if distance > longrangeshot blabla give more moneys                     btw and check if ent is player because everyone can kill static npcs on long range
+            -- if distance > extralongrangeshot blabla give more more moneys and type something in chat about attacker's crazy sniper skills
             net.Start("profiteers_hitmark")
             net.WriteUInt(dmginfo:GetDamage(), 16)
+            net.WriteBool(ent:IsPlayer() or ent:IsNPC())
             net.WriteBool((ent:IsPlayer() and ent:LastHitGroup() == HITGROUP_HEAD) or (ent:IsNPC() and npcheadshotted) or false)
-            net.WriteBool(((ent:IsPlayer() or ent:IsNPC()) and ent:Health() <= 0) or false)
+            net.WriteBool(((ent:IsPlayer() or ent:IsNPC()) and ent:Health() <= 0) or (ent:GetNWInt("PFPropHealth", 1) <= 0) or false)
             net.WriteBool((ent:IsPlayer() and ent:Armor() > 0) or false)
             net.WriteUInt(distance, 16)
             net.Send(attacker)
-			npcheadshotted = false
+            npcheadshotted = false
         end
     end
 
-	hook.Add("ScaleNPCDamage", "profiteers_hitmarkers_npcheadshots", function(npc, hitgroup, dmginfo) -- fuck you garry
+    -- fuck you garry
+    hook.Add("ScaleNPCDamage", "profiteers_hitmarkers_npcheadshots", function(npc, hitgroup, dmginfo)
         if IsValid(npc) and IsValid(dmginfo:GetAttacker()) and dmginfo:GetAttacker():IsPlayer() then
-			if hitgroup == HITGROUP_HEAD then
-				npcheadshotted = true
-			end
-		end
-	end)
+            if hitgroup == HITGROUP_HEAD then
+                npcheadshotted = true
+            end
+        end
+    end)
 
     hook.Add("PostEntityTakeDamage", "profiteers_hitmarkers", hitmark)
 else
-	local hmlength = 0.22 -- 0.5 if kill
-	local lasthm = 0
-	local lastdistantshot = 0
-	local lasthmhead = false
-	local lasthmkill = false
-	local lasthmarmor = false
-	local hmmat = Material( "profiteers/hitmark.png", "noclamp smooth" )
-	local hmmat2 = Material( "profiteers/headmark.png", "noclamp smooth" )
+    local hmlength = 0.22 -- 0.5 if kill
+    local lasthm = 0
+    local lastdistantshot = 0
+    local lasthmhead = false
+    local lasthmkill = false
+    local lasthmarmor = false
+    local lasthmprop = false
+    local hmmat = Material("profiteers/hitmark.png", "noclamp smooth")
+    local hmmat2 = Material("profiteers/headmark.png", "noclamp smooth")
+    local hmmat3 = Material("profiteers/hitprop.png", "noclamp smooth")
 
-	hook.Add("HUDPaint", "profiteers_hitmark_paint", function()
-		local lp = LocalPlayer()
-		local ct = CurTime()
+    hook.Add("HUDPaint", "profiteers_hitmark_paint", function()
+        local lp = LocalPlayer()
+        local ct = CurTime()
 
-		if lasthm > ct then
-			local state = (lasthm - ct) / hmlength
-			surface.SetMaterial(lasthmhead and hmmat2 or hmmat)
+        if lasthm > ct then
+            local state = (lasthm - ct) / hmlength
 
-			if lasthmkill then
-				surface.SetDrawColor(255, 0, 0, 255 * state)
-			elseif lasthmarmor then
-				surface.SetDrawColor(119, 119, 255, 255 * state)
-			else
-				surface.SetDrawColor(255, 255, 255, 255 * state)
-			end
+            if lasthmprop then
+                surface.SetMaterial(hmmat3)
+            else
+                surface.SetMaterial(lasthmhead and hmmat2 or hmmat)
+            end
 
-			surface.DrawTexturedRect(ScrW()/2 - 18 - 25*state, ScrH()/2 - 18 - 25*state, 36 + 50*state, 36 + 50*state)
-		end
+            if lasthmkill then
+                surface.SetDrawColor(255, 0, 0, 255 * state)
+            elseif lasthmarmor then
+                surface.SetDrawColor(119, 119, 255, 255 * state)
+            else
+                surface.SetDrawColor(255, 255, 255, 255 * state)
+            end
 
-		if lastdistantshot > ct then
-			local scrw, scrh = ScrW(), ScrH()
-			local state = (lastdistantshot - ct) * 2
-			local message = (lasthmkill and lasthmhead) and "Long range HEADSHOT!!" or lasthmkill and "Long range kill!" or "Long range hit"
+            surface.DrawTexturedRect(ScrW() / 2 - 18 - 25 * state, ScrH() / 2 - 18 - 25 * state, 36 + 50 * state, 36 + 50 * state)
+        end
 
-			surface.SetFont("CGHUD_7_Shadow")
-			surface.SetTextColor(0, 0, 0, 255*state)
-			surface.SetTextPos(scrw/2 + 75 + 1, scrh/2 + 1)
-			surface.DrawText(message)
-
-			surface.SetTextPos(scrw/2 + 75 + 1, scrh/2 + 20 + 1)
-			surface.DrawText(lasthmdistance .. " m")
-
-			surface.SetFont("CGHUD_7")
-			surface.SetTextColor(255, lasthmkill and 75 or 255, lasthmkill and 75 or 255, 255*state)
-			surface.SetTextPos(scrw/2 + 75, scrh/2)
-			surface.DrawText(message)
-
-			surface.SetTextColor(300 - 255*(lasthmdistance/400), 300 - 255*(lasthmdistance/400), 255, 255*state)
-			surface.SetTextPos(scrw/2 + 75, scrh/2 + 20)
-			surface.DrawText(lasthmdistance .. " m")
-		end
-	end)
+        if lastdistantshot > ct then
+            local scrw, scrh = ScrW(), ScrH()
+            local state = (lastdistantshot - ct) * 2
+            local message = (lasthmkill and lasthmhead) and "Long range HEADSHOT!!" or lasthmkill and "Long range kill!" or "Long range hit"
+            surface.SetFont("CGHUD_7_Shadow")
+            surface.SetTextColor(0, 0, 0, 255 * state)
+            surface.SetTextPos(scrw / 2 + 75 + 1, scrh / 2 + 1)
+            surface.DrawText(message)
+            surface.SetTextPos(scrw / 2 + 75 + 1, scrh / 2 + 20 + 1)
+            surface.DrawText(lasthmdistance .. " m")
+            surface.SetFont("CGHUD_7")
+            surface.SetTextColor(255, lasthmkill and 75 or 255, lasthmkill and 75 or 255, 255 * state)
+            surface.SetTextPos(scrw / 2 + 75, scrh / 2)
+            surface.DrawText(message)
+            surface.SetTextColor(300 - 255 * (lasthmdistance / 400), 300 - 255 * (lasthmdistance / 400), 255, 255 * state)
+            surface.SetTextPos(scrw / 2 + 75, scrh / 2 + 20)
+            surface.DrawText(lasthmdistance .. " m")
+        end
+    end)
 
     local function hitmarker()
         local dmg = net.ReadUInt(16)
+        local isliving = net.ReadBool()
         local head = net.ReadBool()
         local killed = net.ReadBool()
         local armored = net.ReadBool()
         local distance = net.ReadUInt(16)
-		local lp = LocalPlayer()
-		local ct = CurTime()
-		
-		if lasthm > ct and lasthmkill then return end
+        local lp = LocalPlayer()
+        local ct = CurTime()
+        if lasthm > ct and lasthmkill then return end
+        lasthmhead = head
+        lasthmkill = killed
+        lasthmarmor = armored
+        lasthmdistance = math.Round(distance * ARC9.HUToM, 1)
+        lasthmprop = !isliving
+        hmlength = killed and 0.5 or 0.22
 
-		lasthmhead = head
-		lasthmkill = killed
-		lasthmarmor = armored
-		lasthmdistance = math.Round(distance * ARC9.HUToM, 1)
-		
-		hmlength = killed and 0.5 or 0.22
-		if distance > longrangeshot then lastdistantshot = ct + 3 end
+        if isliving and distance > longrangeshot then
+            lastdistantshot = ct + 3
+        end
 
-		lasthm = ct + hmlength
+        lasthm = ct + hmlength
 
-		timer.Simple(0.1, function()
-			if !IsValid(lp) then return end -- just to be sure
+        timer.Simple(0.1, function()
+            if not IsValid(lp) then return end -- just to be sure
 
-			for i=1, math.Clamp(math.ceil(dmg/40), 1, 4) do -- juicer when many dmg
-				if head then
-					surface.PlaySound("profiteers/headmarker.wav")
-				elseif armored then
-					surface.PlaySound("player/kevlar" .. math.random(1, 5) .. ".wav")
-				else
-					surface.PlaySound("profiteers/mwhitmarker.wav")
-				end
+            -- juicer when many dmg
+            for i = 1, math.Clamp(math.ceil(dmg / 40), 1, 4) do
+                if head then
+                    surface.PlaySound("profiteers/headmarker.wav")
+                elseif armored then
+                    surface.PlaySound("player/kevlar" .. math.random(1, 5) .. ".wav")
+                else
+                    surface.PlaySound("profiteers/mwhitmarker.wav")
+                end
 
-				-- end
+                -- end
+                if killed then
+                    timer.Simple(0.15, function()
+                        if not IsValid(lp) then return end -- just to be sure
 
-				if killed then
-					timer.Simple(0.15, function()
-						if !IsValid(lp) then return end -- just to be sure
-						
-						for i=1, 3 do surface.PlaySound("profiteers/killmarker.wav") end
-					end)
-				end
-			end
-		end)
+                        for i = 1, 3 do
+                            surface.PlaySound("profiteers/killmarker.wav")
+                        end
+                    end)
+                end
+            end
+        end)
     end
-    
+
     net.Receive("profiteers_hitmark", hitmarker)
 end

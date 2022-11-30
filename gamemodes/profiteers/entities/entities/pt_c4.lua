@@ -19,7 +19,9 @@ ENT.Category = "Profiteers"
 ENT.Spawnable = false
 
 ENT.Range = 1024
-ENT.FuseTime = 45
+ENT.FuseTime = 5
+
+ENT.Bounty = 0
 
 function ENT:SetupDataTables()
     self:NetworkVar("Bool", 0, "Anchored")
@@ -53,7 +55,13 @@ if SERVER then
         end
     end
 
+    function ENT:OnTakeDamage(damage)
+        return 0
+    end
+
     function ENT:OnUse(ply)
+        if !self:GetAnchored() then return end
+
         self:EmitSound("buttons/button5.wav", 110)
         self:Remove()
     end
@@ -66,9 +74,11 @@ if SERVER then
 
         local effectdata = EffectData()
         effectdata:SetOrigin(self:GetPos())
-        util.Effect("Explosion", effectdata)
+        util.Effect("pt_c4boom", effectdata)
 
-        util.BlastDamage(self, self.ArmedPlayer, self:GetPos(), self.Range, 10000)
+        self:EmitSound("weapons/c4/c4_explode1.wav", 140)
+
+        util.BlastDamage(self, self.ArmedPlayer, self:GetPos(), self.Range, 7500)
 
         self:Remove()
     end

@@ -1,5 +1,5 @@
 AddCSLuaFile()
-ENT.PrintName = "Airdrop Plane"
+ENT.PrintName = "UAV"
 ENT.Type = "anim"
 ENT.RenderGroup = RENDERGROUP_BOTH
 ENT.Model = "models/profiteers/c130.mdl"

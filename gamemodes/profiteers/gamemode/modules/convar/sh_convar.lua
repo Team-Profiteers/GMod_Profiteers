@@ -15,7 +15,7 @@ CreateConVar("pt_money_killmult", 0.5, FCVAR_ARCHIVE + FCVAR_REPLICATED, "Price 
 CreateConVar("pt_money_nukemult", 1, FCVAR_ARCHIVE + FCVAR_REPLICATED, "Price multiplier when you destroy or sell the nuke.", 0, 1)
 
 CreateConVar("pt_airdrop_amount", 250000, FCVAR_ARCHIVE + FCVAR_REPLICATED, "How much money an airdrop will carry.", 0)
-CreateConVar("pt_airdrop_planehealth", 1000, FCVAR_ARCHIVE + FCVAR_REPLICATED, "The durability of the airdrop plane.", 0)
+CreateConVar("pt_airdrop_planehealth", 2500, FCVAR_ARCHIVE + FCVAR_REPLICATED, "The durability of the airdrop plane.", 0)
 CreateConVar("pt_airdrop_moneyhealth", 800, FCVAR_ARCHIVE + FCVAR_REPLICATED, "The durability of the parachute. If destroyed, it will fall immediately.", 0)
 
 CreateConVar("pt_tele_recall_cooldown", 180, FCVAR_ARCHIVE + FCVAR_REPLICATED, "Pocket Teleporter cooldown for recall.", 0)
@@ -26,4 +26,5 @@ CreateConVar("pt_tele_disperse_delay", 5, FCVAR_ARCHIVE + FCVAR_REPLICATED, "Poc
 CreateConVar("pt_prop_ghost", 1, FCVAR_ARCHIVE + FCVAR_REPLICATED, "Ghost props.", 0, 1)
 CreateConVar("pt_prop_beacon_radius", 2048, FCVAR_ARCHIVE + FCVAR_REPLICATED, "Protection radius for the Base Beacon.", 512)
 
+CreateConVar("pt_prop_quota_disable", 0, FCVAR_ARCHIVE + FCVAR_REPLICATED, "Disable prop quota entirely (for testing).", 0, 1)
 CreateConVar("pt_prop_quota", 50000, FCVAR_ARCHIVE + FCVAR_REPLICATED, "Total amount of health a player's props can have. 0 - infinite.", 0)
