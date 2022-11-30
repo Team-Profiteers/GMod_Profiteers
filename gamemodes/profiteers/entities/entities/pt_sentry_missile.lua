@@ -90,7 +90,7 @@ if SERVER then
         if IsValid(self.Target) and dot >= 0.99 then
             if self:GetLockonTime() == 0 then
                 if self.Target.IsAirAsset then
-                    self:SetLockonTime(CurTime() + math.Rand(0, 0.5))
+                    self:SetLockonTime(CurTime() + math.Rand(0.15, 0.5))
                 else
                     self:SetLockonTime(CurTime() + 2)
                 end
@@ -184,7 +184,7 @@ if SERVER then
             filter = self,
             mask = MASK_BLOCKLOS_AND_NPCS,
         })
-        return tr.Entity == ent or !IsValid(tr.Entity) and tr.Fraction == 1
+        return tr.Entity == ent or (!IsValid(tr.Entity) and tr.Fraction == 1)
     end
 
     function ENT:FindTarget()
@@ -197,7 +197,7 @@ if SERVER then
         if IsValid(target) then
 
             if target.IsAirAsset then
-                if !target:Visible(self) then self.Target = nil end
+                if !target:Visible(self) or (target.AirAssetWeight or 1) <= 0 then self.Target = nil end
                 return
             end
 
@@ -224,22 +224,25 @@ if SERVER then
             return
         else
             local r = self.Range * self.Range
-            local plane = nil
+            local planes = {}
             for _, v in pairs(ents.GetAll()) do
                 if !v.IsAirAsset and !self:TestPVS(v) then continue end
                 if !isbool(v.MissileAlreadyFired) and IsValid(v.MissileAlreadyFired) then continue end
                 if !(((v:IsPlayer() and v:Alive() and v ~= self:CPPIGetOwner()) or (v:IsNPC() and v:Health() > 0)) and v:GetPos():DistToSqr(self:GetPos()) <= r)
-                        and !v.IsAirAsset then continue end
+                        and !(v.IsAirAsset and (v.AirAssetWeight or 1) > 0 and (GetConVar("pt_dev_airffa"):GetBool() or v:GetOwner() ~= self:CPPIGetOwner())) then continue end
                 if self:HasLineOfSight(v) then
-                    if !plane and v.IsAirAsset then
-                        plane = v -- don't care about distance, just find the first one
+                    if v.IsAirAsset then
+                        table.insert(planes, {v, v.AirAssetWeight or 1})
                     else
                         self.Target = v
                         return
                     end
                 end
             end
-            self.Target = bestplane
+            if #planes > 0 then
+                table.sort(planes, function(a, b) return a[2] > b[2] end)
+                self.Target = planes[1][1]
+            end
             return
         end
     end

@@ -475,6 +475,6 @@ Profiteers.Buyables = {
 Profiteers.BuyableEntities = {}
 
 for k, v in pairs(Profiteers.Buyables) do
-    if not v.EntityClass then continue end
+    if !v.EntityClass then continue end
     Profiteers.BuyableEntities[v.EntityClass] = true
 end

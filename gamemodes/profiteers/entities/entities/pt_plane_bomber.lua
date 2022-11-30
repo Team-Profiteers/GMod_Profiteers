@@ -38,6 +38,8 @@ if SERVER then
             bomb:Spawn()
 
             bomb:SetVelocity(self:GetVelocity())
+
+            self.AirAssetWeight = -1
         end
 
         self:FrameAdvance(FrameTime())

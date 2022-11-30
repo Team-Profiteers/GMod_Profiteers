@@ -53,6 +53,7 @@ ENT.ShootEntData = {}
 
 ENT.IsProjectile = true
 ENT.IsAirAsset = true
+ENT.AirAssetWeight = 0.5
 
 if SERVER then
     local gunship = {["npc_combinegunship"] = true, ["npc_combinedropship"] = true}

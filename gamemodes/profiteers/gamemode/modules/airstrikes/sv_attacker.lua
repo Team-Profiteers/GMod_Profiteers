@@ -15,10 +15,12 @@ function Profiteers:SpawnAttackerPlane(ply, droppos)
 
     local d = math.abs(pos.z - droppos.z) / math.sqrt(5)
 
-    local diagonal = util.TraceLine({
+    local diagonal = util.TraceHull({
         start = droppos,
         endpos = droppos + approach2d * d + Vector(0, 0, d * 2),
         mask = MASK_SOLID_BRUSHONLY,
+        mins = Vector(-32, -32, -32),
+        maxs = Vector(32, 32, 32),
     })
     debugoverlay.Line(diagonal.StartPos, diagonal.HitPos, 15, Color(255, 0, 0), true)
     debugoverlay.Sphere(diagonal.HitPos, 64, 15, Color(255, 255, 0, 0), true)

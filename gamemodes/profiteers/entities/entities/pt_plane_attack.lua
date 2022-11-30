@@ -21,7 +21,7 @@ if SERVER then
         local phys = self:GetPhysicsObject()
         phys:EnableGravity(false)
         phys:SetDragCoefficient(0)
-        phys:ApplyForceCenter(self:GetAngles():Forward() * FrameTime() * 100000000)
+        phys:ApplyForceCenter(self:GetAngles():Forward() * FrameTime() * 20000000)
         self:SetAngles(self.MyAngle)
         self:FrameAdvance(FrameTime())
 
@@ -62,6 +62,7 @@ if SERVER then
             end
 
             constraint.NoCollide(bomb, bomb2, 0, 0)
+            self.AirAssetWeight = -1
         end
     end
 end
