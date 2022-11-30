@@ -15,4 +15,5 @@
 	"$envmapfresnel" "0.01"
 	"$envmaptint" "[ .01 .01 .01 ]"
 	"$nocull" "0"
+	"$nodecal" "1"
 }
