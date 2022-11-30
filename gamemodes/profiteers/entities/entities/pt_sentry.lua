@@ -121,6 +121,9 @@ if SERVER then
     end
 
     function ENT:FindTarget()
+        if (self.NextFindTarget or 0) > CurTime() then return end
+        self.NextFindTarget = CurTime() + 0.25
+
         local target = self.Target
 
         if IsValid(target) then
