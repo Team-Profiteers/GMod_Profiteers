@@ -1,5 +1,5 @@
 function Profiteers:SpawnBunkerBusterPlane(droppos, ply)
-    local pos, ang = Profiteers:GetPlaneEnterPosAng(droppos)
+    local pos, ang = Profiteers:GetPlaneEnterPosAng(droppos, 500)
 
     if !pos then return end
 

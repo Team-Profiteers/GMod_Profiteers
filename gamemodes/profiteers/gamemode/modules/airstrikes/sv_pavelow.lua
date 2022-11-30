@@ -1,5 +1,5 @@
 function Profiteers:SpawnPaveLowPlane(ply)
-    local pos, ang = Profiteers:GetPlaneEnterPosAng()
+    local pos, ang = Profiteers:GetPlaneEnterPosAng(nil, 500)
 
     if !pos then return end
 

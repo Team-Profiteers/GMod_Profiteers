@@ -34,7 +34,7 @@ if SERVER then
     function ENT:Think()
         local targetpos
 
-        if !IsValid(self:GetOwner()) or self.Rockets <= 0 then
+        if !IsValid(self:GetOwner()) or self.Rockets <= 0 or self.SpawnTime + 120 < CurTime() then
             targetpos = self.EnterPos
             self.LeavingArea = true
         else

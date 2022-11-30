@@ -1,4 +1,6 @@
-function Profiteers:GetPlaneEnterPosAng(droppos)
+function Profiteers:GetPlaneEnterPosAng(droppos, size)
+    size = size or 100
+
     if !droppos and !Profiteers.Nodes or table.Count(Profiteers.Nodes) == 0 then
         ParseNodeFile()
     end
@@ -37,10 +39,12 @@ function Profiteers:GetPlaneEnterPosAng(droppos)
             for j = 0, 359 do
                 local vec = Vector(math.cos(math.rad(angle + j)), math.sin(math.rad(angle + j)), 0)
 
-                entertrace = util.TraceLine({
+                entertrace = util.TraceHull({
                     start = tr.HitPos,
                     endpos = tr.HitPos + vec * 100000,
                     mask = MASK_NPCWORLDSTATIC,
+                    mins = Vector(-1, -1, -1) * size,
+                    maxs = Vector(1, 1, 1) * size,
                 })
 
                 if !entertrace.HitSky then continue end
@@ -49,6 +53,8 @@ function Profiteers:GetPlaneEnterPosAng(droppos)
                     start = tr.HitPos,
                     endpos = tr.HitPos + vec * -100000,
                     mask = MASK_NPCWORLDSTATIC,
+                    mins = Vector(-1, -1, -1) * size,
+                    maxs = Vector(1, 1, 1) * size,
                 })
 
                 if !exittrace.HitSky then continue end
@@ -74,7 +80,7 @@ function Profiteers:GetPlaneEnterPosAng(droppos)
 end
 
 function Profiteers:SpawnAirdrop()
-    local pos, ang = Profiteers:GetPlaneEnterPosAng()
+    local pos, ang = Profiteers:GetPlaneEnterPosAng(nil, 500)
 
     if !pos then return end
 

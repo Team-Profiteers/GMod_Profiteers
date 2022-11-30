@@ -1,5 +1,5 @@
 function Profiteers:SpawnFighterPlane(ply)
-    local pos, ang = Profiteers:GetPlaneEnterPosAng()
+    local pos, ang = Profiteers:GetPlaneEnterPosAng(nil, 200)
 
     if !pos then return end
 
