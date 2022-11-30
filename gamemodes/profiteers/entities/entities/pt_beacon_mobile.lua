@@ -32,8 +32,6 @@ if SERVER then
         self:SetNWInt("PFPropMaxHealth", self.BaseHealth)
 
         self:SetAngles(Angle(0, self:GetAngles().y, 0) + self.PreferredAngle)
-
-        self:OnInitialize()
     end
 
     function ENT:OnPropDestroyed(dmginfo)

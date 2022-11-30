@@ -434,13 +434,23 @@ Profiteers.Buyables = {
             Profiteers:SpawnUAVPlane(ply)
         end
     },
+    ["pt_gunrun"] = {
+        Name = "Gun Run",
+        EntityClass = "pt_gunrun_marker",
+        Price = 20000,
+
+        Description = "Attack jet strafes target area",
+        Description2 = "Fast anti-personnel strike",
+
+        Category = "Air Support",
+    },
     ["pt_attacker"] = {
         Name = "CAS Bomber",
         EntityClass = "pt_rocket_marker",
         Price = 25000,
 
         Description = "Attack jet drops a pair of bombs",
-        Description2 = "Fast, concentrated single strike",
+        Description2 = "Fast all-purpose strike",
 
         Category = "Air Support",
     },
@@ -448,7 +458,7 @@ Profiteers.Buyables = {
         Name = "Fighter Patrol",
         Price = 100000,
 
-        Description = "Fighter jet eliminates air threats",
+        Description = "Fighter jet eliminates air targets",
         --Description2 = "",
 
         Category = "Air Support",

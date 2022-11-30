@@ -1,4 +1,4 @@
-function Profiteers:GetPlaneEnterPosAng(droppos, size)
+function Profiteers:GetPlaneEnterPosAng(droppos, size, ideal_ang)
     size = size or 100
 
     if !droppos and (!Profiteers.Nodes or table.Count(Profiteers.Nodes) == 0) then
@@ -29,14 +29,15 @@ function Profiteers:GetPlaneEnterPosAng(droppos, size)
         })
 
         if tr.HitSky then
-            local angle = math.Rand(0, 360)
+            local angle = ideal_ang or math.Rand(0, 360)
 
             local winner = angle
             local entertrace = nil
             local winningdist = 0
             local winningenterpos = nil
 
-            for j = 0, 359 do
+
+            for j = (ideal_ang and -15 or 0), (ideal_ang and 15 or 359) do
                 local vec = Vector(math.cos(math.rad(angle + j)), math.sin(math.rad(angle + j)), 0)
 
                 entertrace = util.TraceHull({
