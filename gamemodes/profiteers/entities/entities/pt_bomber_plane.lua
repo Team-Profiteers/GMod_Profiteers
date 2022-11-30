@@ -32,7 +32,7 @@ if SERVER then
         local phys = self:GetPhysicsObject()
         phys:EnableGravity(false)
         phys:SetDragCoefficient(0)
-        phys:ApplyForceCenter(self:GetAngles():Forward() * FrameTime() * 50000000)
+        phys:ApplyForceCenter(self:GetAngles():Forward() * FrameTime() * 20000000)
         self:SetAngles(self.MyAngle)
 
         // when we get close to the drop pos, drop a bomb

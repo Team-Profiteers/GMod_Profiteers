@@ -423,17 +423,14 @@ Profiteers.Buyables = {
         end
     },
     ["pt_attacker"] = {
-        Name = "ATGM Strike",
+        Name = "Bomb Strike",
+        EntityClass = "pt_rocket_marker",
         Price = 25000,
 
         Description = "Call in an attack jet",
-        Description2 = "Fires missiles at targets",
+        Description2 = "Drops two bombs on a target",
 
         Category = "Air Strikes",
-
-        OnBuy = function(self, ply)
-            Profiteers:SpawnAttackerPlane(ply)
-        end
     },
     ["pt_fighter"] = {
         Name = "Fighter Patrol",
@@ -453,7 +450,7 @@ Profiteers.Buyables = {
         Price = 200000,
 
         Description = "Call in a helicopter gunship",
-        Description2 = "Loiters and fires on enemies",
+        Description2 = "Loiters and fires missiles",
 
         Category = "Air Strikes",
 

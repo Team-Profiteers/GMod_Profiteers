@@ -69,6 +69,8 @@ if SERVER then
     end
 else
     function ENT:Initialize()
+        surface.PlaySound("profiteers/flyby_01.ogg")
+
         self:SetColor(Color(255, 255, 255, 0))
         self:SetRenderFX(kRenderFxSolidSlow)
     end

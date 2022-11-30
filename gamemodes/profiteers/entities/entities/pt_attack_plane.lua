@@ -8,10 +8,10 @@ ENT.MyAngle = Angle(0, 0, 0)
 
 ENT.IsAirAsset = true
 
-ENT.Rockets = 4
+ENT.Rockets = 16
+ENT.DropPos = Vector(0, 0, 0)
 
-ENT.LaunchedMissileAt = {}
-ENT.NextMissileTime = 0
+ENT.NextRocketTime = 0
 
 if SERVER then
     function ENT:Initialize()
@@ -33,57 +33,41 @@ if SERVER then
         local phys = self:GetPhysicsObject()
         phys:EnableGravity(false)
         phys:SetDragCoefficient(0)
-        phys:ApplyForceCenter(self:GetAngles():Forward() * FrameTime() * 200000000)
+        phys:ApplyForceCenter(self:GetAngles():Forward() * FrameTime() * 100000000)
         self:SetAngles(self.MyAngle)
         self:FrameAdvance(FrameTime())
 
-        if self.Rockets > 0 then
-            local ents = ents.FindInSphere(self:GetPos(), 15000)
+        // when we get close to the drop pos, fire rockets
 
-            local found_tgt = nil
+        local selfpos2d = self:GetPos()
+        local droppos2d = self.DropPos
 
-            if self.NextMissileTime < CurTime() then
-                for k, v in pairs(ents) do
-                    if !IsValid(self.LaunchedMissileAt[v]) and v != self and v != self:GetOwner() and ((v:IsPlayer() and v:Alive() and v:IsOnGround()) or (v:IsNPC() and v:Health() > 0)) and v:Visible(self) then
-                        found_tgt = v
+        selfpos2d.z = 0
+        droppos2d.z = 0
 
-                        if v:IsPlayer() then
-                            break
-                        end
-                    end
-                end
-            end
+        if selfpos2d:Distance(droppos2d) < 500 and not self.BombDropped then
+            self.BombDropped = true
 
-            if found_tgt then
-                self:LaunchMissile(found_tgt)
-            end
+            local bomb = ents.Create("pt_attack_bomb")
+            bomb:SetPos(self:GetPos() - Vector(0, 0, 32) + self:GetRight() * 32)
+            bomb:SetAngles(self:GetAngles())
+            bomb:SetOwner(self:GetOwner())
+            bomb.TargetPos = self.DropPos
+            bomb:Spawn()
+
+            bomb:SetVelocity(self:GetRight() * 100 + self:GetUp() * -1000)
+
+            local bomb2 = ents.Create("pt_attack_bomb")
+            bomb2:SetPos(self:GetPos() - Vector(0, 0, 32) + self:GetRight() * -32)
+            bomb2:SetAngles(self:GetAngles())
+            bomb2:SetOwner(self:GetOwner())
+            bomb2.TargetPos = self.DropPos
+            bomb2:Spawn()
+
+            bomb2:SetVelocity(self:GetRight() * -100 + self:GetUp() * -1000)
+
+            constraint.NoCollide(bomb, bomb2, 0, 0)
         end
-    end
-
-    function ENT:LaunchMissile(target)
-        local targetang = self:GetAngles()
-
-        local rocket = ents.Create("pt_missile")
-        rocket:SetPos(self:GetPos() + self:GetForward() * 250 + self:GetUp() * -32)
-        rocket:SetAngles(targetang)
-        rocket.ShootEntData.Target = target
-        rocket.ImpactDamage = 2500
-        rocket.SteerSpeed = 1500
-        rocket.SeekerAngle = math.cos(math.rad(90))
-        rocket.LifeTime = 15
-        rocket.Boost = 2500
-        rocket:Spawn()
-        rocket.Owner = self:GetOwner()
-        rocket:SetOwner(self:GetOwner())
-        rocket:SetVelocity(targetang:Forward() * 1000000)
-
-        constraint.NoCollide(self, rocket)
-
-        self:EmitSound("weapons/stinger_fire1.wav", 140, 120)
-
-        self.LaunchedMissileAt[target] = rocket
-        self.NextMissileTime = CurTime() + 1
-        self.Rockets = self.Rockets - 1
     end
 
     function ENT:PhysicsCollide(colData, collider)

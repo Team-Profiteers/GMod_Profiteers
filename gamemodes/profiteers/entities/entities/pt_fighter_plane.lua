@@ -58,6 +58,7 @@ if SERVER then
         rocket.ShootEntData.Target = target
         rocket.SteerSpeed = 1500
         rocket.ImpactDamage = 10000
+        rocket.Airburst = true
         rocket:Spawn()
         rocket.Owner = self:GetOwner()
         rocket:SetOwner(self:GetOwner())
@@ -110,6 +111,8 @@ if SERVER then
     end
 else
     function ENT:Initialize()
+        surface.PlaySound("profiteers/flyby_01.ogg")
+
         self:SetColor(Color(255, 255, 255, 0))
         self:SetRenderFX(kRenderFxSolidSlow)
     end

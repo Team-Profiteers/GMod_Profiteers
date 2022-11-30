@@ -1,7 +1,10 @@
 function Profiteers:SpawnPaveLowPlane(ply)
     local pos, ang = Profiteers:GetPlaneEnterPosAng(nil, 500)
 
-    if !pos then return end
+    if !pos then
+        ply:AddMoney(Profiteers.Buyables.pt_pavelow.Price)
+        return
+    end
 
     local airdrop = ents.Create("pt_pavelow_plane")
     airdrop:SetPos(pos)

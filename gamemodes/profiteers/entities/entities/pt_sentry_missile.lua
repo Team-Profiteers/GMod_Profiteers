@@ -86,7 +86,11 @@ if SERVER then
         local dot = targetang:Forward():Dot(self:GetAimAngle():Forward())
         if IsValid(self.Target) and dot >= 0.99 then
             if self:GetLockonTime() == 0 then
-                self:SetLockonTime(CurTime() + 2)
+                if self.Target.IsAirAsset then
+                    self:SetLockonTime(CurTime() + math.Rand(0, 0.5))
+                else
+                    self:SetLockonTime(CurTime() + 2)
+                end
                 self:EmitSound("buttons/button3.wav", 120, 110)
                 self.NextBeep = CurTime() + 0.5
             elseif self:GetLockonTime() < CurTime() then
@@ -105,6 +109,7 @@ if SERVER then
 
     function ENT:ShootTarget()
         if !IsValid(self.Target) then return end
+        if !isbool(self.Target.MissileAlreadyFired) and IsValid(self.Target.MissileAlreadyFired) then self.Target = nil return end
         if (self.NextFire or 0) > CurTime() then return end
         if self:GetAmmo() <= 0 then
             self:EmitSound("weapons/ar2/ar2_empty.wav")
@@ -118,10 +123,13 @@ if SERVER then
         rocket:SetPos(self:GetPos() + Vector(0, 0, 32))
         rocket:SetAngles(targetang)
         rocket.ShootEntData.Target = self.Target
+        rocket.Airburst = true
         rocket:Spawn()
         rocket.Owner = self:CPPIGetOwner()
         rocket:SetOwner(self:CPPIGetOwner())
         self.LastMissile = rocket
+
+        self.Target.MissileAlreadyFired = rocket
 
         local phys = rocket:GetPhysicsObject()
         if phys:IsValid() then
@@ -233,9 +241,10 @@ if SERVER then
             local plane = nil
             for _, v in pairs(ents.GetAll()) do
                 if !v.IsAirAsset and !self:TestPVS(v) then continue end
+                if !isbool(v.MissileAlreadyFired) and IsValid(v.MissileAlreadyFired) then continue end
                 if !(((v:IsPlayer() and v:Alive() and v ~= self:CPPIGetOwner()) or (v:IsNPC() and v:Health() > 0)) and v:GetPos():DistToSqr(self:GetPos()) <= r)
                         and !v.IsAirAsset then continue end
-                if self:HasLineOfSight(v) and v:GetOwner() ~= self:CPPIGetOwner() then
+                if self:HasLineOfSight(v) then
                     if !plane and v.IsAirAsset then
                         plane = v -- don't care about distance, just find the first one
                     else

@@ -28,7 +28,7 @@ end
 
 function SWEP:Deploy()
     local vm = self:GetOwner():GetViewModel()
-    vm:SendViewModelMatchingSequence(vm:LookupSequence("draw"))
+    vm:SendViewModelMatchingSequence(vm:LookupSequence("deploy"))
     vm:SetPlaybackRate(1)
 
     self:SetNextPrimaryFire(CurTime() + vm:SequenceDuration())

@@ -20,6 +20,8 @@ if SERVER then
     end
 
     function ENT:PhysicsCollide(colData, collider)
+        if self.Detonated then return end
+
         self:Detonate()
     end
 
@@ -36,6 +38,10 @@ if SERVER then
         local dist = (targetpos - selfpos):Length()
         local phys = self:GetPhysicsObject()
         phys:ApplyForceCenter(Vector(0, 0, -600) + (dir * 20000 * dist / 1000))
+
+        if self.SpawnTime + 10 < CurTime() then
+            self:Remove()
+        end
     end
 
     function ENT:Detonate()
@@ -50,18 +56,30 @@ if SERVER then
 
         util.BlastDamage(self, self:GetOwner(), self:GetPos(), 1024, 200)
 
-        local mypos = self:GetPos()
-        local owner = self:GetOwner()
+        local groundtrace = util.TraceLine({
+            start = self:GetPos(),
+            endpos = self:GetPos() - Vector(0, 0, 128),
+            filter = self
+        })
 
-        for i = 1, 50 do
-            local blastpos = mypos - Vector(0, 0, i * 256)
+        if !groundtrace.Hit then
+            self.Dud = true
+        end
 
-            if util.IsInWorld(blastpos) then
-                local effectdata2 = EffectData()
-                effectdata2:SetOrigin(blastpos)
-                util.Effect("Explosion", effectdata2)
+        if !self.Dud then
+            local mypos = self:GetPos()
+            local owner = self:GetOwner()
 
-                util.BlastDamage(self, owner, blastpos, 1024, 200)
+            for i = 1, 50 do
+                local blastpos = mypos - Vector(0, 0, i * 256)
+
+                if util.IsInWorld(blastpos) then
+                    local effectdata2 = EffectData()
+                    effectdata2:SetOrigin(blastpos)
+                    util.Effect("Explosion", effectdata2)
+
+                    util.BlastDamage(self, owner, blastpos, 1024, 200)
+                end
             end
         end
 
@@ -69,6 +87,8 @@ if SERVER then
     end
 
     function ENT:OnTakeDamage(damage)
+        self.Dud = true
+        self:Detonate()
         return 0
     end
 end

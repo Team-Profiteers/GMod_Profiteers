@@ -35,6 +35,7 @@ ENT.HelicopterWorkaround = true
 ENT.Damage = 100
 ENT.Radius = 200
 ENT.ImpactDamage = 1000
+ENT.Airburst = false
 
 ENT.Dead = false
 ENT.DieTime = 0
@@ -112,6 +113,12 @@ if SERVER then
             if self.ShootEntData.Target and IsValid(self.ShootEntData.Target) then
                 local target = self.ShootEntData.Target
                 if target.UnTrackable then self.ShootEntData.Target = nil end
+
+                if self.Airburst then
+                    if (self:GetPos() - target:GetPos()):Length() < 128 then
+                        self:Detonate()
+                        return
+                    end
 
                 -- if self.TopAttack then
                 --     local tpos = target:GetPos() + Vector(0, 0, 5000)

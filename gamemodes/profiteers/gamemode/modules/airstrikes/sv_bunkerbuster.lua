@@ -1,7 +1,10 @@
 function Profiteers:SpawnBunkerBusterPlane(droppos, ply)
     local pos, ang = Profiteers:GetPlaneEnterPosAng(droppos, 500)
 
-    if !pos then return end
+    if !pos then
+        ply:AddMoney(Profiteers.Buyables.pt_bomb_marker.Price)
+        return
+    end
 
     local airdrop = ents.Create("pt_bomber_plane")
     airdrop:SetPos(pos)

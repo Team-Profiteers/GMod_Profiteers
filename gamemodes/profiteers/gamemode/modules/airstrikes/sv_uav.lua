@@ -1,7 +1,10 @@
 function Profiteers:SpawnUAVPlane(ply)
     local pos, ang = Profiteers:GetPlaneEnterPosAng(nil, 200)
 
-    if !pos then return end
+    if !pos then
+        ply:AddMoney(Profiteers.Buyables.pt_uav.Price)
+        return
+    end
 
     local airdrop = ents.Create("pt_uav_plane")
     airdrop:SetPos(pos)
