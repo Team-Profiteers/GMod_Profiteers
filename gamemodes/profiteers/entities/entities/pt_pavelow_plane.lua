@@ -16,6 +16,8 @@ ENT.NextMissileTime = 0
 
 ENT.LoiterTargetAng = Angle(0, 0, 0)
 
+ENT.Range = 10000
+
 if SERVER then
     function ENT:Initialize()
         self:SetModel(self.Model)
@@ -90,13 +92,25 @@ if SERVER then
         end
 
         if self.Rockets > 0 then
-            local ents = ents.FindInSphere(self:GetPos(), 15000)
+            local ents = ents.GetAll()
 
             local found_tgt = nil
 
             if self.NextMissileTime < CurTime() then
                 for k, v in pairs(ents) do
-                    if !IsValid(self.LaunchedMissileAt[v]) and v != self and v != self:GetOwner() and ((v:IsPlayer() and v:Alive() and v:IsOnGround()) or (v:IsNPC() and v:Health() > 0)) and v:Visible(self) then
+                    if !IsValid(self.LaunchedMissileAt[v]) and
+                    v != self and v != self:GetOwner() and
+                    ((v:IsPlayer() and v:Alive() and v:IsOnGround()) or (v:IsNPC() and v:Health() > 0)) and
+                    v:Visible(self) then
+                        local mypos2d = self:GetPos()
+                        local tgtpos2d = v:GetPos()
+                        mypos2d.z = 0
+                        tgtpos2d.z = 0
+
+                        if (mypos2d - tgtpos2d):Length() > 10000 then
+                            continue
+                        end
+
                         found_tgt = v
 
                         if v:IsPlayer() then
@@ -125,7 +139,7 @@ if SERVER then
         rocket.SteerSpeed = 1000
         rocket.SeekerAngle = math.cos(math.rad(90))
         rocket.LifeTime = 15
-        rocket.Boost = 2500
+        rocket.Boost = be00
         rocket:Spawn()
         rocket.Owner = self:GetOwner()
         rocket:SetOwner(self:GetOwner())
