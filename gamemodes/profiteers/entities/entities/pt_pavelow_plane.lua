@@ -9,7 +9,7 @@ ENT.IsAirAsset = true
 
 ENT.LeavingArea = false
 
-ENT.Rockets = 32
+ENT.Rockets = 64
 
 ENT.LaunchedMissileAt = {}
 ENT.NextMissileTime = 0
@@ -105,16 +105,17 @@ if SERVER then
     end
 
     function ENT:LaunchMissile(target)
-        local targetang = self:GetAngles() + AngleRand() * 10
+        local targetang = self:GetAngles()
 
         local rocket = ents.Create("arc9_bo1_rocket_stinger")
-        rocket:SetPos(self:GetPos())
+        rocket:SetPos(self:GetPos() + self:GetForward() * 250)
         rocket:SetAngles(targetang)
         rocket.ShootEntData.Target = target
         rocket.ImpactDamage = 100
         rocket.SteerSpeed = 1500
         rocket.SeekerAngle = math.cos(math.rad(90))
-        rocket.LifeTime = 5
+        rocket.LifeTime = 15
+        rocket.Boost = 2500
         rocket:Spawn()
         rocket.Owner = self:GetOwner()
         rocket:SetOwner(self:GetOwner())
