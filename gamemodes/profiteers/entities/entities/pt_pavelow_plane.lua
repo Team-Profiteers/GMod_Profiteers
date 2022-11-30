@@ -24,7 +24,7 @@ if SERVER then
         self.SpawnTime = CurTime()
         self:GetPhysicsObject():SetMass(150)
 
-        self:SetMaxHealth(500)
+        self:SetMaxHealth(5000)
         self:SetHealth(self:GetMaxHealth())
 
         self:ResetSequence(self:LookupSequence("idle"))
