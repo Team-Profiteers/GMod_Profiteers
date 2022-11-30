@@ -84,7 +84,7 @@ function Profiteers:SpawnAirdrop()
 
     if !pos then return end
 
-    local airdrop = ents.Create("pt_airdrop_plane")
+    local airdrop = ents.Create("pt_plane_airdrop")
     airdrop:SetPos(pos)
     airdrop:SetAngles(ang)
     airdrop:Spawn()
