@@ -2,13 +2,11 @@ AddCSLuaFile()
 ENT.PrintName = "UAV"
 ENT.Type = "anim"
 ENT.RenderGroup = RENDERGROUP_BOTH
-ENT.Model = "models/profiteers/c130.mdl"
+ENT.Model = "models/profiteers/vehicles/mw3_uav.mdl"
 ENT.Dropped = false
 ENT.MyAngle = Angle(0, 0, 0)
 
 ENT.IsAirAsset = true
-
-local sounds = {"profiteers/flyover1.wav", "profiteers/flyover2.wav",}
 
 if SERVER then
     function ENT:Initialize()
@@ -16,23 +14,13 @@ if SERVER then
         self:PhysicsInit(SOLID_VPHYSICS)
         self:SetMoveType(MOVETYPE_VPHYSICS)
 
-        if !IsValid(self:GetPhysicsObject()) then
-            self:SetModel("models/props_wasteland/laundry_washer001a.mdl")
-            self:PhysicsInit(SOLID_VPHYSICS)
-            self:SetMoveType(MOVETYPE_VPHYSICS)
-        end
-
         self.SpawnTime = CurTime()
         self:GetPhysicsObject():SetMass(150)
 
-        self:SetMaxHealth(GetConVar("pt_airdrop_planehealth"):GetInt())
+        self:SetMaxHealth(500)
         self:SetHealth(self:GetMaxHealth())
 
         self.MyAngle = self:GetAngles()
-        self:SetOwner(NULL)
-        self:SetBodygroup(1, 1)
-        self:SetBodygroup(2, 1)
-        -- play idle anim
         self:ResetSequence(self:LookupSequence("idle"))
     end
 
@@ -40,7 +28,7 @@ if SERVER then
         local phys = self:GetPhysicsObject()
         phys:EnableGravity(false)
         phys:SetDragCoefficient(0)
-        phys:ApplyForceCenter(self:GetAngles():Forward() * FrameTime() * 5000000)
+        phys:ApplyForceCenter(self:GetAngles():Forward() * FrameTime() * 2500000)
         self:SetAngles(self.MyAngle)
         self:FrameAdvance(FrameTime())
     end
@@ -62,6 +50,7 @@ if SERVER then
         if self:Health() <= 0 and not self.Dropped then
             self.Dropped = true
             self:OnPropDestroyed(damage)
+            self:Remove()
         end
 
         return damage:GetDamage()
@@ -72,24 +61,14 @@ if SERVER then
         effectdata:SetOrigin(self:GetPos())
         util.Effect("pt_bigboom", effectdata)
 
-        for i = 1, math.random(4, 10) do
+        for i = 1, 3 do
             local effectdata2 = EffectData()
             effectdata2:SetOrigin(self:GetPos())
             util.Effect("pt_planewreckage", effectdata2)
         end
-
-        local pos = self:GetPos()
-        self:Remove()
-        timer.Simple(0.1, function()
-            local ent = ents.Create("pt_airdrop")
-            ent:SetPos(pos)
-            ent:Spawn()
-        end)
     end
 else
     function ENT:Initialize()
-        surface.PlaySound("profiteers/flyby_02.ogg")
-
         self:SetColor(Color(255, 255, 255, 0))
         self:SetRenderFX(kRenderFxSolidSlow)
     end
@@ -112,8 +91,8 @@ else
             if self.Ticks % 5 == 0 then
                 local emitter = ParticleEmitter(self:GetPos())
 
-                local particle = emitter:Add("particles/smokey", self:GetPos() + self:GetForward() * 150 + self:GetRight() * 215 + self:GetUp() * 150)
-                particle:SetVelocity(-self:GetForward() * 500 + VectorRand() * 100)
+                local particle = emitter:Add("particles/smokey", self:GetPos() + self:GetForward() * -100)
+                particle:SetVelocity(-self:GetForward() * 1500 + VectorRand() * 100)
                 particle:SetDieTime(math.Rand(2, 2.5))
                 particle:SetStartAlpha(100)
                 particle:SetEndAlpha(0)
@@ -122,7 +101,7 @@ else
                 particle:SetRoll(math.Rand(0, 360))
                 particle:SetRollDelta(math.Rand(-1, 1))
                 particle:SetColor(100, 100, 100)
-                particle:SetAirResistance(100)
+                particle:SetAirResistance(10)
                 particle:SetGravity(Vector(0, 0, 0))
                 particle:SetCollide(true)
                 particle:SetBounce(0.5)

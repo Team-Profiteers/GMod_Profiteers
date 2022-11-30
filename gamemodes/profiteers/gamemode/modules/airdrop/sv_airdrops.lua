@@ -1,20 +1,24 @@
-function Profiteers:SpawnAirdrop()
-    if trans then return end
+function Profiteers:GetPlaneEnterPosAng(droppos, size)
+    size = size or 100
 
-    if !Profiteers.Nodes or table.Count(Profiteers.Nodes) == 0 then
+    if !droppos and !Profiteers.Nodes or table.Count(Profiteers.Nodes) == 0 then
         ParseNodeFile()
     end
 
     local montecarlotries = {}
 
-    for i = 1, table.Count(Profiteers.Nodes) do
-        table.insert(montecarlotries, i)
+    if droppos then
+        table.insert(montecarlotries, droppos)
+    else
+        for i = 1, table.Count(Profiteers.Nodes) do
+            table.insert(montecarlotries, i)
+        end
+
+        table.Shuffle(montecarlotries)
     end
 
-    table.Shuffle(montecarlotries)
-
     for i, k in pairs(montecarlotries) do
-        local pos = Profiteers.Nodes[k]
+        local pos = droppos or Profiteers.Nodes[k]
 
         local tr = util.TraceHull({
             start = pos + Vector(0, 0, 32),
@@ -35,10 +39,12 @@ function Profiteers:SpawnAirdrop()
             for j = 0, 359 do
                 local vec = Vector(math.cos(math.rad(angle + j)), math.sin(math.rad(angle + j)), 0)
 
-                entertrace = util.TraceLine({
+                entertrace = util.TraceHull({
                     start = tr.HitPos,
                     endpos = tr.HitPos + vec * 100000,
                     mask = MASK_NPCWORLDSTATIC,
+                    mins = Vector(-1, -1, -1) * size,
+                    maxs = Vector(1, 1, 1) * size,
                 })
 
                 if !entertrace.HitSky then continue end
@@ -47,6 +53,8 @@ function Profiteers:SpawnAirdrop()
                     start = tr.HitPos,
                     endpos = tr.HitPos + vec * -100000,
                     mask = MASK_NPCWORLDSTATIC,
+                    mins = Vector(-1, -1, -1) * size,
+                    maxs = Vector(1, 1, 1) * size,
                 })
 
                 if !exittrace.HitSky then continue end
@@ -62,18 +70,25 @@ function Profiteers:SpawnAirdrop()
 
             local enterpos = winningenterpos
 
-            local ent = ents.Create("pt_airdrop_plane")
-
             local ang = Angle(0, winner + 180, 0)
 
-            ent:SetPos(enterpos - Vector(0, 0, 512) + ang:Forward() * 1024)
-            ent:SetAngles(ang)
-            ent:Spawn()
-            ent:Activate()
+            local pos = enterpos - Vector(0, 0, 512) + ang:Forward() * 1024
 
-            return
+            return pos, ang
         end
     end
+end
+
+function Profiteers:SpawnAirdrop()
+    local pos, ang = Profiteers:GetPlaneEnterPosAng(nil, 500)
+
+    if !pos then return end
+
+    local airdrop = ents.Create("pt_airdrop_plane")
+    airdrop:SetPos(pos)
+    airdrop:SetAngles(ang)
+    airdrop:Spawn()
+    airdrop:Activate()
 end
 
 -- spawn airdrops at random

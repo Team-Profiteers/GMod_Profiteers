@@ -471,12 +471,21 @@ hook.Add("HUDPaint", "HUDPaint_DrawABox", function()
 
     end
 
+    local owns_uav = false
+
+    for i, k in ipairs(ents.FindByClass("pt_uav_plane")) do
+        if k:GetOwner() == LocalPlayer() then
+            owns_uav = true
+        end
+    end
+
     local ally_positions = {}
     local vehicle_positions = {}
     local beacon_positions = {}
+    local npc_positions = {}
     cam.Start3D()
     for _, p in pairs(player.GetAll()) do
-        if p ~= ply and p:Team() == ply:Team() and p:Team() != TEAM_UNASSIGNED then
+        if p ~= ply and ((p:Team() == ply:Team() and p:Team() != TEAM_UNASSIGNED) or owns_uav) then
             table.insert(ally_positions, {p, (p:GetPos() + Vector(0, 0, 80)):ToScreen()})
         end
     end
@@ -487,7 +496,7 @@ hook.Add("HUDPaint", "HUDPaint_DrawABox", function()
         class = t.VehicleName
 
         local cur_team, occupied = GAMEMODE:GetVehicleTeam(v, true)
-        if GAMEMODE.Vehicles[class] and cur_team == ply:Team() then --(hasally or (not occupied and t.Team == ply:Team())) then
+        if GAMEMODE.Vehicles[class] and (cur_team == ply:Team() or owns_uav) then --(hasally or (not occupied and t.Team == ply:Team())) then
             table.insert(vehicle_positions, {v, (v:GetPos() + Vector(0, 0, 100)):ToScreen(), GAMEMODE.VehiclePadTypes[GAMEMODE.Vehicles[class].Type].Icon, class, occupied})
         end
     end
@@ -495,6 +504,18 @@ hook.Add("HUDPaint", "HUDPaint_DrawABox", function()
     for _, e in pairs(ply.BoughtEntities["pt_beacon"] or {}) do
         if not IsValid(e) then continue end
         table.insert(beacon_positions, {e, (e:GetPos() + Vector(0, 0, 48)):ToScreen()})
+    end
+
+    if owns_uav then
+        for _, e in pairs(ents.GetAll()) do
+            if not IsValid(e) then continue end
+
+            if e:IsNPC() then
+                table.insert(npc_positions, {e, (e:GetPos() + Vector(0, 0, 48)):ToScreen()})
+            elseif e:GetClass() == "pt_beacon" then
+                table.insert(beacon_positions, {e, (e:GetPos() + Vector(0, 0, 48)):ToScreen()})
+            end
+        end
     end
     cam.End3D()
 
@@ -547,6 +568,16 @@ hook.Add("HUDPaint", "HUDPaint_DrawABox", function()
         surface.SetDrawColor(CLR_W.r, CLR_W.g, CLR_W.b, 255)
         surface.SetMaterial(beacon)
         surface.DrawTexturedRect(x - s * 0.5, y - s * 0.5, s, s)
+    end
+
+    for k, v in pairs(npc_positions) do
+        local ply_dist = EyePos():DistToSqr(v[1]:GetPos() + Vector(0, 0, 80))
+        local s = math.Clamp(1 - ply_dist / 4096 ^ 2, 0.5, 1) * 32
+        local x, y = v[2].x, v[2].y
+
+        surface.SetDrawColor(255, 100, 100, 50)
+        surface.SetMaterial(diamond)
+        surface.DrawTexturedRect(x - s * 0.5, y - s * 0.5, s, s * 0.625)
     end
 
     local display_money

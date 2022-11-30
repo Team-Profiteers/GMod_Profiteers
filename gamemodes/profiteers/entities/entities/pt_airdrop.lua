@@ -7,7 +7,7 @@ ENT.ParachuteOpenTime = 1
 ENT.ParachuteOpen = false
 ENT.ParachuteOpenAmount = 0
 
-ENT.IsAirAsset = true
+ENT.IsAirAsset = false
 
 function ENT:SetupDataTables()
     self:NetworkVar("Bool", 0, "Armed")

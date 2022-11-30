@@ -23,11 +23,6 @@ ENT.Range = 4096
 ENT.Damage = 20
 ENT.MagSize = 2
 
-ENT.GlobalLockon = {
-    ["pt_airdrop_plane"] = true,
-    ["pt_uav_plane"] = true,
-}
-
 function ENT:SetupDataTables()
     self:NetworkVar("Bool", 0, "Anchored")
     self:NetworkVar("Int", 0, "Ammo")
@@ -79,12 +74,12 @@ if SERVER then
             local tgtpos = self.Target:EyePos()
             targetang = self:WorldToLocalAngles((tgtpos - (self:GetPos() + Vector(0, 0, 32))):Angle())
         else
-            targetang = Angle(0, self:WorldToLocalAngles(self:GetAngles()).y + math.sin(CurTime() / math.pi / 2) * 120, 0)
+            targetang = Angle(0, self:WorldToLocalAngles(self:GetAngles()).y + math.sin(CurTime() / math.pi / 10) * 180, 0)
         end
 
         self:SetAimAngle(Angle(
-            math.ApproachAngle(self:GetAimAngle().p, targetang.p, engine.TickInterval() * 480),
-            math.ApproachAngle(self:GetAimAngle().y, targetang.y, engine.TickInterval() * 480), 0))
+            math.ApproachAngle(self:GetAimAngle().p, targetang.p, engine.TickInterval() * 720),
+            math.ApproachAngle(self:GetAimAngle().y, targetang.y, engine.TickInterval() * 720), 0))
 
         debugoverlay.Line(self:GetPos(), self:GetPos() + self:LocalToWorldAngles(self:GetAimAngle()):Forward() * 32, 1, Color(255, 0, 0))
 
@@ -169,7 +164,7 @@ if SERVER then
     function ENT:HasLineOfSight(ent)
         local pos = (ent:IsNPC() or ent:IsPlayer()) and ent:EyePos() or ent:WorldSpaceCenter()
         local tr = util.TraceLine({
-            start = self:GetPos() + Vector(0, 0, 32),
+            start = self:GetPos(),
             endpos = pos,
             filter = self,
             mask = MASK_BLOCKLOS_AND_NPCS,
@@ -186,7 +181,7 @@ if SERVER then
 
         if IsValid(target) then
 
-            if self.GlobalLockon[target:GetClass()] then
+            if target.IsAirAsset then
                 if !target:Visible(self) then self.Target = nil end
                 return
             end
@@ -213,14 +208,35 @@ if SERVER then
 
             return
         else
+            --[[]
+            local targets = ents.FindInSphere(self:GetPos(), self.Range)
+            for k, v in pairs(targets) do
+                if (v:IsPlayer() and v:OwnsBoughtEntity(self)) then continue end
+                if (v:IsPlayer() and v:Alive()) or (v:IsNPC() and v:Health() > 0) then
+                    if v:Visible(self) then
+                        self.Target = v
+                        return
+                    end
+                end
+            end
+
+            if !IsValid(self.Target) then
+                for _, v in pairs(ents.GetAll()) do
+                    if self:Visible(v) then
+                        self.Target = v
+                        return
+                    end
+                end
+            end
+            ]]
             local r = self.Range * self.Range
             local plane = nil
             for _, v in pairs(ents.GetAll()) do
-                if !self.GlobalLockon[v:GetClass()] and !self:TestPVS(v) then continue end
+                if !v.IsAirAsset and !self:TestPVS(v) then continue end
                 if !(((v:IsPlayer() and v:Alive() and v ~= self:CPPIGetOwner()) or (v:IsNPC() and v:Health() > 0)) and v:GetPos():DistToSqr(self:GetPos()) <= r)
-                        and !self.GlobalLockon[v:GetClass()] then continue end
-                if self:HasLineOfSight(v) then
-                    if !plane and self.GlobalLockon[v:GetClass()] then
+                        and !v.IsAirAsset then continue end
+                if self:HasLineOfSight(v) and v:GetOwner() ~= self:CPPIGetOwner() then
+                    if !plane and v.IsAirAsset then
                         plane = v -- don't care about distance, just find the first one
                     else
                         self.Target = v
@@ -228,7 +244,7 @@ if SERVER then
                     end
                 end
             end
-            self.Target = plane
+            self.Target = bestplane
             return
         end
     end

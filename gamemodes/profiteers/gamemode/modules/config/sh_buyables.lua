@@ -399,6 +399,68 @@ Profiteers.Buyables = {
 
         Category = "Explosives"
     },
+    ["pt_bomb_marker"] = {
+        Name = "Bunker Buster",
+        EntityClass = "pt_bomb_marker",
+        Price = 50000,
+
+        Description = "Call in a bomber to drop a bomb",
+        Description2 = "Bomb penetrates surfaces",
+
+        Category = "Air Strikes"
+    },
+    ["pt_uav"] = {
+        Name = "UAV",
+        Price = 75000,
+
+        Description = "Call in an unmanned aerial vehicle",
+        Description2 = "Spots players, NPCs, and bases",
+
+        Category = "Air Strikes",
+
+        OnBuy = function(self, ply)
+            Profiteers:SpawnUAVPlane(ply)
+        end
+    },
+    ["pt_attacker"] = {
+        Name = "ATGM Strike",
+        Price = 90000,
+
+        Description = "Call in an attack jet",
+        Description2 = "Fires missiles at targets",
+
+        Category = "Air Strikes",
+
+        OnBuy = function(self, ply)
+            Profiteers:SpawnAttackPlane(ply)
+        end
+    },
+    ["pt_fighter"] = {
+        Name = "Fighter Patrol",
+        Price = 100000,
+
+        Description = "Call in a fighter jet",
+        Description2 = "Eliminates air threats",
+
+        Category = "Air Strikes",
+
+        OnBuy = function(self, ply)
+            Profiteers:SpawnFighterPlane(ply)
+        end
+    },
+    ["pt_pavelow"] = {
+        Name = "Pave Low",
+        Price = 200000,
+
+        Description = "Call in a helicopter gunship",
+        Description2 = "Loiters and fires on enemies",
+
+        Category = "Air Strikes",
+
+        OnBuy = function(self, ply)
+            Profiteers:SpawnPaveLowPlane(ply)
+        end
+    }
 }
 
 Profiteers.BuyableEntities = {}
