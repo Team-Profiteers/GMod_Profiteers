@@ -14,6 +14,8 @@ ENT.Rockets = 64
 ENT.LaunchedMissileAt = {}
 ENT.NextMissileTime = 0
 
+ENT.LoiterTargetAng = Angle(0, 0, 0)
+
 if SERVER then
     function ENT:Initialize()
         self:SetModel(self.Model)
@@ -39,6 +41,10 @@ if SERVER then
             self.LeavingArea = true
         else
             targetpos = self.LoiterPos
+
+            if math.Rand(0, 1) <= 0.01 then
+                self.LoiterTargetAng = AngleRand()
+            end
         end
 
         // local tr = util.TraceHull({
@@ -60,11 +66,15 @@ if SERVER then
         targetang.p = 0
         targetang.r = 0
 
+        if dist <= 500 then
+            targetang = self.LoiterTargetAng
+        end
+
         local ang = self:GetAngles()
 
         local angdiff = math.AngleDifference(ang.y, targetang.y)
 
-        ang.y = math.ApproachAngle(ang.y, targetang.y, FrameTime() * 100 * math.Clamp(angdiff, -100, 100))
+        ang.y = math.ApproachAngle(ang.y, targetang.y, FrameTime() * 25 * math.Clamp(angdiff, -100, 100))
         ang.r = 0
 
         self:SetAngles(ang)
@@ -107,7 +117,7 @@ if SERVER then
     function ENT:LaunchMissile(target)
         local targetang = self:GetAngles()
 
-        local rocket = ents.Create("arc9_bo1_rocket_stinger")
+        local rocket = ents.Create("pt_missile")
         rocket:SetPos(self:GetPos() + self:GetForward() * 250)
         rocket:SetAngles(targetang)
         rocket.ShootEntData.Target = target

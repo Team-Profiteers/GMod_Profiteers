@@ -39,9 +39,8 @@ if SERVER then
 
         if self.NextMissileTime < CurTime() then
             for k, v in pairs(ents) do
-                if !self.LaunchedMissileAt[v] and v != self and v.IsAirAsset and v:GetOwner() != self:GetOwner() then
+                if !IsValid(self.LaunchedMissileAt[v]) and v != self and v.IsAirAsset and v:GetOwner() != self:GetOwner() then
                     self:LaunchMissile(v)
-                    self.LaunchedMissileAt[v] = true
                     break
                 end
             end
@@ -53,7 +52,7 @@ if SERVER then
     function ENT:LaunchMissile(target)
         local targetang = self:GetAngles()
 
-        local rocket = ents.Create("arc9_bo1_rocket_stinger")
+        local rocket = ents.Create("pt_missile")
         rocket:SetPos(self:GetPos() + Vector(0, 0, 32))
         rocket:SetAngles(targetang)
         rocket.ShootEntData.Target = target
@@ -61,6 +60,8 @@ if SERVER then
         rocket:Spawn()
         rocket.Owner = self:GetOwner()
         rocket:SetOwner(self:GetOwner())
+
+        self.LaunchedMissileAt[target] = rocket
 
         local phys = rocket:GetPhysicsObject()
         if phys:IsValid() then
