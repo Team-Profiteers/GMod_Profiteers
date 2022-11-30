@@ -207,6 +207,17 @@ else
         //     end
         // end
 
+        local rotorbone = "main_rotor_jnt"
+        local rotorbone2 = "tail_rotor_jnt"
+
+        local rotorboneid = self:LookupBone(rotorbone)
+        local rotorboneid2 = self:LookupBone(rotorbone2)
+
+        if rotorboneid and rotorboneid2 then
+            self:ManipulateBoneAngles(rotorboneid, Angle(0, math.fmod(CurTime() * 100, 360, 0)))
+            self:ManipulateBoneAngles(rotorboneid2, Angle(math.fmod(CurTime() * 10, 360), 0, 0))
+        end
+
         self.Ticks = self.Ticks + 1
 
         self:FrameAdvance(FrameTime())
