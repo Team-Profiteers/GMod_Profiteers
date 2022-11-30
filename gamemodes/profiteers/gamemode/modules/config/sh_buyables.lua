@@ -399,6 +399,16 @@ Profiteers.Buyables = {
 
         Category = "Explosives"
     },
+    ["pt_bomb_marker"] = {
+        Name = "Bunker Buster",
+        EntityClass = "pt_bomb_marker",
+        Price = 125000,
+
+        Description = "Call in a bomber to drop a",
+        Description2 = "ground-penetrating bomb",
+
+        Category = "Air Strikes"
+    }
 }
 
 Profiteers.BuyableEntities = {}
