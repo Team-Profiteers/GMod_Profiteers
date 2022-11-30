@@ -426,7 +426,7 @@ Profiteers.Buyables = {
         Name = "Fighter Patrol",
         Price = 100000,
 
-        Description = "Call in a fighter jet to attack",
+        Description = "Call in a fighter jet",
         Description2 = "Eliminates air threats",
 
         Category = "Air Strikes",
