@@ -422,6 +422,19 @@ Profiteers.Buyables = {
             Profiteers:SpawnUAVPlane(ply)
         end
     },
+    ["pt_attacker"] = {
+        Name = "ATGM Strike",
+        Price = 90000,
+
+        Description = "Call in an attack jet",
+        Description2 = "Fires missiles at targets",
+
+        Category = "Air Strikes",
+
+        OnBuy = function(self, ply)
+            Profiteers:SpawnAttackPlane(ply)
+        end
+    },
     ["pt_fighter"] = {
         Name = "Fighter Patrol",
         Price = 100000,
