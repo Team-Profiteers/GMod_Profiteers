@@ -7,7 +7,7 @@ local SIZEOF_SHORT = 2
 local AINET_VERSION_NUMBER = 37
 
 local mindist = 2000 * 2000
-local maxdist = 6000 * 6000
+local maxdist = math.huge
 
 local function toUShort(b)
     local i = {string.byte(b, 1, SIZEOF_SHORT)}
