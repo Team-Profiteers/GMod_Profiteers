@@ -408,6 +408,19 @@ Profiteers.Buyables = {
         Description2 = "Bomb penetrates surfaces",
 
         Category = "Air Strikes"
+    },
+    ["pt_uav"] = {
+        Name = "UAV",
+        Price = 75000,
+
+        Description = "Call in an unmanned aerial vehicle",
+        Description2 = "Spots players, NPCs, and bases",
+
+        Category = "Air Strikes",
+
+        OnBuy = function(self, ply)
+            Profiteers:SpawnUAVPlane(ply)
+        end
     }
 }
 

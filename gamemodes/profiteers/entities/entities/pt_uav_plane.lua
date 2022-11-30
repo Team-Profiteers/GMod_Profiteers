@@ -2,7 +2,7 @@ AddCSLuaFile()
 ENT.PrintName = "UAV"
 ENT.Type = "anim"
 ENT.RenderGroup = RENDERGROUP_BOTH
-ENT.Model = "models/profiteers/c130.mdl"
+ENT.Model = "models/profiteers/vehicles/mw3_uav.mdl"
 ENT.Dropped = false
 ENT.MyAngle = Angle(0, 0, 0)
 
@@ -17,7 +17,7 @@ if SERVER then
         self.SpawnTime = CurTime()
         self:GetPhysicsObject():SetMass(150)
 
-        self:SetMaxHealth(1500)
+        self:SetMaxHealth(500)
         self:SetHealth(self:GetMaxHealth())
 
         self.MyAngle = self:GetAngles()
@@ -28,7 +28,7 @@ if SERVER then
         local phys = self:GetPhysicsObject()
         phys:EnableGravity(false)
         phys:SetDragCoefficient(0)
-        phys:ApplyForceCenter(self:GetAngles():Forward() * FrameTime() * 5000000)
+        phys:ApplyForceCenter(self:GetAngles():Forward() * FrameTime() * 2500000)
         self:SetAngles(self.MyAngle)
         self:FrameAdvance(FrameTime())
     end
@@ -50,6 +50,7 @@ if SERVER then
         if self:Health() <= 0 and not self.Dropped then
             self.Dropped = true
             self:OnPropDestroyed(damage)
+            self:Remove()
         end
 
         return damage:GetDamage()
@@ -91,7 +92,7 @@ else
                 local emitter = ParticleEmitter(self:GetPos())
 
                 local particle = emitter:Add("particles/smokey", self:GetPos() + self:GetForward() * -100)
-                particle:SetVelocity(-self:GetForward() * 500 + VectorRand() * 100)
+                particle:SetVelocity(-self:GetForward() * 1500 + VectorRand() * 100)
                 particle:SetDieTime(math.Rand(2, 2.5))
                 particle:SetStartAlpha(100)
                 particle:SetEndAlpha(0)
@@ -100,7 +101,7 @@ else
                 particle:SetRoll(math.Rand(0, 360))
                 particle:SetRollDelta(math.Rand(-1, 1))
                 particle:SetColor(100, 100, 100)
-                particle:SetAirResistance(100)
+                particle:SetAirResistance(10)
                 particle:SetGravity(Vector(0, 0, 0))
                 particle:SetCollide(true)
                 particle:SetBounce(0.5)
