@@ -416,42 +416,42 @@ Profiteers.Buyables = {
         EntityClass = "pt_bomb_marker",
         Price = 50000,
 
-        Description = "Call in a bomber to drop a bomb",
-        Description2 = "Bomb penetrates surfaces",
+        Description = "Bomber drops anti-structure bomb",
+        Description2 = "Penetrates surfaces and decimates bases",
 
-        Category = "Air Strikes"
+        Category = "Air Support"
     },
     ["pt_uav"] = {
         Name = "UAV",
         Price = 75000,
 
-        Description = "Call in an unmanned aerial vehicle",
-        Description2 = "Spots players, NPCs, and bases",
+        Description = "Spots players, NPCs, and bases",
+        Description2 = "Slow and fragile",
 
-        Category = "Air Strikes",
+        Category = "Air Support",
 
         OnBuy = function(self, ply)
             Profiteers:SpawnUAVPlane(ply)
         end
     },
     ["pt_attacker"] = {
-        Name = "Bomb Strike",
+        Name = "CAS Bomber",
         EntityClass = "pt_rocket_marker",
         Price = 25000,
 
-        Description = "Call in an attack jet",
-        Description2 = "Drops two bombs on a target",
+        Description = "Attack jet drops a pair of bombs",
+        Description2 = "Fast, concentrated single strike",
 
-        Category = "Air Strikes",
+        Category = "Air Support",
     },
     ["pt_fighter"] = {
         Name = "Fighter Patrol",
         Price = 100000,
 
-        Description = "Call in a fighter jet",
-        Description2 = "Eliminates air threats",
+        Description = "Fighter jet eliminates air threats",
+        --Description2 = "",
 
-        Category = "Air Strikes",
+        Category = "Air Support",
 
         OnBuy = function(self, ply)
             Profiteers:SpawnFighterPlane(ply)
@@ -464,7 +464,7 @@ Profiteers.Buyables = {
         Description = "Call in a helicopter gunship",
         Description2 = "Loiters and fires missiles",
 
-        Category = "Air Strikes",
+        Category = "Air Support",
 
         OnBuy = function(self, ply)
             Profiteers:SpawnPaveLowPlane(ply)

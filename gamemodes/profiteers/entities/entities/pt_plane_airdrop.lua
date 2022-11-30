@@ -1,4 +1,7 @@
 AddCSLuaFile()
+
+ENT.Base = "pt_base_plane"
+
 ENT.PrintName = "Airdrop Plane"
 ENT.Type = "anim"
 ENT.RenderGroup = RENDERGROUP_BOTH
@@ -6,21 +9,11 @@ ENT.Model = "models/profiteers/c130.mdl"
 ENT.Dropped = false
 ENT.MyAngle = Angle(0, 0, 0)
 
-ENT.IsAirAsset = true
-
-local sounds = {"profiteers/flyover1.wav", "profiteers/flyover2.wav",}
-
 if SERVER then
     function ENT:Initialize()
         self:SetModel(self.Model)
         self:PhysicsInit(SOLID_VPHYSICS)
         self:SetMoveType(MOVETYPE_VPHYSICS)
-
-        if !IsValid(self:GetPhysicsObject()) then
-            self:SetModel("models/props_wasteland/laundry_washer001a.mdl")
-            self:PhysicsInit(SOLID_VPHYSICS)
-            self:SetMoveType(MOVETYPE_VPHYSICS)
-        end
 
         self.SpawnTime = CurTime()
         self:GetPhysicsObject():SetMass(150)
@@ -45,28 +38,6 @@ if SERVER then
         self:FrameAdvance(FrameTime())
     end
 
-    function ENT:PhysicsCollide(colData, collider)
-        -- if it hits world make it remove itself
-        if colData.HitEntity:IsWorld() then
-            self:Remove()
-        end
-    end
-
-    function ENT:OnTakeDamage(damage)
-        if damage:GetDamageType() != DMG_BLAST and damage:GetDamageType() != DMG_AIRBOAT then
-            damage:ScaleDamage(0.25)
-        end
-
-        self:SetHealth(self:Health() - damage:GetDamage())
-
-        if self:Health() <= 0 and not self.Dropped then
-            self.Dropped = true
-            self:OnPropDestroyed(damage)
-        end
-
-        return damage:GetDamage()
-    end
-
     function ENT:OnPropDestroyed(dmginfo)
         local effectdata = EffectData()
         effectdata:SetOrigin(self:GetPos())
@@ -89,46 +60,33 @@ if SERVER then
 else
     function ENT:Initialize()
         surface.PlaySound("profiteers/flyby_02.ogg")
-
         self:SetColor(Color(255, 255, 255, 0))
         self:SetRenderFX(kRenderFxSolidSlow)
-    end
-
-    function ENT:Draw()
-        self:DrawModel()
-    end
-
-    function ENT:DrawTranslucent()
-        self:DrawModel()
     end
 
     ENT.Ticks = 0
 
     function ENT:Think()
         -- advance animation sequence
-        if self:Health() < (self:GetMaxHealth() * 0.5) then
-            // generate smoke particles
+        if self:Health() < (self:GetMaxHealth() * 0.5) and self.Ticks % 5 == 0 then
+            local emitter = ParticleEmitter(self:GetPos())
 
-            if self.Ticks % 5 == 0 then
-                local emitter = ParticleEmitter(self:GetPos())
+            local particle = emitter:Add("particles/smokey", self:GetPos() + self:GetForward() * 150 + self:GetRight() * 215 + self:GetUp() * 150)
+            particle:SetVelocity(-self:GetForward() * 500 + VectorRand() * 100)
+            particle:SetDieTime(math.Rand(2, 2.5))
+            particle:SetStartAlpha(100)
+            particle:SetEndAlpha(0)
+            particle:SetStartSize(32)
+            particle:SetEndSize(math.random(100, 200))
+            particle:SetRoll(math.Rand(0, 360))
+            particle:SetRollDelta(math.Rand(-1, 1))
+            particle:SetColor(100, 100, 100)
+            particle:SetAirResistance(100)
+            particle:SetGravity(Vector(0, 0, 0))
+            particle:SetCollide(true)
+            particle:SetBounce(0.5)
 
-                local particle = emitter:Add("particles/smokey", self:GetPos() + self:GetForward() * 150 + self:GetRight() * 215 + self:GetUp() * 150)
-                particle:SetVelocity(-self:GetForward() * 500 + VectorRand() * 100)
-                particle:SetDieTime(math.Rand(2, 2.5))
-                particle:SetStartAlpha(100)
-                particle:SetEndAlpha(0)
-                particle:SetStartSize(32)
-                particle:SetEndSize(math.random(100, 200))
-                particle:SetRoll(math.Rand(0, 360))
-                particle:SetRollDelta(math.Rand(-1, 1))
-                particle:SetColor(100, 100, 100)
-                particle:SetAirResistance(100)
-                particle:SetGravity(Vector(0, 0, 0))
-                particle:SetCollide(true)
-                particle:SetBounce(0.5)
-
-                emitter:Finish()
-            end
+            emitter:Finish()
         end
 
         if self.Ticks % 5 == 0 then

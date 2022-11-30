@@ -6,7 +6,7 @@ function Profiteers:SpawnUAVPlane(ply)
         return
     end
 
-    local airdrop = ents.Create("pt_uav_plane")
+    local airdrop = ents.Create("pt_plane_uav")
     airdrop:SetPos(pos)
     airdrop:SetAngles(ang)
     airdrop:SetOwner(ply)

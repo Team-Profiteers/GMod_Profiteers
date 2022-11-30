@@ -1,14 +1,14 @@
 AddCSLuaFile()
-ENT.PrintName = "Heavy Bomber"
+ENT.PrintName = "Base Aircraft"
 ENT.Type = "anim"
 ENT.RenderGroup = RENDERGROUP_BOTH
-ENT.Model = "models/profiteers/vehicles/bo1_rolling_thunder.mdl"
+ENT.Model = "models/profiteers/vehicles/mw3_harrier.mdl"
 ENT.Dropped = false
 ENT.MyAngle = Angle(0, 0, 0)
 
-ENT.DropPos = Vector(0, 0, 0)
-
 ENT.IsAirAsset = true
+ENT.FlybySound = false
+ENT.BaseHealth = 1000
 
 if SERVER then
     function ENT:Initialize()
@@ -19,43 +19,11 @@ if SERVER then
         self.SpawnTime = CurTime()
         self:GetPhysicsObject():SetMass(150)
 
-        self:SetMaxHealth(3000)
+        self:SetMaxHealth(self.BaseHealth)
         self:SetHealth(self:GetMaxHealth())
 
         self.MyAngle = self:GetAngles()
         self:ResetSequence(self:LookupSequence("idle"))
-
-        self.BombDropped = false
-    end
-
-    function ENT:Think()
-        local phys = self:GetPhysicsObject()
-        phys:EnableGravity(false)
-        phys:SetDragCoefficient(0)
-        phys:ApplyForceCenter(self:GetAngles():Forward() * FrameTime() * 20000000)
-        self:SetAngles(self.MyAngle)
-
-        // when we get close to the drop pos, drop a bomb
-
-        local selfpos2d = self:GetPos()
-        local droppos2d = self.DropPos
-
-        selfpos2d.z = 0
-        droppos2d.z = 0
-
-        if selfpos2d:Distance(droppos2d) < 500 and not self.BombDropped then
-            self.BombDropped = true
-            local bomb = ents.Create("pt_bomber_bomb")
-            bomb:SetPos(self:GetPos() - Vector(0, 0, 32))
-            bomb:SetAngles(self:GetAngles())
-            bomb:SetOwner(self:GetOwner())
-            bomb.TargetPos = self.DropPos
-            bomb:Spawn()
-
-            bomb:SetVelocity(self:GetVelocity())
-        end
-
-        self:FrameAdvance(FrameTime())
     end
 
     function ENT:PhysicsCollide(colData, collider)
@@ -86,7 +54,7 @@ if SERVER then
         effectdata:SetOrigin(self:GetPos())
         util.Effect("pt_bigboom", effectdata)
 
-        for i = 1, 10 do
+        for i = 1, 3 do
             local effectdata2 = EffectData()
             effectdata2:SetOrigin(self:GetPos())
             util.Effect("pt_planewreckage", effectdata2)
@@ -94,10 +62,11 @@ if SERVER then
     end
 else
     function ENT:Initialize()
-        surface.PlaySound("profiteers/flyby_01.ogg")
-
         self:SetColor(Color(255, 255, 255, 0))
         self:SetRenderFX(kRenderFxSolidSlow)
+        if self.FlybySound then
+            surface.PlaySound("profiteers/flyby_01.ogg")
+        end
     end
 
     function ENT:Draw()
@@ -112,29 +81,24 @@ else
 
     function ENT:Think()
         -- advance animation sequence
-        if self:Health() < (self:GetMaxHealth() * 0.5) then
-            // generate smoke particles
-
-            if self.Ticks % 5 == 0 then
-                local emitter = ParticleEmitter(self:GetPos())
-
-                local particle = emitter:Add("particles/smokey", self:GetPos() + self:GetForward() * 150 + self:GetRight() * 215 + self:GetUp() * 150)
-                particle:SetVelocity(-self:GetForward() * 500 + VectorRand() * 100)
-                particle:SetDieTime(math.Rand(2, 2.5))
-                particle:SetStartAlpha(100)
-                particle:SetEndAlpha(0)
-                particle:SetStartSize(32)
-                particle:SetEndSize(math.random(100, 200))
-                particle:SetRoll(math.Rand(0, 360))
-                particle:SetRollDelta(math.Rand(-1, 1))
-                particle:SetColor(100, 100, 100)
-                particle:SetAirResistance(100)
-                particle:SetGravity(Vector(0, 0, 0))
-                particle:SetCollide(true)
-                particle:SetBounce(0.5)
-
-                emitter:Finish()
-            end
+        if self:Health() < (self:GetMaxHealth() * 0.5) and self.Ticks % 5 == 0 then
+            -- generate smoke particles
+            local emitter = ParticleEmitter(self:GetPos())
+            local particle = emitter:Add("particles/smokey", self:GetPos() + self:GetForward() * -100)
+            particle:SetVelocity(-self:GetForward() * 500 + VectorRand() * 100)
+            particle:SetDieTime(math.Rand(2, 2.5))
+            particle:SetStartAlpha(100)
+            particle:SetEndAlpha(0)
+            particle:SetStartSize(32)
+            particle:SetEndSize(math.random(100, 200))
+            particle:SetRoll(math.Rand(0, 360))
+            particle:SetRollDelta(math.Rand(-1, 1))
+            particle:SetColor(100, 100, 100)
+            particle:SetAirResistance(10)
+            particle:SetGravity(Vector(0, 0, 0))
+            particle:SetCollide(true)
+            particle:SetBounce(0.5)
+            emitter:Finish()
         end
 
         if self.Ticks % 5 == 0 then

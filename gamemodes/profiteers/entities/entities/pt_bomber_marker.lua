@@ -30,6 +30,12 @@ if SERVER then
     end
 
     function ENT:PhysicsCollide(colData, collider)
+        if not self.Welded and colData.HitNormal:Dot(Vector(0, 0, -1)) >= 0.5 then
+            self.Welded = true
+            timer.Simple(0, function()
+                constraint.Weld(self, colData.HitEntity, 0, 0, 0, true, false)
+            end)
+        end
     end
 
     function ENT:OnRemove()

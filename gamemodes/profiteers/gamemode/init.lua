@@ -28,8 +28,3 @@ end
 function GM:GetFallDamage(ply, speed)
     return speed / 20
 end
-
-function GM:PostGamemodeLoaded()
-    BaseClass.PostGamemodeLoaded(self)
-    GAMEMODE:GenerateRandomWeaponLists()
-end

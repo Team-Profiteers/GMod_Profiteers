@@ -4,7 +4,7 @@ ENT.Type = "anim"
 ENT.RenderGroup = RENDERGROUP_BOTH
 ENT.Model = "models/props_phx/ww2bomb.mdl"
 
-ENT.TargetPos = Vector(0, 0, 0)
+ENT.TargetPos = nil
 
 ENT.IsAirAsset = true
 
@@ -17,6 +17,11 @@ if SERVER then
         self:DrawShadow(false)
 
         self.SpawnTime = CurTime()
+        self.StartPos = self:GetPos()
+
+        if IsValid(self:GetPhysicsObject()) then
+            self:GetPhysicsObject():SetDragCoefficient(0)
+        end
     end
 
     function ENT:PhysicsCollide(colData, collider)
@@ -25,7 +30,15 @@ if SERVER then
 
     function ENT:Think()
         local phys = self:GetPhysicsObject()
-        phys:ApplyForceCenter(Vector(0, 0, -2500) * FrameTime() + VectorRand() * FrameTime() * 1024)
+        phys:ApplyForceCenter(Vector(0, 0, -1000000) * FrameTime())
+        if (self.TargetPos) then
+            local d = self.TargetPos - self.StartPos
+            d.z = 0
+            --self:SetAngles((self.TargetPos - self:GetPos()):Angle())
+            phys:ApplyForceCenter(d:GetNormalized() * 1250000 * FrameTime())
+            debugoverlay.Cross(self:GetPos(), 24, 10, Color(0, 255, 255), true)
+
+        end
     end
 
     function ENT:Detonate()
@@ -38,7 +51,7 @@ if SERVER then
 
         self:EmitSound("ambient/explosions/explode_4.wav", 125)
 
-        util.BlastDamage(self, self:GetOwner(), self:GetPos(), 1024, 200)
+        util.BlastDamage(self, self:GetOwner(), self:GetPos(), 1024, 400)
 
         self:Remove()
     end

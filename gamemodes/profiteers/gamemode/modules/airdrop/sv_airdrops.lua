@@ -1,7 +1,7 @@
 function Profiteers:GetPlaneEnterPosAng(droppos, size)
     size = size or 100
 
-    if !droppos and !Profiteers.Nodes or table.Count(Profiteers.Nodes) == 0 then
+    if !droppos and (!Profiteers.Nodes or table.Count(Profiteers.Nodes) == 0) then
         ParseNodeFile()
     end
 

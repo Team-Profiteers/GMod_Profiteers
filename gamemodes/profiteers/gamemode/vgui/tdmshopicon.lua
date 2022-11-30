@@ -14,7 +14,7 @@ AccessorFunc(PANEL, "m_Price", "Price", FORCE_NUMBER)
 function PANEL:Init()
     self:SetPaintBackground( false )
     -- local sw, sh = self:GetParent():GetParent():GetParent():GetSize()
-    self:SetSize( 400, 128 ) -- TODO: get real long n har. nvm
+    self:SetSize( 420, 128 ) -- TODO: get real long n har. nvm
     self:SetText( "" )
     self:SetDoubleClickingEnabled( false )
 
@@ -116,6 +116,12 @@ function PANEL:Paint(w, h)
         surface.DrawTexturedRect(self.Border, self.Border, w, h)
     end
 
+    render.PushFilterMag(TEXFILTER.ANISOTROPIC)
+    render.PushFilterMin(TEXFILTER.ANISOTROPIC)
+    self.Image:PaintAt(3 + self.Border, 3 + self.Border, 128 - 8 - self.Border * 2, 128 - 8 - self.Border * 2)
+    render.PopFilterMin()
+    render.PopFilterMag()
+
     -- Name
     if assert(self.m_NiceName, "Holy balls no weapon name??") then
         surface.SetFont("PTShopicon")
@@ -180,12 +186,6 @@ function PANEL:Paint(w, h)
         surface.SetTextColor(c_w)
         surface.DrawText(self.Description2)
     end
-
-    render.PushFilterMag(TEXFILTER.ANISOTROPIC)
-    render.PushFilterMin(TEXFILTER.ANISOTROPIC)
-    self.Image:PaintAt(3 + self.Border, 3 + self.Border, 128 - 8 - self.Border * 2, 128 - 8 - self.Border * 2)
-    render.PopFilterMin()
-    render.PopFilterMag()
 
     --surface.DrawTexturedRect( self.Border, self.Border, w-self.Border*2, h-self.Border*2 )
 end

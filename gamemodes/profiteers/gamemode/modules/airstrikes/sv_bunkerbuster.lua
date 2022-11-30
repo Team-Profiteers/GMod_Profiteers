@@ -6,7 +6,7 @@ function Profiteers:SpawnBunkerBusterPlane(droppos, ply)
         return
     end
 
-    local airdrop = ents.Create("pt_bomber_plane")
+    local airdrop = ents.Create("pt_plane_bomber")
     airdrop:SetPos(pos)
     airdrop:SetAngles(ang)
     airdrop:SetOwner(ply)

@@ -13,11 +13,11 @@ ENT.FuseTime = 0
 ENT.Defused = false
 ENT.BoxSize = Vector(8, 4, 1)
 ENT.SmokeTrail = true
-ENT.SmokeTrailSize = 64
+ENT.SmokeTrailSize = 32
 ENT.SmokeTrailTime = 5
 ENT.Flare = false
-ENT.LifeTime = 15
-ENT.BoostTime = 15
+ENT.LifeTime = 30
+ENT.BoostTime = 30
 ENT.Drunkenness = 0
 
 ENT.Drag = true
@@ -26,7 +26,6 @@ ENT.DragCoefficient = 0.25
 ENT.Boost = 5000
 ENT.BoostTarget = 15000
 ENT.Lift = 100
-ENT.BoostTime = 10
 ENT.DragCoefficient = 0
 
 ENT.GunshipWorkaround = true
@@ -44,10 +43,7 @@ ENT.SteerSpeed = 15000 -- The maximum amount of degrees per second the missile c
 ENT.SeekerAngle = math.cos(math.rad(30)) -- The missile will lose tracking outside of this angle.
 ENT.SuperSeeker = false
 ENT.SACLOS = false -- This missile is manually guided by its shooter.
-ENT.SemiActive = false -- This missile needs to be locked on to the target at all times.
 ENT.FireAndForget = true -- This missile automatically tracks its target.
-ENT.TopAttack = false -- This missile flies up above its target before going down in a top-attack trajectory.
-ENT.TopAttackHeight = 5000
 ENT.SuperSteerBoostTime = 5 -- Time given for this projectile to adjust its trajectory from top attack to direct
 ENT.NoReacquire = false -- F&F target is permanently lost if it cannot reacquire
 
@@ -103,56 +99,18 @@ if SERVER then
 
         local drunk = false
 
-        if self.FireAndForget or self.SemiActive then
-            if self.SemiActive then
-                if IsValid(self.Weapon) then
-                    self.ShootEntData = self.Weapon:RunHook("Hook_GetShootEntData", {})
-                end
-            end
+        if self.FireAndForget then
 
             if self.ShootEntData.Target and IsValid(self.ShootEntData.Target) then
                 local target = self.ShootEntData.Target
                 if target.UnTrackable then self.ShootEntData.Target = nil end
 
-                if self.Airburst then
-                    if (self:GetPos() - target:GetPos()):Length() < 128 then
-                        self:Detonate()
-                        return
-                    end
+                if self.Airburst and (self:GetPos() - target:GetPos()):Length() < 128 then
+                    self:Detonate()
+                    return
                 end
 
-                -- if self.TopAttack then
-                --     local tpos = target:GetPos() + Vector(0, 0, 5000)
-                --     if self.SpawnTime + self.TopAttackTime - 1 < CurTime() or self.TopAttackReached then
-                --         tpos = target:GetPos()
-                --     end
-                --     local dir = (tpos - self:GetPos()):GetNormalized()
-                --     local dist = (tpos - self:GetPos()):Length()
-                --     local ang = dir:Angle()
-
-                --     local p = self:GetAngles().p
-                --     local y = self:GetAngles().y
-
-                --     p = math.ApproachAngle(p, ang.p, FrameTime() * self.SteerSpeed)
-                --     y = math.ApproachAngle(y, ang.y, FrameTime() * self.SteerSpeed)
-
-                --     self:SetAngles(Angle(p, y, 0))
-
-                --     if dist <= 1024 then
-                --         self.TopAttackReached = true
-                --     end
-                -- else
                 local tpos = target:EyePos()
-                if self.TopAttack and !self.TopAttackReached then
-                    tpos = tpos + Vector(0, 0, self.TopAttackHeight)
-
-                    local dist = (tpos - self:GetPos()):Length()
-
-                    if dist <= 2000 then
-                        self.TopAttackReached = true
-                        self.SuperSteerTime = CurTime() + self.SuperSteerBoostTime
-                    end
-                end
                 local dir = (tpos - self:GetPos()):GetNormalized()
                 local dot = dir:Dot(self:GetAngles():Forward())
                 local ang = dir:Angle()
@@ -357,7 +315,7 @@ function ENT:Draw()
         eff:SetOrigin(self:GetPos())
         eff:SetAngles(self:GetAngles())
         eff:SetEntity(self)
-        eff:SetScale(1)
+        eff:SetScale(5)
         util.Effect("MuzzleEffect", eff)
     end
 end

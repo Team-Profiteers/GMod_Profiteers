@@ -6,7 +6,7 @@ function Profiteers:SpawnPaveLowPlane(ply)
         return
     end
 
-    local airdrop = ents.Create("pt_pavelow_plane")
+    local airdrop = ents.Create("pt_plane_pavelow")
     airdrop:SetPos(pos)
     airdrop:SetAngles(ang)
     airdrop:SetOwner(ply)

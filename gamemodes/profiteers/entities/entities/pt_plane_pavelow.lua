@@ -1,4 +1,7 @@
 AddCSLuaFile()
+
+ENT.Base = "pt_base_plane"
+
 ENT.PrintName = "MH-53 'Pave Low'"
 ENT.Type = "anim"
 ENT.RenderGroup = RENDERGROUP_BOTH
@@ -16,22 +19,16 @@ ENT.NextMissileTime = 0
 
 ENT.LoiterTargetAng = Angle(0, 0, 0)
 
+ENT.Health = 1500
+
 ENT.Range = 10000
 
+DEFINE_BASECLASS(ENT.Base)
+
 if SERVER then
+
     function ENT:Initialize()
-        self:SetModel(self.Model)
-        self:PhysicsInit(SOLID_VPHYSICS)
-        self:SetMoveType(MOVETYPE_VPHYSICS)
-
-        self.SpawnTime = CurTime()
-        self:GetPhysicsObject():SetMass(150)
-
-        self:SetMaxHealth(5000)
-        self:SetHealth(self:GetMaxHealth())
-
-        self:ResetSequence(self:LookupSequence("idle"))
-
+        BaseClass.Initialize(self)
         self.EnterPos = self:GetPos()
     end
 
@@ -48,19 +45,6 @@ if SERVER then
                 self.LoiterTargetAng = AngleRand()
             end
         end
-
-        // local tr = util.TraceHull({
-        //     start = self:GetPos(),
-        //     endpos = targetpos,
-        //     filter = self,
-        //     mins = Vector(-1400, -1400, -200),
-        //     maxs = Vector(1400, 1400, 200),
-        //     mask = MASK_SOLID
-        // })
-
-        // if tr.Hit then
-        //     targetpos = tr.HitPos
-        // end
 
         local dist = (targetpos - self:GetPos()):Length()
 
@@ -177,58 +161,29 @@ if SERVER then
         return damage:GetDamage()
     end
 
-    function ENT:OnPropDestroyed(dmginfo)
-        local effectdata = EffectData()
-        effectdata:SetOrigin(self:GetPos())
-        util.Effect("pt_bigboom", effectdata)
-
-        for i = 1, 3 do
-            local effectdata2 = EffectData()
-            effectdata2:SetOrigin(self:GetPos())
-            util.Effect("pt_planewreckage", effectdata2)
-        end
-    end
 else
-    function ENT:Initialize()
-        self:SetColor(Color(255, 255, 255, 0))
-        self:SetRenderFX(kRenderFxSolidSlow)
-    end
-
-    function ENT:Draw()
-        self:DrawModel()
-    end
-
-    function ENT:DrawTranslucent()
-        self:DrawModel()
-    end
-
-    ENT.Ticks = 0
-
     function ENT:Think()
         -- advance animation sequence
-        if self:Health() < (self:GetMaxHealth() * 0.5) then
+        if self:Health() < (self:GetMaxHealth() * 0.5) and self.Ticks % 5 == 0 then
             // generate smoke particles
+            local emitter = ParticleEmitter(self:GetPos())
 
-            if self.Ticks % 5 == 0 then
-                local emitter = ParticleEmitter(self:GetPos())
+            local particle = emitter:Add("particles/smokey", self:GetPos() + self:GetForward() * -100)
+            particle:SetVelocity(-self:GetForward() * 1500 + VectorRand() * 100)
+            particle:SetDieTime(math.Rand(2, 2.5))
+            particle:SetStartAlpha(100)
+            particle:SetEndAlpha(0)
+            particle:SetStartSize(32)
+            particle:SetEndSize(math.random(100, 200))
+            particle:SetRoll(math.Rand(0, 360))
+            particle:SetRollDelta(math.Rand(-1, 1))
+            particle:SetColor(100, 100, 100)
+            particle:SetAirResistance(10)
+            particle:SetGravity(Vector(0, 0, 0))
+            particle:SetCollide(true)
+            particle:SetBounce(0.5)
 
-                local particle = emitter:Add("particles/smokey", self:GetPos() + self:GetForward() * -100)
-                particle:SetVelocity(-self:GetForward() * 1500 + VectorRand() * 100)
-                particle:SetDieTime(math.Rand(2, 2.5))
-                particle:SetStartAlpha(100)
-                particle:SetEndAlpha(0)
-                particle:SetStartSize(32)
-                particle:SetEndSize(math.random(100, 200))
-                particle:SetRoll(math.Rand(0, 360))
-                particle:SetRollDelta(math.Rand(-1, 1))
-                particle:SetColor(100, 100, 100)
-                particle:SetAirResistance(10)
-                particle:SetGravity(Vector(0, 0, 0))
-                particle:SetCollide(true)
-                particle:SetBounce(0.5)
-
-                emitter:Finish()
-            end
+            emitter:Finish()
         end
 
         if self.LeavingArea and self.Ticks % 5 == 0 then
