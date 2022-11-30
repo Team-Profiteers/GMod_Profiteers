@@ -26,6 +26,8 @@ if SERVER then
 
         self:SetNWInt("PFPropHealth", 1000)
         self:SetNWInt("PFPropMaxHealth", 1000)
+
+        self:EmitSound("profiteers/nuclear.mp3", 100)
     end
 
     function ENT:Think()
