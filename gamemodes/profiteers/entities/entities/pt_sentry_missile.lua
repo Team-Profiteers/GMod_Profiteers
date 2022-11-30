@@ -58,7 +58,6 @@ if SERVER then
 
     function ENT:Think()
         if !self:CanFunction() then return end
-        if IsValid(self.LastMissile) then return end
         if (self.NextFire or 0) > CurTime() then return end
 
         local oldtgt = self.Target
@@ -130,11 +129,10 @@ if SERVER then
         rocket:SetPos(self:GetPos() + Vector(0, 0, 32))
         rocket:SetAngles(targetang)
         rocket.ShootEntData.Target = self.Target
-        rocket.Airburst = true
+        rocket.Airburst = self.Target.IsAirAsset
         rocket:Spawn()
         rocket.Owner = self:CPPIGetOwner()
         rocket:SetOwner(self:CPPIGetOwner())
-        self.LastMissile = rocket
 
         self.Target.MissileAlreadyFired = rocket
 

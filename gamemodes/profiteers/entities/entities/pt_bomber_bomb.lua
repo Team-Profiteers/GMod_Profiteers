@@ -7,6 +7,7 @@ ENT.Model = "models/props_phx/mk-82.mdl"
 ENT.TargetPos = Vector(0, 0, 0)
 
 ENT.IsAirAsset = true
+ENT.AirAssetWeight = 2
 
 if SERVER then
     function ENT:Initialize()
@@ -34,14 +35,15 @@ if SERVER then
         targetpos.z = 0
         selfpos.z = 0
 
-        local dir = (targetpos - selfpos):GetNormalized()
-        local dist = (targetpos - selfpos):Length()
         local phys = self:GetPhysicsObject()
-        phys:ApplyForceCenter(Vector(0, 0, -600) + (dir * 20000 * dist / 1000))
+        phys:ApplyForceCenter(Vector(0, 0, -40000 * 0.2))
 
-        if self.SpawnTime + 10 < CurTime() then
+        if self.SpawnTime + 20 < CurTime() then
             self:Remove()
         end
+
+        self:NextThink(CurTime() + 0.2)
+        return true
     end
 
     function ENT:Detonate()
@@ -54,7 +56,7 @@ if SERVER then
 
         self:EmitSound("ambient/explosions/explode_4.wav", 125)
 
-        util.BlastDamage(self, self:GetOwner(), self:GetPos(), 1024, 200)
+        util.BlastDamage(self, self:GetOwner(), self:GetPos(), 1536, 1000)
 
         local groundtrace = util.TraceLine({
             start = self:GetPos(),
@@ -70,15 +72,15 @@ if SERVER then
             local mypos = self:GetPos()
             local owner = self:GetOwner()
 
-            for i = 1, 50 do
-                local blastpos = mypos - Vector(0, 0, i * 256)
+            for i = 1, 20 do
+                local blastpos = mypos - Vector(0, 0, i * 128)
 
                 if util.IsInWorld(blastpos) then
                     local effectdata2 = EffectData()
                     effectdata2:SetOrigin(blastpos)
                     util.Effect("Explosion", effectdata2)
 
-                    util.BlastDamage(self, owner, blastpos, 1024, 200)
+                    util.BlastDamage(self, owner, blastpos, 1024, 150)
                 end
             end
         end

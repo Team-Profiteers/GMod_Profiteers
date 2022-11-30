@@ -32,7 +32,7 @@ ENT.GunshipWorkaround = true
 ENT.HelicopterWorkaround = true
 
 ENT.Damage = 100
-ENT.Radius = 200
+ENT.Radius = 256
 ENT.ImpactDamage = 1000
 ENT.Airburst = false
 
@@ -106,7 +106,7 @@ if SERVER then
                 local target = self.ShootEntData.Target
                 if target.UnTrackable then self.ShootEntData.Target = nil end
 
-                if self.Airburst and (self:GetPos() - target:GetPos()):Length() < 128 then
+                if self.Airburst and (self:GetPos() - target:GetPos()):Length() < 256 then
                     self:Detonate()
                     return
                 end

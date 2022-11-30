@@ -23,16 +23,19 @@ if SERVER then
         // when we get close to the drop pos, drop a bomb
 
         local selfpos2d = self:GetPos()
-        local droppos2d = self.DropPos
+        local droppos2d = Vector(self.DropPos)
 
         selfpos2d.z = 0
         droppos2d.z = 0
 
         if selfpos2d:Distance(droppos2d) < 500 and not self.BombDropped then
             self.BombDropped = true
+
+            local spot = droppos2d
+            spot.z = self:GetPos().z - 256
             local bomb = ents.Create("pt_bomber_bomb")
-            bomb:SetPos(self:GetPos() - Vector(0, 0, 32))
-            bomb:SetAngles(self:GetAngles())
+            bomb:SetPos(spot)
+            bomb:SetAngles(self:GetAngles() + Angle(90, 0, 0))
             bomb:SetOwner(self:GetOwner())
             bomb.TargetPos = self.DropPos
             bomb:Spawn()

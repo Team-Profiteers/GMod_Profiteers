@@ -53,20 +53,20 @@ if SERVER then
             local bullet = {
                 Attacker = self:GetOwner(),
                 Inflictor = self,
-                Damage = 40,
+                Damage = 50,
                 Force = 10,
                 Num = 4,
                 Dir = shootang,
                 Src = self:GetPos(),
                 Tracer = 0,
-                HullSize = 64,
+                HullSize = 128,
                 Spread = Vector(0.04, 0.04, 0.01),
                 filter = self,
                 Callback = function(attacker, tr, dmginfo)
                     if IsValid(tr.Entity) and tr.Entity:IsPlayer() then
                         dmginfo:ScaleDamage(2)
                     elseif IsValid(tr.Entity) and tr.Entity:IsNPC() then
-                        dmginfo:ScaleDamage(3)
+                        dmginfo:ScaleDamage(4)
                     end
                 end
             }

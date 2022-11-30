@@ -1,17 +1,17 @@
 function Profiteers:SpawnAttackerPlane(ply, droppos)
-    local pos, ang = Profiteers:GetPlaneEnterPosAng(droppos, 200)
+    local pos, ang = Profiteers:GetPlaneEnterPosAng(droppos, 200, ply:GetAngles().y + 90)
 
     if !pos then
         ply:AddMoney(Profiteers.Buyables.pt_attacker.Price)
         return
     end
 
-    debugoverlay.Sphere(droppos, 128, 15, Color(255, 255, 255, 0), true)
+    debugoverlay.Sphere(droppos, 128, 30, Color(255, 255, 255, 0), true)
 
     local approach2d = pos - droppos
     approach2d.z = 0
     approach2d:Normalize()
-    debugoverlay.Line(droppos, droppos + approach2d * 128, 15, Color(0, 255, 0), true)
+    debugoverlay.Line(droppos, droppos + approach2d * 128, 30, Color(0, 255, 0), true)
 
     local d = math.abs(pos.z - droppos.z) / math.sqrt(5)
     local diagonal = util.TraceHull({
@@ -21,8 +21,8 @@ function Profiteers:SpawnAttackerPlane(ply, droppos)
         mins = Vector(-32, -32, 0),
         maxs = Vector(32, 32, 32),
     })
-    debugoverlay.Line(diagonal.StartPos, diagonal.HitPos, 15, Color(255, 0, 0), true)
-    debugoverlay.Sphere(diagonal.HitPos, 64, 15, Color(255, 255, 0, 0), true)
+    debugoverlay.Line(diagonal.StartPos, diagonal.HitPos, 30, Color(255, 0, 0), true)
+    debugoverlay.Sphere(diagonal.HitPos, 64, 30, Color(255, 255, 0, 0), true)
 
     local airdrop = ents.Create("pt_plane_attack")
     airdrop:SetPos(pos)
@@ -32,7 +32,7 @@ function Profiteers:SpawnAttackerPlane(ply, droppos)
     airdrop.DropPos = droppos
     if !diagonal.Hit then
         airdrop.DiagonalDrop = diagonal.HitPos
-        debugoverlay.Sphere(diagonal.HitPos, 128, 15, Color(255, 0, 0, 0), true)
+        debugoverlay.Sphere(diagonal.HitPos, 128, 30, Color(255, 0, 0, 0), true)
     end
 
     airdrop:Spawn()

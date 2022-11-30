@@ -7,6 +7,7 @@ ENT.Model = "models/props_phx/ww2bomb.mdl"
 ENT.TargetPos = nil
 
 ENT.IsAirAsset = true
+ENT.AirAssetWeight = 1.5
 
 if SERVER then
     function ENT:Initialize()
@@ -19,9 +20,9 @@ if SERVER then
         self.SpawnTime = CurTime()
         self.StartPos = self:GetPos()
 
-        if IsValid(self:GetPhysicsObject()) then
-            self:GetPhysicsObject():SetDragCoefficient(0)
-        end
+        -- if IsValid(self:GetPhysicsObject()) then
+        --     self:GetPhysicsObject():SetDragCoefficient(0)
+        -- end
     end
 
     function ENT:PhysicsCollide(colData, collider)
@@ -30,15 +31,21 @@ if SERVER then
 
     function ENT:Think()
         local phys = self:GetPhysicsObject()
-        phys:ApplyForceCenter(Vector(0, 0, -1000000) * FrameTime())
+        local add = Vector(0, 0, -180000 * 0.2)
         if (self.TargetPos) then
             local d = self.TargetPos - self.StartPos
             d.z = 0
-            --self:SetAngles((self.TargetPos - self:GetPos()):Angle())
-            phys:ApplyForceCenter(d:GetNormalized() * 1250000 * FrameTime())
+            add = add + d:GetNormalized() * 145000 * 0.2
             debugoverlay.Cross(self:GetPos(), 24, 10, Color(0, 255, 255), true)
-
         end
+        phys:ApplyForceCenter(add)
+
+        if self.SpawnTime + 20 < CurTime() then
+            self:Remove()
+        end
+
+        self:NextThink(CurTime() + 0.2)
+        return true
     end
 
     function ENT:Detonate()

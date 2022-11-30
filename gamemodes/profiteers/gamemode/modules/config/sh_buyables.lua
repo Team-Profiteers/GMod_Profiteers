@@ -417,7 +417,7 @@ Profiteers.Buyables = {
         Price = 50000,
 
         Description = "Bomber drops anti-structure bomb",
-        Description2 = "Penetrates surfaces and decimates bases",
+        Description2 = "Penetrates surfaces, high damage",
 
         Category = "Air Support"
     },
