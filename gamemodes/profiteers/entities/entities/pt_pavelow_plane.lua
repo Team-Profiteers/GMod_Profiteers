@@ -7,10 +7,9 @@ ENT.Dropped = false
 
 ENT.IsAirAsset = true
 
-ENT.EnterPos = Vector(0, 0, 0)
 ENT.LeavingArea = false
 
-ENT.Rockets = 32
+ENT.Rockets = 64
 
 ENT.LaunchedMissileAt = {}
 ENT.NextMissileTime = 0
@@ -37,22 +36,23 @@ if SERVER then
 
         if !IsValid(self:GetOwner()) or self.Rockets <= 0 then
             targetpos = self.EnterPos
+            self.LeavingArea = true
         else
-            targetpos = self:GetOwner():GetPos() + Vector(0, 0, 4000)
+            targetpos = self.LoiterPos
         end
 
-        local tr = util.TraceHull({
-            start = self:GetPos(),
-            endpos = targetpos,
-            filter = self,
-            mins = Vector(-1400, -1400, -200),
-            maxs = Vector(1400, 1400, 200),
-            mask = MASK_SOLID
-        })
+        // local tr = util.TraceHull({
+        //     start = self:GetPos(),
+        //     endpos = targetpos,
+        //     filter = self,
+        //     mins = Vector(-1400, -1400, -200),
+        //     maxs = Vector(1400, 1400, 200),
+        //     mask = MASK_SOLID
+        // })
 
-        if tr.Hit then
-            targetpos = tr.HitPos - (tr.HitNormal * 1500)
-        end
+        // if tr.Hit then
+        //     targetpos = tr.HitPos
+        // end
 
         local dist = (targetpos - self:GetPos()):Length()
 
@@ -67,16 +67,18 @@ if SERVER then
 
         if dist > 500 then
             phys:SetVelocity((targetpos - self:GetPos()):GetNormalized() * 1000)
+        elseif self.LeavingArea then
+            self:Remove()
         end
 
         if self.Rockets > 0 then
-            local ents = ents.FindInSphere(self:GetPos(), 8000)
+            local ents = ents.FindInSphere(self:GetPos(), 15000)
 
             local found_tgt = nil
 
             if self.NextMissileTime < CurTime() then
                 for k, v in pairs(ents) do
-                    if v != self and v != self:GetOwner() and ((v:IsPlayer() and v:Alive()) or (v:IsNPC() and v:Health() > 0)) and v:Visible(self) then
+                    if !IsValid(self.LaunchedMissileAt[v]) and v != self and v != self:GetOwner() and ((v:IsPlayer() and v:Alive()) or (v:IsNPC() and v:Health() > 0)) and v:Visible(self) then
                         found_tgt = v
 
                         if v:IsPlayer() then
@@ -113,7 +115,8 @@ if SERVER then
 
         self:EmitSound("weapons/stinger_fire1.wav", 140, 120)
 
-        self.NextMissileTime = CurTime() + 1
+        self.LaunchedMissileAt[target] = rocket
+        self.NextMissileTime = CurTime() + 0.5
         self.Rockets = self.Rockets - 1
     end
 
@@ -194,18 +197,18 @@ else
             end
         end
 
-        // if self.Ticks % 5 == 0 then
-        //     local tr = util.TraceLine({
-        //         start = self:GetPos(),
-        //         endpos = self:GetPos() + self:GetForward() * 2000,
-        //         filter = self,
-        //         mask = MASK_NPCWORLDSTATIC
-        //     })
+        if self.LeavingArea and self.Ticks % 5 == 0 then
+            local tr = util.TraceLine({
+                start = self:GetPos(),
+                endpos = self:GetPos() + self:GetForward() * 2000,
+                filter = self,
+                mask = MASK_NPCWORLDSTATIC
+            })
 
-        //     if tr.Hit and tr.HitWorld then
-        //         self:SetRenderFX(kRenderFxFadeSlow)
-        //     end
-        // end
+            if tr.Hit and tr.HitWorld then
+                self:SetRenderFX(kRenderFxFadeSlow)
+            end
+        end
 
         local rotorbone = "main_rotor_jnt"
         local rotorbone2 = "tail_rotor_jnt"

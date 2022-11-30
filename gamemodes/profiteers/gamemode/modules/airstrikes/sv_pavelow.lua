@@ -7,6 +7,7 @@ function Profiteers:SpawnPaveLowPlane(ply)
     airdrop:SetPos(pos)
     airdrop:SetAngles(ang)
     airdrop:SetOwner(ply)
+    airdrop.LoiterPos = Vector(ply:GetPos().x, ply:GetPos().y, pos.z)
     airdrop:Spawn()
     airdrop:Activate()
 end
