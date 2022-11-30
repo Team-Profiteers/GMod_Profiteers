@@ -122,7 +122,7 @@ if SERVER then
         rocket:SetAngles(targetang)
         rocket.ShootEntData.Target = target
         rocket.ImpactDamage = 100
-        rocket.SteerSpeed = 1500
+        rocket.SteerSpeed = 1000
         rocket.SeekerAngle = math.cos(math.rad(90))
         rocket.LifeTime = 15
         rocket.Boost = 2500
