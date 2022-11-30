@@ -23,6 +23,11 @@ ENT.Range = 4096
 ENT.Damage = 20
 ENT.MagSize = 2
 
+ENT.GlobalLockon = {
+    ["pt_airdrop_plane"] = true,
+    ["pt_uav_plane"] = true,
+}
+
 function ENT:SetupDataTables()
     self:NetworkVar("Bool", 0, "Anchored")
     self:NetworkVar("Int", 0, "Ammo")
@@ -74,14 +79,14 @@ if SERVER then
             local tgtpos = self.Target:EyePos()
             targetang = self:WorldToLocalAngles((tgtpos - (self:GetPos() + Vector(0, 0, 32))):Angle())
         else
-            --targetang = self:GetAimAngle() + Angle(0, math.sin(CurTime()) * engine.TickInterval() * 360, 0)
-            targetang = Angle(0, self:WorldToLocalAngles(self:GetAngles()).y + math.sin(CurTime()) * 180, 0)
+            targetang = Angle(0, self:WorldToLocalAngles(self:GetAngles()).y + math.sin(CurTime() / math.pi / 2) * 120, 0)
         end
 
         self:SetAimAngle(Angle(
-            math.ApproachAngle(self:GetAimAngle().p, targetang.p, engine.TickInterval() * 360),
-            math.ApproachAngle(self:GetAimAngle().y, targetang.y, engine.TickInterval() * 360), 0))
+            math.ApproachAngle(self:GetAimAngle().p, targetang.p, engine.TickInterval() * 480),
+            math.ApproachAngle(self:GetAimAngle().y, targetang.y, engine.TickInterval() * 480), 0))
 
+        debugoverlay.Line(self:GetPos(), self:GetPos() + self:LocalToWorldAngles(self:GetAimAngle()):Forward() * 32, 1, Color(255, 0, 0))
 
         local dot = targetang:Forward():Dot(self:GetAimAngle():Forward())
         if IsValid(self.Target) and dot >= 0.99 then
@@ -161,12 +166,27 @@ if SERVER then
         end
     end
 
+    function ENT:HasLineOfSight(ent)
+        local pos = (ent:IsNPC() or ent:IsPlayer()) and ent:EyePos() or ent:WorldSpaceCenter()
+        local tr = util.TraceLine({
+            start = self:GetPos() + Vector(0, 0, 32),
+            endpos = pos,
+            filter = self,
+            mask = MASK_BLOCKLOS_AND_NPCS,
+        })
+        return tr.Entity == ent or !IsValid(tr.Entity) and tr.Fraction == 1
+    end
+
     function ENT:FindTarget()
+
+        if (self.NextFindTarget or 0) > CurTime() then return end
+        self.NextFindTarget = CurTime() + 0.25
+
         local target = self.Target
 
         if IsValid(target) then
 
-            if target:GetClass() == "pt_airdrop_plane" then
+            if self.GlobalLockon[target:GetClass()] then
                 if !target:Visible(self) then self.Target = nil end
                 return
             end
@@ -193,25 +213,23 @@ if SERVER then
 
             return
         else
-            local targets = ents.FindInSphere(self:GetPos(), self.Range)
-            for k, v in pairs(targets) do
-                if (v:IsPlayer() and v:OwnsBoughtEntity(self)) then continue end
-                if (v:IsPlayer() and v:Alive()) or (v:IsNPC() and v:Health() > 0) then
-                    if v:Visible(self) then
+            local r = self.Range * self.Range
+            local plane = nil
+            for _, v in pairs(ents.GetAll()) do
+                if !self.GlobalLockon[v:GetClass()] and !self:TestPVS(v) then continue end
+                if !(((v:IsPlayer() and v:Alive() and v ~= self:CPPIGetOwner()) or (v:IsNPC() and v:Health() > 0)) and v:GetPos():DistToSqr(self:GetPos()) <= r)
+                        and !self.GlobalLockon[v:GetClass()] then continue end
+                if self:HasLineOfSight(v) then
+                    if !plane and self.GlobalLockon[v:GetClass()] then
+                        plane = v -- don't care about distance, just find the first one
+                    else
                         self.Target = v
                         return
                     end
                 end
             end
-
-            if !IsValid(self.Target) then
-                for _, v in pairs(ents.FindByClass("pt_airdrop_plane")) do
-                    if self:Visible(v) then
-                        self.Target = v
-                        return
-                    end
-                end
-            end
+            self.Target = plane
+            return
         end
     end
 end
@@ -229,15 +247,9 @@ if CLIENT then
 
         if bone then
             local bonepos, boneang = self:GetBonePosition(bone)
-            self.AimAng = self.AimAng or Angle(0, 0, 0)
-            -- self.AimAng = Angle(
-            --     math.ApproachAngle(self.AimAng.p, self:GetAimAngle().p, 18 * FrameTime()),
-            --     math.ApproachAngle(self.AimAng.y, self:GetAimAngle().y, 18 * FrameTime()), 0)
-            self.AimAng = LerpAngle(FrameTime() * 1, self.AimAng, self:GetAimAngle())
+            self.AimAng = LerpAngle(FrameTime() * 3, self.AimAng or Angle(0, 0, 0), self:GetAimAngle())
 
             self:ManipulateBoneAngles(bone, self.AimAng, false)
-            -- debugoverlay.Line(self:GetPos(), self:GetPos() + self:LocalToWorldAngles(self.AimAng):Forward() * 512, 1, Color(0, 0, 255))
-            -- debugoverlay.Line(self:GetPos(), self:GetPos() + self:LocalToWorldAngles(self:GetAimAngle()):Forward() * 128, 1, Color(0, 255, 255))
 
             local pos = bonepos + boneang:Up() * 4 + boneang:Forward() * 6 + boneang:Right() * -13
 
@@ -250,7 +262,7 @@ if CLIENT then
                 else
                     GAMEMODE:ShadowText("OFFLINE", "CGHUD_5", 0, 0, self:WithinBeacon() and color_white or Color(255, 0, 0), Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
                 end
-                --GAMEMODE:ShadowText(tostring(self:GetAmmo()) .. "/" .. self.MagSize, "CGHUD_7", 0, 40, self:GetAmmo() > 0 and Color(150, 255, 150) or Color(255, 150, 150), Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+
                 surface.SetMaterial(mat_missile)
                 surface.SetDrawColor(0, 0, 0, 255)
                 surface.DrawTexturedRectRotated(-48, 50, 64, 64, 90)
