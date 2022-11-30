@@ -23,11 +23,6 @@ ENT.Range = 4096
 ENT.Damage = 20
 ENT.MagSize = 2
 
-ENT.GlobalLockon = {
-    ["pt_airdrop_plane"] = true,
-    ["pt_uav_plane"] = true,
-}
-
 function ENT:SetupDataTables()
     self:NetworkVar("Bool", 0, "Anchored")
     self:NetworkVar("Int", 0, "Ammo")
@@ -186,7 +181,7 @@ if SERVER then
 
         if IsValid(target) then
 
-            if self.GlobalLockon[target:GetClass()] then
+            if target.IsAirAsset then
                 if !target:Visible(self) then self.Target = nil end
                 return
             end
@@ -237,11 +232,11 @@ if SERVER then
             local r = self.Range * self.Range
             local plane = nil
             for _, v in pairs(ents.GetAll()) do
-                if !self.GlobalLockon[v:GetClass()] and !self:TestPVS(v) then continue end
+                if !v.IsAirAsset and !self:TestPVS(v) then continue end
                 if !(((v:IsPlayer() and v:Alive() and v ~= self:CPPIGetOwner()) or (v:IsNPC() and v:Health() > 0)) and v:GetPos():DistToSqr(self:GetPos()) <= r)
-                        and !self.GlobalLockon[v:GetClass()] then continue end
-                if self:HasLineOfSight(v) then
-                    if !plane and self.GlobalLockon[v:GetClass()] then
+                        and !v.IsAirAsset then continue end
+                if self:HasLineOfSight(v) and v:GetOwner() ~= self:CPPIGetOwner() then
+                    if !plane and v.IsAirAsset then
                         plane = v -- don't care about distance, just find the first one
                     else
                         self.Target = v

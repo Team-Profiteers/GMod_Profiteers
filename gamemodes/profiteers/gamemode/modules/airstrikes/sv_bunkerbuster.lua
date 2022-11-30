@@ -7,8 +7,7 @@ function Profiteers:SpawnBunkerBusterPlane(droppos, ply)
     airdrop:SetPos(pos)
     airdrop:SetAngles(ang)
     airdrop:SetOwner(ply)
+    airdrop.DropPos = droppos
     airdrop:Spawn()
     airdrop:Activate()
-
-    airdrop.DropPos = droppos
 end

@@ -1,9 +1,9 @@
 "VertexlitGeneric"
 {
-	"$basetexture" "models/profiteers/vehicles/mw3_pavelow/pavelow"
-	"$bumpmap" "models/profiteers/vehicles/mw3_pavelow/pavelow_n"
-	"$phongexponenttexture" "models/profiteers/vehicles/mw3_pavelow/pavelow_s"
-	"$envmapmask" "models/profiteers/vehicles/mw3_pavelow/pavelow_s"
+	"$basetexture" "models/profiteers/vehicles/mw3_pavelow/pavelow_glass"
+	"$bumpmap" "models/profiteers/vehicles/mw3_pavelow/pavelow_glass_n"
+	"$phongexponenttexture" "models/profiteers/vehicles/mw3_pavelow/pavelow_glass_s"
+	"$envmapmask" "models/profiteers/vehicles/mw3_pavelow/pavelow_glass_s"
 	"$normalmapalphaenvmapmask" "1"
 	
 	//"$color2" "[ .4 .4 .4 ]"
