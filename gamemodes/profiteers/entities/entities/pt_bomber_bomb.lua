@@ -88,7 +88,7 @@ if SERVER then
         self:Remove()
     end
 
-    function ENT:OnTakeDamage(damage)
+    function ENT:OnTakeDamage(dmginfo)
         self.Dud = true
         self:Detonate()
 
