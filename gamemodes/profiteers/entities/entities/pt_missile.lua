@@ -46,6 +46,9 @@ ENT.SACLOS = false -- This missile is manually guided by its shooter.
 ENT.FireAndForget = true -- This missile automatically tracks its target.
 ENT.SuperSteerBoostTime = 5 -- Time given for this projectile to adjust its trajectory from top attack to direct
 ENT.NoReacquire = false -- F&F target is permanently lost if it cannot reacquire
+ENT.TopAttack = false -- This missile flies up above its target before going down in a top-attack trajectory.
+ENT.TopAttackHeight = 5000
+ENT.TopAttackDistance = 2000
 
 ENT.FuseTime = 0
 
@@ -82,6 +85,7 @@ if SERVER then
     end
 
     function ENT:OnTakeDamage(damage)
+        if self.Defused then return end
         self:Remove()
         return 1
     end
@@ -102,7 +106,6 @@ if SERVER then
         local drunk = false
 
         if self.FireAndForget then
-
             if self.ShootEntData.Target and IsValid(self.ShootEntData.Target) then
                 local target = self.ShootEntData.Target
                 if target.UnTrackable then self.ShootEntData.Target = nil end
@@ -113,6 +116,18 @@ if SERVER then
                 end
 
                 local tpos = target:EyePos()
+
+                if self.TopAttack and !self.TopAttackReached then
+                    tpos = tpos + Vector(0, 0, self.TopAttackHeight)
+
+                    local dist = (tpos - self:GetPos()):Length()
+
+                    if dist <= self.TopAttackDistance then
+                        self.TopAttackReached = true
+                        self.SuperSteerTime = CurTime() + self.SuperSteerBoostTime
+                    end
+                end
+
                 local dir = (tpos - self:GetPos()):GetNormalized()
                 local dot = dir:Dot(self:GetAngles():Forward())
                 local ang = dir:Angle()
@@ -125,7 +140,6 @@ if SERVER then
                     y = math.ApproachAngle(y, ang.y, FrameTime() * self.SteerSpeed)
 
                     self:SetAngles(Angle(p, y, 0))
-                    -- self:SetVelocity(dir * 15000)
                 elseif self.NoReacquire then
                     self.ShootEntData.Target = nil
                     drunk = true

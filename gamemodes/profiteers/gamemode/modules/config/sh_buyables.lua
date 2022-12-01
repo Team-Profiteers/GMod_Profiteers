@@ -322,6 +322,18 @@ Profiteers.Buyables = {
 
         Category = "Construction"
     },
+    ["pt_sentry_rocket"] = {
+        Name = "Missile Battery",
+        EntityClass = "pt_sentry_rocket",
+        Price = 90000,
+        PlaceEntity = true,
+        EntityLimit = 1,
+
+        Description = "Long range. Targets ground",
+        Description2 = "Must be deployed near a Beacon",
+
+        Category = "Construction"
+    },
     ["pt_cart_armor"] = {
         Name = "Armor Station",
         EntityClass = "pt_cart_armor",

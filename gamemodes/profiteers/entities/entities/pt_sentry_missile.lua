@@ -125,7 +125,7 @@ if SERVER then
 
         local targetang = self:LocalToWorldAngles(self:GetAimAngle())
 
-        local rocket = ents.Create("arc9_bo1_rocket_stinger")
+        local rocket = ents.Create("pt_missile")
         rocket:SetPos(self:GetPos() + Vector(0, 0, 32))
         rocket:SetAngles(targetang)
         rocket.ShootEntData.Target = self.Target

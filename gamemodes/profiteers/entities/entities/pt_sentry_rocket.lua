@@ -20,9 +20,12 @@ ENT.AnchorSpikeSize = 200
 ENT.Category = "Profiteers"
 ENT.Spawnable = false
 
-ENT.Range = 8000
-ENT.Damage = 10
-ENT.MagSize = 1000
+ENT.MinRange = 2000
+ENT.Range = 12000
+ENT.Damage = 75
+ENT.MagSize = 21
+
+ENT.LastBurstTime = 0
 
 function ENT:SetupDataTables()
     self:NetworkVar("Bool", 0, "Anchored")
@@ -39,6 +42,15 @@ end
 
 if SERVER then
     ENT.Target = nil
+
+    local function estimateRangeFromPitch(p, h)
+        local V = 500
+        local Vx = V * math.cos(math.rad(p))
+        local Vy = V * math.sin(math.rad(p))
+        local g = 600
+
+        return Vx * (Vy + math.sqrt(Vy^2 + 2 * g * h)) / g
+    end
 
     function ENT:Initialize()
         self:SetModel(self.Model)
@@ -59,30 +71,66 @@ if SERVER then
         local oldtgt = self.Target
         self:FindTarget()
         if oldtgt ~= self.Target then
-            self:SetLockonTime(0)
-            if !IsValid(oldtgt) then
-                self:EmitSound("npc/turret_floor/active.wav", 120, 110)
-            else
-                self:EmitSound("buttons/combine_button1.wav", 120, 110)
+            if self.LastBurstTime + 2.5 < CurTime() then
+                self:SetLockonTime(0)
+
+                if !IsValid(oldtgt) then
+                    self:EmitSound("npc/turret_floor/active.wav", 120, 110)
+                else
+                    self:EmitSound("buttons/combine_button1.wav", 120, 110)
+                end
             end
         end
 
+        local pitch = -45
         local targetang
+
         if IsValid(self.Target) then
-            local tgtpos = self.Target:EyePos()
+            local tgtpos = self.Target:GetPos()
+            // local h = self.Target:GetPos().z - self:GetPos().z
+            // local mypos2d = self:GetPos()
+            // local tgtpos2d = self.Target:GetPos()
+            // mypos2d.z = 0
+            // tgtpos2d.z = 0
+            // local dist = mypos2d:Distance(tgtpos2d)
             targetang = self:WorldToLocalAngles((tgtpos - (self:GetPos() + Vector(0, 0, 64))):Angle())
-        else
+
+            // local bestrange = estimateRangeFromPitch(45, h)
+            // local bestpitch = 45
+            // local lastrange = 0
+            // local lastpitch = 0
+
+            // // binary search for an optimal pitch
+            // for i = 1, 5 do
+            //     local newrange
+            //     local newpitch
+            //     newpitch = (lastpitch + bestpitch) / 2
+
+            //     newrange = estimateRangeFromPitch(newpitch, h)
+
+            //     if math.abs(newrange - dist) < math.abs(bestrange - dist) then
+            //         bestpitch = newpitch
+            //         bestrange = newrange
+            //     end
+
+            //     lastpitch = newpitch
+            //     lastrange = newrange
+            // end
+
+            // pitch = bestpitch
+        elseif self.LastBurstTime + 2.5 < CurTime() then
             targetang = Angle(0, self:WorldToLocalAngles(self:GetAngles()).y + math.sin(CurTime() / math.pi / 3) * 180, 0)
+        else
+            targetang = self:GetAimAngle()
         end
 
         self:SetAimAngle(Angle(
-            math.ApproachAngle(self:GetAimAngle().p, targetang.p, engine.TickInterval() * 1080),
+            math.ApproachAngle(self:GetAimAngle().p, pitch, engine.TickInterval() * 1080),
             math.ApproachAngle(self:GetAimAngle().y, targetang.y, engine.TickInterval() * 1080), 0))
 
-        local dot = targetang:Forward():Dot(self:GetAimAngle():Forward())
-        if IsValid(self.Target) and dot >= 0.99 then
+        if IsValid(self.Target) then
             if self:GetLockonTime() == 0 then
-                self:SetLockonTime(CurTime() + 0.5)
+                self:SetLockonTime(CurTime() + 1.5)
                 self:EmitSound("npc/turret_floor/ping.wav", 120, 100)
             elseif self:GetLockonTime() < CurTime() then
                 self:ShootTarget()
@@ -109,63 +157,39 @@ if SERVER then
         if (self.NextFire or 0) > CurTime() then return end
         if self:GetAmmo() <= 0 then
             self:EmitSound("weapons/ar2/ar2_empty.wav")
-            self.NextFire = CurTime() + 0.3
+            self.NextFire = CurTime() + 0.5
             return
         end
-        self.NextFire = CurTime() + 0.1
+        self.NextFire = CurTime() + 0.75
 
-        -- local targetang = ((self.Target:EyePos() + Vector(0, 0, -8)) - (self:GetPos() + Vector(0, 0, 8))):Angle()
-        -- local target_yaw = math.NormalizeAngle(targetang.y) - self:GetAngles().y
-        -- self:SetPoseParameter("yaw", target_yaw)
-        -- local target_pitch = math.NormalizeAngle(targetang.p) - self:GetAngles().p
-        -- self:SetPoseParameter("pitch", target_pitch)
+        self.LastBurstTime = CurTime()
 
-        local targetpos = self.Target:GetPos()
+        local targetang = self:LocalToWorldAngles(self:GetAimAngle())
 
-        local bullet = {
-            Attacker = self:CPPIGetOwner(),
-            Inflictor = self,
-            Damage = self.Damage,
-            Force = 1,
-            Num = 4,
-            Dir = self:LocalToWorldAngles(self:GetAimAngle()):Forward(),
-            Src = self:GetPos() + Vector(0, 0, 64),
-            Tracer = 4,
-            HullSize = 4,
-            Spread = Vector(0.01, 0.01, 0.01),
-            Callback = function(attacker, tr, dmginfo)
-                local pos = tr.HitPos
-                if !tr.Hit or tr.HitSky then
-                    pos = targetpos
-                else
-                    util.BlastDamage(self, self:CPPIGetOwner(), pos, 128, 25)
-                end
+        local rocket = ents.Create("pt_missile")
+        rocket:SetPos(self:GetPos() + Vector(0, 0, 256))
+        rocket:SetAngles(targetang)
+        rocket.ShootEntData.Target = self.Target
+        rocket.TopAttack = true
+        rocket.TopAttackHeight = 2000
+        rocket.TopAttackDistance = 500
+        rocket.ImpactDamage = 0
+        rocket.Damage = self.Damage
+        rocket.Radius = 256
+        rocket.SteerSpeed = 5000
+        rocket.Boost = 1500
+        rocket.SuperSeeker = false
+        rocket.SuperSteerBoostTime = 5
+        rocket.NoReacquire = true
+        rocket.DragCoefficient = 0
+        rocket:Spawn()
+        rocket.Owner = self:CPPIGetOwner()
+        rocket:SetOwner(self:CPPIGetOwner())
 
-                local effectdata = EffectData()
-                effectdata:SetOrigin(tr.HitPos)
-                util.Effect("HelicopterMegaBomb", effectdata)
-            end
-        }
+        self.Target.RocketFiredAt = rocket
 
-        self:FireBullets(bullet)
-        self:EmitSound("^weapons/ar1/ar1_dist2.wav", 140, 85, 0.85)
+        self:EmitSound("weapons/stinger_fire1.wav", 140, 85, 0.85)
         self:SetAmmo(self:GetAmmo() - 1)
-
-        // local attpos = self:GetAttachment(1)
-
-        // local ang = attpos.Ang
-
-        // ang:RotateAroundAxis(ang:Right(), 90)
-
-        --[[]
-        local muzzle = EffectData()
-        muzzle:SetOrigin(attpos.Pos)
-        muzzle:SetAngles(ang)
-        muzzle:SetEntity(self)
-        muzzle:SetAttachment(1)
-        muzzle:SetScale(2)
-        util.Effect("MuzzleEffect", muzzle)
-        ]]
     end
 
     function ENT:OnAnchor(ply)
@@ -184,27 +208,29 @@ if SERVER then
 
     function ENT:FindTarget()
         if (self.NextFindTarget or 0) > CurTime() then return end
+        self.NextFindTarget = CurTime() + 0.25
+
         local target = self.Target
 
-        self.NextFindTarget = CurTime() + 0.2
-
         if IsValid(target) then
-            if target.IsAirAsset then
-                if !target:Visible(self) or (target.AirAssetWeight or 1) <= 0 then self.Target = nil end
-                return
-            end
-
-            if target:Health() <= 0 then
+            if IsValid(target.RocketFiredAt) then
                 self.Target = nil
                 return
             end
 
-            if self:GetPos():DistToSqr(target:GetPos()) > self.Range * self.Range then
+            local dsq = self:GetPos():DistToSqr(target:GetPos())
+
+            if dsq > self.Range * self.Range then
                 self.Target = nil
                 return
             end
 
-            if !target:Visible(self) then
+            if dsq < self.MinRange * self.MinRange then
+                self.Target = nil
+                return
+            end
+
+            if !self:HasLineOfSight(target) then
                 self.Target = nil
                 return
             end
@@ -216,44 +242,17 @@ if SERVER then
 
             return
         else
-            local r = self.Range * self.Range
-            local planes = {}
-            for _, v in pairs(ents.GetAll()) do
-                if v:GetPos().z < self:GetPos().z then continue end
-                if !v.IsAirAsset then continue end
-                local mypos2d = self:GetPos()
-                local targetpos2d = v:GetPos()
-
-                mypos2d.z = 0
-                targetpos2d.z = 0
-
-                if mypos2d:DistToSqr(targetpos2d) > r then continue end
-                if !(GetConVar("pt_dev_airffa"):GetBool() or v:GetOwner() ~= self:CPPIGetOwner()) then continue end
-                if self:HasLineOfSight(v) then
-                    if v.IsAirAsset then
-                        if v:GetClass() == "pt_missile" then
-                            if IsValid(v.ShootEntData.Target)
-                            and (v.ShootEntData.Target == self:CPPIGetOwner()
-                                or v.ShootEntData.Target:CPPIGetOwner() == self:CPPIGetOwner()) then
-                                table.insert(planes, {v, 1000})
-                            else
-                                table.insert(planes, {v, v.AirAssetWeight or 1})
-                            end
-                        else
-                            table.insert(planes, {v, v.AirAssetWeight or 1})
-                        end
-                    else
-                        self.Target = v
-                        return
-                    end
+            local targets = ents.FindInSphere(self:GetPos(), self.Range)
+            for k, v in pairs(targets) do
+                local dsq = self:GetPos():DistToSqr(v:GetPos())
+                if dsq > self.Range * self.Range then continue end
+                if dsq < self.MinRange * self.MinRange then continue end
+                if IsValid(v.RocketFiredAt) then continue end
+                if ((v:IsPlayer() and v:Alive() and v ~= self:CPPIGetOwner()) or (v:IsNPC() and v:Health() > 0)) and self:HasLineOfSight(v) then
+                    self.Target = v
+                    return
                 end
             end
-            if #planes > 0 then
-                table.sort(planes, function(a, b) return a[2] > b[2] end)
-                self.Target = planes[1][1]
-            end
-
-            return
         end
     end
 end
@@ -264,16 +263,13 @@ if CLIENT then
 
         local bone = self:LookupBone("pivot")
         local bone2 = self:LookupBone("elevation")
-        local bone3 = self:LookupBone("m61a1_vulcan")
 
-        if bone and bone2 and bone3 then
+        if bone and bone2 then
             local bonepos, boneang = self:GetBonePosition(bone2)
             self.AimAngYaw = LerpAngle(FrameTime() * 3, self.AimAngYaw or Angle(0, 0, 0), Angle(0, self:GetAimAngle().y - 90, 0))
             self:ManipulateBoneAngles(bone, self.AimAngYaw, false)
             self.AimAngPitch = LerpAngle(FrameTime() * 3, self.AimAngPitch or Angle(0, 0, 0), Angle(self:GetAimAngle().p, 0, 0))
             self:ManipulateBoneAngles(bone2, self.AimAngPitch, false)
-            self.BarrelRoll = Angle(0, 0, math.fmod(CurTime() * 500, 360))
-            self:ManipulateBoneAngles(bone3, self.BarrelRoll, false)
 
             -- self.AimAngYaw = math.ApproachAngle(self.AimAngYaw or 0, self:GetAimAngle().y, FrameTime() * 1)
             -- self:SetPoseParameter("yaw", self.AimAngYaw)
@@ -281,7 +277,7 @@ if CLIENT then
             -- self:SetPoseParameter("pitch", self.AimAngPitch)
             -- self:InvalidateBoneCache()
 
-            local pos = bonepos + boneang:Up() * 0 + boneang:Forward() * -30 + boneang:Right() * 0
+            local pos = bonepos + boneang:Up() * 30 + boneang:Forward() * -72 + boneang:Right() * 0
 
             boneang:RotateAroundAxis(boneang:Forward(), 90)
             boneang:RotateAroundAxis(boneang:Right(), 90)
