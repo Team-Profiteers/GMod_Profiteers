@@ -2,10 +2,10 @@ AddCSLuaFile()
 
 ENT.Base = "pt_base_anchorable"
 
-ENT.PrintName = "Advanced Sentry"
+ENT.PrintName = "Rocket Sentry"
 ENT.Type = "anim"
 ENT.RenderGroup = RENDERGROUP_BOTH
-ENT.Model = "models/drgordon/black_ops_2/equipment/weapons/phalanx_m61a1_close-in_weapons_system.mdl"
+ENT.Model = "models/drgordon/black_ops_2/equipment/weapons/rim-116_rolling_airframe_missile_launcher.mdl"
 
 ENT.TakePropDamage = true
 ENT.BaseHealth = 1200
@@ -20,7 +20,7 @@ ENT.AnchorSpikeSize = 200
 ENT.Category = "Profiteers"
 ENT.Spawnable = false
 
-ENT.Range = 100000
+ENT.Range = 8000
 ENT.Damage = 10
 ENT.MagSize = 1000
 
@@ -127,11 +127,11 @@ if SERVER then
             Inflictor = self,
             Damage = self.Damage,
             Force = 1,
-            Num = 1,
+            Num = 4,
             Dir = self:LocalToWorldAngles(self:GetAimAngle()):Forward(),
             Src = self:GetPos() + Vector(0, 0, 64),
-            Tracer = 0,
-            HullSize = 8,
+            Tracer = 4,
+            HullSize = 4,
             Spread = Vector(0.01, 0.01, 0.01),
             Callback = function(attacker, tr, dmginfo)
                 local pos = tr.HitPos
@@ -144,18 +144,6 @@ if SERVER then
                 local effectdata = EffectData()
                 effectdata:SetOrigin(tr.HitPos)
                 util.Effect("HelicopterMegaBomb", effectdata)
-
-                // Create custom tracer effect
-
-                local gunbone = self:LookupBone("m61a1_vulcan")
-                local gunpos = self:GetBonePosition(gunbone)
-
-                local fx = EffectData()
-                fx:SetOrigin(pos)
-                fx:SetStart(gunpos)
-                fx:SetScale(10000)
-
-                util.Effect("GunshipTracer", fx)
             end
         }
 
@@ -201,12 +189,27 @@ if SERVER then
         self.NextFindTarget = CurTime() + 0.2
 
         if IsValid(target) then
+            if target.IsAirAsset then
+                if !target:Visible(self) or (target.AirAssetWeight or 1) <= 0 then self.Target = nil end
+                return
+            end
+
+            if target:Health() <= 0 then
+                self.Target = nil
+                return
+            end
+
             if self:GetPos():DistToSqr(target:GetPos()) > self.Range * self.Range then
                 self.Target = nil
                 return
             end
 
             if !target:Visible(self) then
+                self.Target = nil
+                return
+            end
+
+            if target:IsPlayer() and target:OwnsBoughtEntity(self) then
                 self.Target = nil
                 return
             end
@@ -293,8 +296,4 @@ if CLIENT then
             cam.End3D2D()
         end
     end
-end
-
-function ENT:GetTracerOrigin()
-    return Vector(0, 0 ,0)
 end

@@ -9,7 +9,7 @@ ENT.Model = "models/profiteers/vehicles/bo1_rolling_thunder.mdl"
 ENT.Dropped = false
 ENT.MyAngle = Angle(0, 0, 0)
 
-ENT.BaseHealth = 1000
+ENT.BaseHealth = 5000
 ENT.FlybySound = true
 
 if SERVER then
