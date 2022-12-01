@@ -187,12 +187,18 @@ function GM:OnNPCKilled(npc, atk, inf)
         -- money:Spawn()
         local wasplayer = false
 
+        local money = npc.bounty
+
+        -- for every 10 minutes that pass, the money will be increased by 25%
+
+        money = money * math.Clamp(1 + (CurTime() * 0.25 / 600), 1, 1000)
+
         if atk:IsPlayer() then
-            atk:AddMoney(math.Round(npc.bounty * math.Rand(0.9, 1.1)))
+            atk:AddMoney(math.Round(money * math.Rand(0.9, 1.1)))
             wasplayer = true
         elseif npc:IsOnFire() and IsValid(npc.PlayerDamaged) then
             -- Combine NPCs with fire death logic attribute kills to themselves
-            npc.PlayerDamaged:AddMoney(math.Round(npc.bounty * math.Rand(0.9, 1.1)))
+            npc.PlayerDamaged:AddMoney(math.Round(money * math.Rand(0.9, 1.1)))
             wasplayer = true
         end
 

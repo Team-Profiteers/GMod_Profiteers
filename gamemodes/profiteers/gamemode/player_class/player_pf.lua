@@ -7,8 +7,8 @@ local PLAYER = {}
 PLAYER.DisplayName			= "Profiteers Player Class"
 
 PLAYER.SlowWalkSpeed		= 130		-- How fast to move when slow-walking (+WALK)
-PLAYER.WalkSpeed			= 220		-- How fast to move when not running
-PLAYER.RunSpeed				= 300		-- How fast to move when running
+PLAYER.WalkSpeed			= 300		-- How fast to move when not running
+PLAYER.RunSpeed				= 500		-- How fast to move when running
 PLAYER.CrouchedWalkSpeed	= 0.4		-- Multiply move speed by this when crouching
 PLAYER.DuckSpeed			= 0.4		-- How fast to go from not ducking, to ducking
 PLAYER.UnDuckSpeed			= 0.4		-- How fast to go from ducking, to not ducking
