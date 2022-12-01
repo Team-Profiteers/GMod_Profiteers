@@ -80,7 +80,7 @@ else
     end
 
     function ENT:DrawTranslucent()
-        self:DrawModel()
+        self:Draw()
     end
 
     ENT.Ticks = 0

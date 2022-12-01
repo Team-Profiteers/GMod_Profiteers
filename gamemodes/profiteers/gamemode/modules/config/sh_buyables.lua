@@ -303,8 +303,21 @@ Profiteers.Buyables = {
         EntityClass = "pt_sentry_missile",
         Price = 25000,
         PlaceEntity = true,
+        EntityLimit = 2,
 
         Description = "Locks onto planes and enemies",
+        Description2 = "Must be deployed near a Beacon",
+
+        Category = "Construction"
+    },
+    ["pt_sentry_advanced"] = {
+        Name = "Air Defense Turret",
+        EntityClass = "pt_sentry_advanced",
+        Price = 55000,
+        PlaceEntity = true,
+        EntityLimit = 2,
+
+        Description = "Targets aircraft and missiles",
         Description2 = "Must be deployed near a Beacon",
 
         Category = "Construction"
@@ -420,6 +433,19 @@ Profiteers.Buyables = {
         Description2 = "Penetrates surfaces, high damage",
 
         Category = "Air Support"
+    },
+    ["pt_uav_light"] = {
+        Name = "Light UAV",
+        Price = 10000,
+
+        Description = "Spots NPCs only",
+        Description2 = "Slow and fragile",
+
+        Category = "Air Support",
+
+        OnBuy = function(self, ply)
+            Profiteers:SpawnUAVLightPlane(ply)
+        end
     },
     ["pt_uav"] = {
         Name = "UAV",

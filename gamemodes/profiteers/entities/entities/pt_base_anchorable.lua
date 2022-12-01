@@ -13,6 +13,7 @@ ENT.AnchorRequiresBeacon = false
 ENT.AllowUnAnchor = false
 ENT.AnchorOffset = Vector(0, 0, 0)
 ENT.AnchorAngle = Angle(0, 0, 0)
+ENT.AnchorSpikeSize = 64
 
 function ENT:SetupDataTables()
     self:NetworkVar("Bool", 0, "Anchored")
@@ -66,7 +67,7 @@ if SERVER then
 
         local tr = util.TraceLine({
             start = self:WorldSpaceCenter(),
-            endpos = self:WorldSpaceCenter() - Vector(0, 0, 1) * 64,
+            endpos = self:WorldSpaceCenter() - Vector(0, 0, 1) * self.AnchorSpikeSize,
             mask = MASK_SOLID_BRUSHONLY,
         })
         local pos = tr.HitPos + self.AnchorOffset

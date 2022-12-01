@@ -472,10 +472,19 @@ hook.Add("HUDPaint", "HUDPaint_DrawABox", function()
     end
 
     local owns_uav = false
+    local owns_light_uav = false
 
-    for i, k in ipairs(ents.FindByClass("pt_uav_plane")) do
+    for i, k in ipairs(ents.FindByClass("pt_plane_uav")) do
         if k:GetOwner() == LocalPlayer() then
             owns_uav = true
+        end
+    end
+
+    if not owns_uav then
+        for i, k in ipairs(ents.FindByClass("pt_plane_uav_light")) do
+            if k:GetOwner() == LocalPlayer() then
+                owns_light_uav = true
+            end
         end
     end
 
@@ -506,13 +515,13 @@ hook.Add("HUDPaint", "HUDPaint_DrawABox", function()
         table.insert(beacon_positions, {e, (e:GetPos() + Vector(0, 0, 48)):ToScreen()})
     end
 
-    if owns_uav then
+    if owns_uav or owns_light_uav then
         for _, e in ipairs(ents.GetAll()) do
             if not IsValid(e) then continue end
 
             if e:IsNPC() then
                 table.insert(npc_positions, {e, (e:GetPos() + Vector(0, 0, 48)):ToScreen()})
-            elseif e:GetClass() == "pt_beacon" then
+            elseif owns_uav and e:GetClass() == "pt_beacon" then
                 table.insert(beacon_positions, {e, (e:GetPos() + Vector(0, 0, 48)):ToScreen()})
             end
         end

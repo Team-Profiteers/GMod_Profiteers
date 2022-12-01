@@ -82,7 +82,8 @@ if SERVER then
     end
 
     function ENT:OnTakeDamage(damage)
-        self:Detonate()
+        self:Remove()
+        return 1
     end
 
     function ENT:Think()
