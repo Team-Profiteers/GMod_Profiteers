@@ -1,0 +1,11 @@
+"VertexLitGeneric"
+{
+	"$basetexture"					"models\drgordon\black_ops_2\phalanx\phalanx"
+	"$bumpmap"					"models\drgordon\glass_n"
+	"$nocull"	"1"
+	"$phong"	"1"
+	"$phongexponent"	"10"
+	"$phongalbedotint"	"1"
+	"$phongboost"	"0.05"
+	"$phongfresnelranges"	"[1 1 1]"
+}
