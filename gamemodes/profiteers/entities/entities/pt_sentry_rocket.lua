@@ -144,7 +144,7 @@ if SERVER then
     function ENT:HasLineOfSight(ent)
         local pos = (ent:IsNPC() or ent:IsPlayer()) and ent:EyePos() or ent:WorldSpaceCenter()
         local tr = util.TraceLine({
-            start = self:GetPos(),
+            start = self:GetPos() + Vector(0, 0, 128),
             endpos = pos,
             filter = self,
             mask = MASK_BLOCKLOS_AND_NPCS,
