@@ -32,7 +32,7 @@ if SERVER then
         selfpos2d.z = 0
         droppos2d.z = 0
 
-        if selfpos2d:Distance(droppos2d) < 1500 and (self.NextShoot or 0) < CurTime() then
+        if selfpos2d:Distance(droppos2d) < 1750 and (self.NextShoot or 0) < CurTime() then
             -- does not work
             --[[]
             if !self.CausedCower then
@@ -53,14 +53,14 @@ if SERVER then
             local bullet = {
                 Attacker = self:GetOwner(),
                 Inflictor = self,
-                Damage = 50,
-                Force = 10,
-                Num = 4,
+                Damage = 25,
+                Force = 20,
+                Num = 8,
                 Dir = shootang,
                 Src = self:GetPos(),
                 Tracer = 0,
-                HullSize = 128,
-                Spread = Vector(0.04, 0.04, 0.01),
+                HullSize = 48,
+                Spread = Vector(0.045, 0.045, 0.01),
                 filter = self,
                 Callback = function(attacker, tr, dmginfo)
                     if IsValid(tr.Entity) and tr.Entity:IsPlayer() then
@@ -82,12 +82,12 @@ if SERVER then
 
             self:FireBullets(bullet)
 
-            phys:ApplyForceCenter(self:GetAngles():Forward() * FrameTime() * 15000000)
+            phys:ApplyForceCenter(self:GetAngles():Forward() * FrameTime() * 25000000)
 
             self:NextThink(CurTime() + 0.01)
             return true
         else
-            phys:ApplyForceCenter(self:GetAngles():Forward() * FrameTime() * 20000000)
+            phys:ApplyForceCenter(self:GetAngles():Forward() * FrameTime() * 30000000)
         end
     end
 end

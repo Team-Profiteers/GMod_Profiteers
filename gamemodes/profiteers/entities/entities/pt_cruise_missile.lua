@@ -13,7 +13,7 @@ ENT.Drag = false
 ENT.Gravity = true
 ENT.Damping = false
 ENT.Boost = 20000
-ENT.BoostTarget = 50000
+ENT.BoostTarget = 40000
 ENT.Lift = 0
 ENT.DragCoefficient = 0
 ENT.AngleDragCoefficient = 0
@@ -41,13 +41,21 @@ ENT.Flare = true
 ENT.SmokeTrail = true
 ENT.SmokeTrailSize = 64
 ENT.SmokeTrailTime = 10
-ENT.BoostEffectSize = 5
+ENT.BoostEffectSize = 8
 
 ENT.SuperSeeker = true
 
 DEFINE_BASECLASS(ENT.Base)
 
 if SERVER then
+
+
+    function ENT:Initialize()
+        BaseClass.Initialize(self)
+
+        self:SetModelScale(2)
+    end
+
     function ENT:Detonate()
         if self.Detonated then return end
         self.Detonated = true
