@@ -193,6 +193,14 @@ Profiteers.Buyables = {
         Description2 = "Long cooldown after use",
         Category = "Equipment",
     },
+    ["pt_wrangler"] = {
+        EntityClass = "pt_wrangler",
+        Price = 2500,
+
+        Description = "Manually target sentries",
+        Description2 = "M1 for guns, M2 for rockets",
+        Category = "Equipment",
+    },
 
     ["pt_nuke"] = {
         Name = "Nuclear Device",

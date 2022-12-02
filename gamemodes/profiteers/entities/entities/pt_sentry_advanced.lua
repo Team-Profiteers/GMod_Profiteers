@@ -22,7 +22,7 @@ ENT.Category = "Profiteers"
 ENT.Spawnable = false
 
 ENT.Range = 8000
-ENT.Damage = 5
+ENT.Damage = 10
 ENT.MagSize = 1000
 
 function ENT:SetupDataTables()
@@ -59,35 +59,56 @@ if SERVER then
     function ENT:Think()
         if !self:CanFunction() then return end
 
-        local oldtgt = self.Target
-        self:FindTarget()
-        if oldtgt ~= self.Target then
-            self:SetLockonTime(0)
-            if !IsValid(oldtgt) then
-                self:EmitSound("npc/turret_floor/ping.wav", 120, 100)
-            else
-                self:EmitSound("buttons/combine_button1.wav", 120, 110)
+        local owner = self:CPPIGetOwner()
+        local wep = owner:GetActiveWeapon()
+
+        if IsValid(wep) and wep:GetClass() == "pt_wrangler" then
+            local tr = owner:GetEyeTrace()
+
+            local targetang = self:WorldToLocalAngles((tr.HitPos - (self:GetPos() + Vector(0, 0, 64))):Angle())
+
+            targetang.p = math.Clamp(targetang.p, -90, 5)
+
+            self:SetAimAngle(Angle(
+                math.ApproachAngle(self:GetAimAngle().p, targetang.p, engine.TickInterval() * 1080),
+                math.ApproachAngle(self:GetAimAngle().y, targetang.y, engine.TickInterval() * 1080), 0))
+
+            if owner:KeyDown(IN_ATTACK) then
+                self:ShootTarget(true)
             end
-        end
 
-        local targetang
-        if IsValid(self.Target) then
-            local tgtpos = self.Target:EyePos()
-            targetang = self:WorldToLocalAngles((tgtpos - (self:GetPos() + Vector(0, 0, 64))):Angle())
+            self.Target = nil
         else
-            targetang = Angle(0, self:WorldToLocalAngles(self:GetAngles()).y + math.sin(CurTime() / math.pi / 3) * 180, 0)
-        end
+            local oldtgt = self.Target
+            self:FindTarget()
+            if oldtgt ~= self.Target then
+                self:SetLockonTime(0)
+                if !IsValid(oldtgt) then
+                    self:EmitSound("npc/turret_floor/ping.wav", 120, 100)
+                else
+                    self:EmitSound("buttons/combine_button1.wav", 120, 110)
+                end
+            end
 
-        self:SetAimAngle(Angle(
-            math.ApproachAngle(self:GetAimAngle().p, targetang.p, engine.TickInterval() * 1080),
-            math.ApproachAngle(self:GetAimAngle().y, targetang.y, engine.TickInterval() * 1080), 0))
+            local targetang
+            if IsValid(self.Target) then
+                local tgtpos = self.Target:EyePos()
+                targetang = self:WorldToLocalAngles((tgtpos - (self:GetPos() + Vector(0, 0, 64))):Angle())
+            else
+                targetang = Angle(0, self:WorldToLocalAngles(self:GetAngles()).y + math.sin(CurTime() / math.pi / 3) * 180, 0)
+            end
 
-        local dot = targetang:Forward():Dot(self:GetAimAngle():Forward())
-        if IsValid(self.Target) and dot >= 0.99 then
-            if self:GetLockonTime() == 0 then
-                self:SetLockonTime(CurTime() + 0.25)
-            elseif self:GetLockonTime() < CurTime() then
-                self:ShootTarget()
+            self:SetAimAngle(Angle(
+                math.ApproachAngle(self:GetAimAngle().p, targetang.p, engine.TickInterval() * 1080),
+                math.ApproachAngle(self:GetAimAngle().y, targetang.y, engine.TickInterval() * 1080), 0))
+
+            local dot = targetang:Forward():Dot(self:GetAimAngle():Forward())
+            if IsValid(self.Target) and dot >= 0.99 then
+                if self:GetLockonTime() == 0 then
+                    self:SetLockonTime(CurTime() + 0.25)
+                elseif self:GetLockonTime() < CurTime() then
+                    self:ShootTarget()
+                end
             end
         end
 
@@ -106,8 +127,8 @@ if SERVER then
         return tr.Entity == ent or (!IsValid(tr.Entity) and tr.Fraction == 1)
     end
 
-    function ENT:ShootTarget()
-        if !IsValid(self.Target) then return end
+    function ENT:ShootTarget(force)
+        if !force and !IsValid(self.Target) then return end
         if (self.NextFire or 0) > CurTime() then return end
         if self:GetAmmo() <= 0 then
             self:EmitSound("weapons/ar2/ar2_empty.wav")
@@ -137,7 +158,7 @@ if SERVER then
                 local pos = tr.HitPos
 
                 if tr.Hit then
-                    util.BlastDamage(self, self:CPPIGetOwner(), pos, 128, 6)
+                    util.BlastDamage(self, self:CPPIGetOwner(), pos, 128, 20)
                 end
 
                 if tr.Entity.IsProjectile then

@@ -19,7 +19,7 @@ ENT.NextMissileTime = 0
 
 ENT.LoiterTargetAng = Angle(0, 0, 0)
 
-ENT.Health = 5000
+ENT.Health = 10000
 
 ENT.Range = 10000
 ENT.AirAssetWeight = 5

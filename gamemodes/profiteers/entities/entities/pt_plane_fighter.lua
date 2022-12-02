@@ -8,7 +8,7 @@ ENT.RenderGroup = RENDERGROUP_BOTH
 ENT.Model = "models/profiteers/vehicles/mw3_mig29.mdl"
 ENT.Dropped = false
 
-ENT.BaseHealth = 2000
+ENT.BaseHealth = 500
 ENT.FlybySound = true
 
 ENT.NextMissileTime = 0
