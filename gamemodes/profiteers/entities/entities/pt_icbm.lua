@@ -117,7 +117,7 @@ if SERVER then
 
         timer.Simple(15, function()
             if MapVote then
-                MapVote.Start(60, true, 20, "")
+                MapVote.Start(60, true, 20)
             else
                 game.CleanUpMap()
                 for _, ply in pairs(player.GetAll()) do
