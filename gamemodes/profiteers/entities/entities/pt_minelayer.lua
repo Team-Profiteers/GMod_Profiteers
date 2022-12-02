@@ -8,7 +8,7 @@ ENT.RenderGroup = RENDERGROUP_BOTH
 ENT.Model = "models/props_phx/trains/wheel_medium.mdl"
 
 ENT.TakePropDamage = true
-ENT.BaseHealth = 100
+ENT.BaseHealth = 500
 
 ENT.PreferredAngle = Angle(0, 0, 0)
 ENT.AnchorRequiresBeacon = true
@@ -17,6 +17,10 @@ ENT.AnchorOffset = Vector(0, 0, 0)
 
 ENT.Category = "Profiteers"
 ENT.Spawnable = false
+
+ENT.MyMines = {}
+
+ENT.MinesLaid = false
 
 function ENT:SetupDataTables()
     self:NetworkVar("Bool", 0, "Anchored")
@@ -38,9 +42,37 @@ if SERVER then
     function ENT:Think()
         if !self:GetArmed() then return end
 
-        if CurTime() > self:GetArmTime() + 5 then
+        if CurTime() > self:GetArmTime() + 5 and !self.MinesLaid then
             self:SetArmed(false)
             self:Explode()
+        end
+
+        if self.MinesLaid then
+            local activemines = 0
+
+            for _, i in ipairs(self.MyMines) do
+                if i:IsValid() then
+                    activemines = activemines + 1
+                end
+            end
+
+            if activemines == 0 then
+                local effectdata = EffectData()
+                effectdata:SetOrigin(self:GetPos())
+                util.Effect("HelicopterMegaBomb", effectdata)
+
+                self:EmitSound("ambient/explosions/explode_3.wav", 125)
+
+                self:Remove()
+            end
+        end
+    end
+
+    function ENT:OnRemove()
+        for _, i in ipairs(self.MyMines) do
+            if i:IsValid() then
+                i:Remove()
+            end
         end
     end
 
@@ -61,6 +93,8 @@ if SERVER then
 
                 mine:SetOwner(self.ArmedPlayer or NULL)
 
+                table.insert(self.MyMines, mine)
+
                 local phys = mine:GetPhysicsObject()
 
                 if IsValid(phys) then
@@ -69,7 +103,7 @@ if SERVER then
             end
         end
 
-        self:Remove()
+        self.MinesLaid = true
     end
 end
 
