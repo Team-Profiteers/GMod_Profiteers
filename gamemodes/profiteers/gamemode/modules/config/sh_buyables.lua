@@ -534,7 +534,7 @@ Profiteers.Buyables = {
         Price = 10000000,
 
         Description = "Intercontinental ballistic missile",
-        Description2 = "Guaranteed victory",
+        Description2 = "Guaranteed instant victory",
 
         Category = "Air Support",
 
