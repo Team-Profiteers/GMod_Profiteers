@@ -119,7 +119,6 @@ local function createEnemyNPC()
     local tospawn = math.random(squad["minsize"], squad["maxsize"])
 
     for i = 1, tospawn do
-        local enemy = ents.Create(squad["class_type"])
         wp = nil
 
         if squad["wpn"] then
@@ -131,8 +130,20 @@ local function createEnemyNPC()
         local ang = i * (360 / tospawn)
         va.x = va.x + math.cos(math.rad(ang)) * 128
         va.y = va.y + math.sin(math.rad(ang)) * 128
+
+        local tr = util.TraceHull({
+            start = va,
+            endpos = va,
+            mins = Vector(-16, -16, 0),
+            maxs = Vector(16, 16, 64),
+            mask = MASK_SOLID_BRUSHONLY
+        })
+
+        if tr.StartSolid or tr.Hit or tr.Fraction > 0 then continue end
+
+        local enemy = ents.Create(squad["class_type"])
         if not enemy:IsValid() then return end
-        if util.PointContents(va) == CONTENTS_SOLID or util.PointContents(va + Vector(0, 0, 48)) == CONTENTS_SOLID then return end
+
         enemy:SetPos(va)
         enemy:SetAngles(Angle(0, math.random(0, 360), 0))
         enemy.ProfiteersSpawned = true
