@@ -40,8 +40,10 @@ if SERVER then
     end
 
     function Player:UnTrackPropQuota(ent)
-        if not ent._trackedmaxhealth then
+        if not ent._trackedmaxhealth and not ent._noinfinitelooponquota then
+            ent._noinfinitelooponquota = true
             self:RecalcPropQuota() -- something went wrong. Best to be absolutely sure!
+            ent._noinfinitelooponquota = false
             return
         end
         self:SetPropQuota(self:GetPropQuota() - ent._trackedmaxhealth)
