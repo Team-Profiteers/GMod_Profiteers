@@ -13,7 +13,7 @@ function Entity:CanTakePropDamage()
 end
 
 function Entity:IsVulnerableProp()
-    return !self:WithinBeacon() or self:GetClass() ~= "prop_physics"
+    return (!self:WithinBeacon() or self:GetClass() ~= "prop_physics") and !self.NotVulnerableProp
 end
 
 function Entity:CalculatePropHealth()

@@ -11,8 +11,8 @@ ENT.TakePropDamage = true
 ENT.BaseHealth = 400
 
 ENT.PreferredAngle = Angle(0, 0, 0)
-ENT.AnchorRequiresBeacon = false
-ENT.AllowUnAnchor = true
+ENT.AnchorRequiresBeacon = true
+ENT.AllowUnAnchor = false
 
 ENT.AnchorOffset = Vector(0, 0, 0)
 
@@ -34,7 +34,7 @@ end
 
 
 function ENT:CanFunction()
-    return self:WithinBeacon() and self:GetAngles():Up():Dot(Vector(0, 0, 1)) > 0.6 and self:WaterLevel() == 0
+    return self:WithinBeacon() and self:GetAnchored() and self:GetAngles():Up():Dot(Vector(0, 0, 1)) > 0.6 and self:WaterLevel() == 0
 end
 
 if SERVER then
@@ -141,7 +141,7 @@ if SERVER then
             phys:AddVelocity(targetang:Forward() * 1000)
         end
 
-        self:EmitSound("weapons/stinger_fire1.wav", 100, 120)
+        self:EmitSound("weapons/rpg/rocketfire1.wav", 100, 120)
         self:SetAmmo(self:GetAmmo() - 1)
         --[[]
         local attpos = self:GetAttachment(0)

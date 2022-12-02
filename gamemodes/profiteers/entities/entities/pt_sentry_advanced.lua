@@ -8,12 +8,13 @@ ENT.RenderGroup = RENDERGROUP_BOTH
 ENT.Model = "models/drgordon/black_ops_2/equipment/weapons/phalanx_m61a1_close-in_weapons_system.mdl"
 
 ENT.TakePropDamage = true
-ENT.BaseHealth = 1200
+ENT.BaseHealth = 1500
+ENT.NotVulnerableProp = true
 
 ENT.PreferredAngle = Angle(0, -90, 0)
-ENT.AnchorRequiresBeacon = false
+ENT.AnchorRequiresBeacon = true
 ENT.AnchorOffset = Vector(0, 0, -4)
-ENT.AllowUnAnchor = true
+ENT.AllowUnAnchor = false
 
 ENT.AnchorSpikeSize = 200
 
@@ -34,7 +35,7 @@ function ENT:SetupDataTables()
 end
 
 function ENT:CanFunction()
-    return self:WithinBeacon() and self:GetAngles():Up():Dot(Vector(0, 0, 1)) > 0.6 and self:WaterLevel() == 0
+    return self:WithinBeacon() and self:GetAnchored() and self:WaterLevel() == 0
 end
 
 if SERVER then
@@ -61,7 +62,7 @@ if SERVER then
         if oldtgt ~= self.Target then
             self:SetLockonTime(0)
             if !IsValid(oldtgt) then
-                self:EmitSound("npc/turret_floor/active.wav", 120, 110)
+                self:EmitSound("npc/turret_floor/ping.wav", 120, 100)
             else
                 self:EmitSound("buttons/combine_button1.wav", 120, 110)
             end
@@ -82,8 +83,7 @@ if SERVER then
         local dot = targetang:Forward():Dot(self:GetAimAngle():Forward())
         if IsValid(self.Target) and dot >= 0.99 then
             if self:GetLockonTime() == 0 then
-                self:SetLockonTime(CurTime() + 0.5)
-                self:EmitSound("npc/turret_floor/ping.wav", 120, 100)
+                self:SetLockonTime(CurTime() + 0.25)
             elseif self:GetLockonTime() < CurTime() then
                 self:ShootTarget()
             end
@@ -236,7 +236,7 @@ if SERVER then
                             else
                                 table.insert(planes, {v, v.AirAssetWeight or 1})
                             end
-                        else
+                        elseif (v.AirAssetWeight or 1) > 0 then
                             table.insert(planes, {v, v.AirAssetWeight or 1})
                         end
                     else

@@ -29,6 +29,7 @@ function CPPI.GetNameFromUID(uid)
 end
 
 function Entity:CPPIGetOwner()
+    if self:IsPlayer() then return self, self:UniqueID() end
     return self:GetNWEntity("PFPropOwner"), self:GetNWString("PFPropOwnerID")
 end
 
@@ -42,7 +43,7 @@ function Entity:CPPIGetOwnerName()
 end
 
 function Entity:CPPICanPhysgun(ply)
-    return (self:CPPIGetOwner() == ply or ply:IsSuperAdmin()) and (self:GetClass() == "prop_physics" or self.AllowPhysgun)
+    return ply:IsSuperAdmin() or (self:CPPIGetOwner() == ply and (self:GetClass() == "prop_physics" or self.AllowPhysgun))
 end
 
 if SERVER then

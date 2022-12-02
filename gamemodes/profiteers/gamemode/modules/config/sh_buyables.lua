@@ -287,14 +287,14 @@ Profiteers.Buyables = {
     --     Category = "Construction"
     -- },
     ["pt_sentry"] = {
-        Name = "Sentry Turret",
+        Name = "Briefcase Turret",
         EntityClass = "pt_sentry",
         Price = 12500,
         PlaceEntity = true,
         EntityLimit = 3,
 
         Description = "Attacks enemies automatically",
-        Description2 = "Must be deployed near a Beacon",
+        Description2 = "Lightweight emplacement",
 
         Category = "Construction"
     },
@@ -306,31 +306,31 @@ Profiteers.Buyables = {
         EntityLimit = 2,
 
         Description = "Locks onto planes and enemies",
-        Description2 = "Must be deployed near a Beacon",
+        Description2 = "Lightweight emplacement",
 
         Category = "Construction"
     },
     ["pt_sentry_advanced"] = {
         Name = "Air Defense Turret",
         EntityClass = "pt_sentry_advanced",
-        Price = 55000,
+        Price = 70000,
         PlaceEntity = true,
         EntityLimit = 2,
 
-        Description = "Targets aircraft and missiles",
-        Description2 = "Must be deployed near a Beacon",
+        Description = "Anti-air rotary cannon",
+        Description2 = "Durable static emplacement",
 
         Category = "Construction"
     },
     ["pt_sentry_rocket"] = {
-        Name = "Missile Battery",
+        Name = "Rocket Battery",
         EntityClass = "pt_sentry_rocket",
-        Price = 90000,
+        Price = 120000,
         PlaceEntity = true,
         EntityLimit = 1,
 
-        Description = "Long range. Targets ground",
-        Description2 = "Must be deployed near a Beacon",
+        Description = "Launches multi-rocket barrages",
+        Description2 = "Durable static emplacement",
 
         Category = "Construction"
     },
@@ -439,7 +439,7 @@ Profiteers.Buyables = {
     ["pt_bomb_marker"] = {
         Name = "Bunker Buster",
         EntityClass = "pt_bomb_marker",
-        Price = 50000,
+        Price = 40000,
 
         Description = "Bomber drops anti-structure bomb",
         Description2 = "Penetrates surfaces, high damage",
@@ -447,7 +447,7 @@ Profiteers.Buyables = {
         Category = "Air Support"
     },
     ["pt_uav_light"] = {
-        Name = "Light UAV",
+        Name = "UAV",
         Price = 10000,
 
         Description = "Spots NPCs only",
@@ -460,7 +460,7 @@ Profiteers.Buyables = {
         end
     },
     ["pt_uav"] = {
-        Name = "UAV",
+        Name = "Advanced UAV",
         Price = 75000,
 
         Description = "Spots players, NPCs, and bases",

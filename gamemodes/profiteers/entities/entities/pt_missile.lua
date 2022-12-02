@@ -15,6 +15,7 @@ ENT.BoxSize = Vector(8, 4, 1)
 ENT.SmokeTrail = true
 ENT.SmokeTrailSize = 32
 ENT.SmokeTrailTime = 5
+ENT.BoostEffectSize = 2
 ENT.Flare = false
 ENT.LifeTime = 30
 ENT.BoostTime = 30
@@ -22,11 +23,12 @@ ENT.Drunkenness = 0
 
 ENT.Drag = true
 ENT.Gravity = true
-ENT.DragCoefficient = 0.25
 ENT.Boost = 5000
 ENT.BoostTarget = 15000
 ENT.Lift = 100
 ENT.DragCoefficient = 0
+ENT.Damping = true
+ENT.Inertia = nil
 
 ENT.GunshipWorkaround = true
 ENT.HelicopterWorkaround = true
@@ -72,6 +74,11 @@ if SERVER then
             phys:Wake()
             phys:EnableDrag(self.Drag)
             phys:SetDragCoefficient(self.DragCoefficient)
+            if !self.Damping then phys:SetDamping(0, 0) end
+            if self.Inertia then phys:SetInertia(self.Inertia) end
+            if self.AngleDragCoefficient then
+                phys:SetAngleDragCoefficient(self.AngleDragCoefficient)
+            end
             phys:EnableGravity(self.Gravity)
             phys:SetMass(5)
             phys:SetBuoyancyRatio(0.4)
@@ -331,7 +338,7 @@ function ENT:Draw()
         eff:SetOrigin(self:GetPos())
         eff:SetAngles(self:GetAngles())
         eff:SetEntity(self)
-        eff:SetScale(5)
+        eff:SetScale(self.BoostEffectSize)
         util.Effect("MuzzleEffect", eff)
     end
 end
