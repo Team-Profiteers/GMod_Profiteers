@@ -136,8 +136,6 @@ if SERVER then
                     end
                 end
 
-                print(tpos)
-
                 local dir = (tpos - self:GetPos()):GetNormalized()
                 local dot = dir:Dot(self:GetAngles():Forward())
                 local ang = dir:Angle()

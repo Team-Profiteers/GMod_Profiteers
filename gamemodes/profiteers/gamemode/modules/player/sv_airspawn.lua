@@ -46,7 +46,7 @@ hook.Add("PlayerSpawn", "ProfiteersPlayerSpawn", function(ply, trans)
         })
 
         if tr.HitSky then
-            ply:SetPos(tr.HitPos)
+            ply:SetPos(tr.HitPos - Vector(0, 0, 72))
             ply:SetEyeAngles(Angle(0, math.Rand(-180, 180), 0))
 
             ply:SetNWBool("pt_parachute_pending", true)

@@ -47,6 +47,9 @@ if SERVER then
             -- fall slowly
             phys:AddVelocity(-physenv.GetGravity() - Vector(0, 0, 500))
             --phys:AddAngleVelocity()
+            if self:WaterLevel() > 0 then
+                self:CloseChute()
+            end
         end
     end
 
