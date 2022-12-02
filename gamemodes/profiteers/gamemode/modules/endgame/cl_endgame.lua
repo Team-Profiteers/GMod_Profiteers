@@ -7,6 +7,7 @@ net.Receive("pt_nuke", function()
         Profiteers.NukeOwnerName = net.ReadString()
         Profiteers.NukePos = net.ReadVector()
         Profiteers.NukeArmTime = net.ReadFloat()
+        surface.PlaySound("profiteers/meowmeow.mp3")
     end
 end)
 
