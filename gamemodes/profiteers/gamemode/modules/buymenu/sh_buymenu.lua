@@ -39,3 +39,24 @@ function Player:OwnsBoughtEntity(ent)
     end
     return false
 end
+
+function Player:GetShopCooldown(class)
+    self.ShopCooldown = self.ShopCooldown or {}
+    return self.ShopCooldown[class] or 0
+end
+
+function Player:IsOnShopCooldown(class)
+    if GetConVar("pt_dev_wtf"):GetBool() then return end
+    self.ShopCooldown = self.ShopCooldown or {}
+    return (self.ShopCooldown[class] or 0) > CurTime()
+end
+
+function Player:SetShopCooldown(class)
+    local tbl = Profiteers.Buyables[class]
+    self.ShopCooldown = self.ShopCooldown or {}
+    if tbl.GetCooldown then
+        self.ShopCooldown[class] = CurTime() + tbl:GetCooldown(self)
+    elseif tbl.Cooldown then
+        self.ShopCooldown[class] = CurTime() + (tbl.Cooldown or 0)
+    end
+end

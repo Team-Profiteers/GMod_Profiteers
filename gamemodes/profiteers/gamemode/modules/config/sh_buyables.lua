@@ -13,6 +13,7 @@ Profiteers.Buyables = {
     --  Price = 750,
     --  EntityLimit = nil,
     --  CannotSell = false,
+    --  Cooldown = 300,
 
     -- 	Description = "Break action grenade launcher",
     --  Description2 = "Multiple payload types",
@@ -20,6 +21,7 @@ Profiteers.Buyables = {
     --  Icon = nil, -- taken from EntityClass
     --  CanBuy = nil, -- function(self, ply)
     --  OnBuy = nil, -- function(self, ply)
+    --  GetCooldown = nil, -- function(self, ply)
     -- },
 
     ["arc9_bo2_stinger"] = {
@@ -461,7 +463,8 @@ Profiteers.Buyables = {
     ["pt_bomb_marker"] = {
         Name = "Bunker Buster",
         EntityClass = "pt_bomb_marker",
-        Price = 40000,
+        Price = 35000,
+        Cooldown = 120,
 
         Description = "Bomber drops anti-structure bomb",
         Description2 = "Penetrates surfaces, high damage",
@@ -471,6 +474,7 @@ Profiteers.Buyables = {
     ["pt_uav_light"] = {
         Name = "UAV",
         Price = 10000,
+        Cooldown = 90,
 
         Description = "Spots NPCs only",
         Description2 = "Slow and fragile",
@@ -483,7 +487,8 @@ Profiteers.Buyables = {
     },
     ["pt_uav"] = {
         Name = "Advanced UAV",
-        Price = 75000,
+        Price = 60000,
+        Cooldown = 180,
 
         Description = "Spots players, NPCs, and bases",
         Description2 = "Slow and fragile",
@@ -497,7 +502,8 @@ Profiteers.Buyables = {
     ["pt_gunrun"] = {
         Name = "Gun Run",
         EntityClass = "pt_gunrun_marker",
-        Price = 20000,
+        Price = 12000,
+        Cooldown = 60,
 
         Description = "Attack jet strafes target area",
         Description2 = "Fast anti-personnel strike",
@@ -507,7 +513,8 @@ Profiteers.Buyables = {
     ["pt_attacker"] = {
         Name = "CAS Bomber",
         EntityClass = "pt_rocket_marker",
-        Price = 25000,
+        Price = 15000,
+        Cooldown = 60,
 
         Description = "Attack jet drops a pair of bombs",
         Description2 = "Fast all-purpose strike",
@@ -517,7 +524,8 @@ Profiteers.Buyables = {
     ["pt_cruise_missile"] = {
         Name = "Cruise Missile",
         EntityClass = "pt_cruise_missile_marker",
-        Price = 30000,
+        Price = 25000,
+        Cooldown = 120,
 
         Description = "Launch a cruise missile",
         Description2 = "Hard to shoot down",
@@ -526,7 +534,8 @@ Profiteers.Buyables = {
     },
     ["pt_fighter"] = {
         Name = "Fighter Patrol",
-        Price = 100000,
+        Price = 75000,
+        Cooldown = 30,
 
         Description = "Fighter jet eliminates air targets",
         --Description2 = "",
@@ -540,6 +549,7 @@ Profiteers.Buyables = {
     ["pt_pavelow"] = {
         Name = "Pave Low",
         Price = 200000,
+        Cooldown = 300,
 
         Description = "Call in a helicopter gunship",
         Description2 = "Loiters and fires missiles",

@@ -21,7 +21,7 @@ local function fixupProp( ply, ent, hitpos, mins, maxs )
     } )
 
     -- Both traces hit meaning we are probably inside a wall on both sides, do nothing
-    if ( tr_up.Hit && tr_down.Hit ) then return end
+    if ( tr_up.Hit and tr_down.Hit ) then return end
 
     if ( tr_down.Hit ) then ent:SetPos( entPos + ( tr_down.HitPos - endposD ) ) end
     if ( tr_up.Hit ) then ent:SetPos( entPos + ( tr_up.HitPos - endposU ) ) end
@@ -50,9 +50,11 @@ net.Receive("pt_buy", function(len, ply)
     if itemtbl.EntityLimit and itemtbl.EntityLimit <= ply:CountBoughtEntities(itemclass) then
         return
     end
+    if ply:IsOnShopCooldown(itemclass) then
+        return
+    end
 
-    ply:AddMoney(-itemtbl.Price)
-    ply:EmitSound("items/ammopickup.wav", 70)
+    local ent = nil
 
     if itemtbl.EntityClass and not ply:HasWeapon(itemtbl.EntityClass) then
         if itemtbl.PlaceEntity then
@@ -71,8 +73,8 @@ net.Receive("pt_buy", function(len, ply)
                 return
             end]]
 
-            local ent = ents.Create( itemtbl.EntityClass )
-            if ( not IsValid( ent ) ) then return end
+            ent = ents.Create( itemtbl.EntityClass )
+            if not IsValid( ent ) then return end
 
             local ang = ply:EyeAngles()
             ang.yaw = ang.yaw + 180 -- Rotate it 180 degrees in my favour
@@ -96,11 +98,6 @@ net.Receive("pt_buy", function(len, ply)
             ply.BoughtEntities[itemclass] = ply.BoughtEntities[itemclass] or {}
             table.insert(ply.BoughtEntities[itemclass], ent)
 
-            net.Start("pt_buy")
-                net.WriteUInt(ent:EntIndex(), 16)
-                net.WriteString(itemclass)
-            net.Send(ply)
-
             -- Attempt to move the object so it sits flush
             -- We could do a TraceEntity instead of doing all
             -- of this - but it feels off after the old way
@@ -122,6 +119,16 @@ net.Receive("pt_buy", function(len, ply)
     if itemtbl.OnBuy then
         itemtbl:OnBuy(ply)
     end
+
+    ply:AddMoney(-itemtbl.Price)
+    ply:EmitSound("items/ammopickup.wav", 70)
+
+    net.Start("pt_buy")
+        net.WriteUInt(IsValid(ent) and ent:EntIndex() or 0, 16)
+        net.WriteString(itemclass)
+    net.Send(ply)
+
+    ply:SetShopCooldown(itemclass)
 end)
 
 local Player = FindMetaTable("Player")

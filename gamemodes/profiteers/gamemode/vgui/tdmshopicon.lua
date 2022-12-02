@@ -135,37 +135,57 @@ function PANEL:Paint(w, h)
 
     -- Price
     local textprice
+    local price_x = 128 + 16
     if itemtbl.EntityClass and LocalPlayer():HasWeapon(itemtbl.EntityClass) and not itemtbl.AmmoOnRebuy then
         textprice = "OWNED"
         surface.SetFont("PTShopicon2")
-        surface.SetTextPos((128 + 16) + 2, (14 + 32) + 2)
+        surface.SetTextPos(price_x + 2, (14 + 32) + 2)
         surface.SetTextColor(c_s)
         surface.DrawText(textprice)
-        surface.SetTextPos(128 + 16, 14 + 32)
+        surface.SetTextPos(price_x, 14 + 32)
         surface.SetTextColor(color_white)
         surface.DrawText(textprice)
     else
         textprice = GAMEMODE:FormatMoney(self:GetPrice() or 0)
         surface.SetFont("PTShopicon2")
-        surface.SetTextPos((128 + 16) + 2, (14 + 32) + 2)
+        surface.SetTextPos(price_x + 2, (14 + 32) + 2)
         surface.SetTextColor(c_s)
         surface.DrawText(textprice)
-        surface.SetTextPos(128 + 16, 14 + 32)
+        surface.SetTextPos(price_x, 14 + 32)
         surface.SetTextColor(LocalPlayer():GetMoney() > self:GetPrice() and color_white or c_r)
         surface.DrawText(textprice)
     end
+    price_x = price_x + surface.GetTextSize(textprice) + 12
 
     if itemtbl.EntityLimit then
         local cur = LocalPlayer():CountBoughtEntities(self:GetSpawnName())
-        local wprice = surface.GetTextSize(textprice)
         local textlimit = "(Limit " .. cur .. "/" .. itemtbl.EntityLimit .. ")"
         surface.SetFont("PTShopicon2")
-        surface.SetTextPos((128 + 16) + 2 + wprice + 16, (14 + 32) + 2)
+        surface.SetTextPos(price_x + 2, (14 + 32) + 2)
         surface.SetTextColor(c_s)
         surface.DrawText(textlimit)
-        surface.SetTextPos(128 + 16 + wprice + 16, 14 + 32)
+        surface.SetTextPos(price_x, 14 + 32)
         surface.SetTextColor(cur < itemtbl.EntityLimit and color_white or c_r)
         surface.DrawText(textlimit)
+
+        price_x = price_x + surface.GetTextSize(textlimit) + 12
+    end
+
+    if itemtbl.Cooldown then
+        local tleft = math.max(0, LocalPlayer():GetShopCooldown(self:GetSpawnName()) - CurTime())
+        local textcooldown
+        if tleft > 0 then
+            textcooldown = "(wait " .. string.ToMinutesSeconds(tleft) .. ")"
+        else
+            textcooldown = "(" .. string.ToMinutesSeconds(itemtbl.Cooldown) .. " cooldown)"
+        end
+        surface.SetFont("PTShopicon2")
+        surface.SetTextPos(price_x + 2, (14 + 32) + 2)
+        surface.SetTextColor(c_s)
+        surface.DrawText(textcooldown)
+        surface.SetTextPos(price_x, 14 + 32)
+        surface.SetTextColor(tleft <= 0 and color_white or c_r)
+        surface.DrawText(textcooldown)
     end
 
     if self.Description then

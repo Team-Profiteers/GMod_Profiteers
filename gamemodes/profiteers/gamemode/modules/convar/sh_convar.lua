@@ -34,3 +34,5 @@ CreateConVar("pt_prop_quota", 50000, FCVAR_ARCHIVE + FCVAR_REPLICATED, "Total am
 CreateConVar("pt_npc_max", 60, FCVAR_REPLICATED, "Total amount of NPCs that can be spawned at once.", 0)
 
 CreateConVar("pt_dev_airffa", 0, FCVAR_REPLICATED, "Make aircraft and anti-air engage everything.", 0, 1)
+CreateConVar("pt_dev_wtf", 0, FCVAR_REPLICATED, "Bypass shop cooldowns.", 0, 1)
+CreateConVar("pt_dev_communism", 0, FCVAR_REPLICATED, "It's all free, comrade!", 0, 1)
