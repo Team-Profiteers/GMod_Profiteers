@@ -3,7 +3,7 @@ function GM:ContextMenuOpen()
 end
 
 SPAWN_Destroy = {
-	["#spawnmenu.category.dupes"] = true,
+	["#spawnmenu.category.dupes"] = false,
 	["#spawnmenu.category.saves"] = true,
 	["#spawnmenu.category.npcs"] = true,
 	["#spawnmenu.category.vehicles"] = true,
