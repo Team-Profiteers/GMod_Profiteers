@@ -205,7 +205,7 @@ Profiteers.Buyables = {
         Description = "1.2mt fission bomb",
         Description2 = "End it all and watch it burn",
 
-        Category = "Construction"
+        Category = "Explosives"
     },
     ["pt_beacon"] = {
         Name = "Base Beacon",
@@ -528,7 +528,20 @@ Profiteers.Buyables = {
         OnBuy = function(self, ply)
             Profiteers:SpawnPaveLowPlane(ply)
         end
-    }
+    },
+    ["pt_icbm"] = {
+        Name = "ICBM",
+        Price = 10000000,
+
+        Description = "Intercontinental ballistic missile",
+        Description2 = "Guaranteed victory",
+
+        Category = "Air Support",
+
+        OnBuy = function(self, ply)
+            Profiteers:SpawnICBMPlane(ply)
+        end
+    },
 }
 
 Profiteers.BuyableEntities = {}

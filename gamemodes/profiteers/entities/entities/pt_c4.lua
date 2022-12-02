@@ -19,7 +19,7 @@ ENT.Category = "Profiteers"
 ENT.Spawnable = false
 
 ENT.Range = 1024
-ENT.FuseTime = 5
+ENT.FuseTime = 30
 
 ENT.Bounty = 0
 
