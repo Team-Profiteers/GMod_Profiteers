@@ -79,7 +79,7 @@ if SERVER then
     function ENT:Use(activator)
         if self:GetArmed() and self.NextUse < CurTime() then
             self.NextUse = CurTime() + 0.5
-            local total = GetConVar("pt_airdrop_amount"):GetInt()
+            local total = GetConVar("pt_airdrop_amount"):GetInt() * Profiteers:GetMoneyRampUp()
             local amount = math.min(self:GetAmount(), math.Round(math.random(math.ceil(total / 30), math.ceil(total / 50))))
             activator:AddMoney(amount)
             self:SetAmount(self:GetAmount() - amount)
@@ -114,7 +114,7 @@ if SERVER then
                 eff:SetMagnitude(math.Rand(64, 512))
                 util.Effect("pt_moneyeff", eff, true)
             end
-            local damage = math.min(self:GetAmount(), math.ceil(dmginfo:GetDamage() * 10))
+            local damage = math.min(self:GetAmount(), math.ceil(dmginfo:GetDamage() * 10)) * Profiteers:GetMoneyRampUp()
             if dmginfo:GetInflictor():GetClass() == "entityflame" then
                 damage = math.ceil(self:GetAmount() * 0.02)
             end
