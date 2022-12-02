@@ -94,6 +94,10 @@ concommand.Add("pt_buy", function(ply, cmd, args, argStr)
         surface.PlaySound("items/medshotno1.wav")
         return
     end
+    if ply:IsOnShopCooldown(args[1]) then
+        surface.PlaySound("items/medshotno1.wav")
+        return
+    end
 
     net.Start("pt_buy")
         net.WriteString(args[1])
@@ -130,13 +134,18 @@ end, "Sell all of the specified item.")
 net.Receive("pt_buy", function()
     local entindex = net.ReadUInt(16)
     local itemclass = net.ReadString()
-    timer.Create("pt_buy_" .. entindex, 0.1, 50, function()
-        local ent = Entity(entindex)
-        if IsValid(ent) then
-            LocalPlayer().BoughtEntities = LocalPlayer().BoughtEntities or {}
-            LocalPlayer().BoughtEntities[itemclass] = LocalPlayer().BoughtEntities[itemclass] or {}
-            table.insert(LocalPlayer().BoughtEntities[itemclass], ent)
-            timer.Remove("pt_buy_" .. entindex)
-        end
-    end)
+
+    if entindex > 0 then
+        timer.Create("pt_buy_" .. entindex, 0.1, 50, function()
+            local ent = Entity(entindex)
+            if IsValid(ent) then
+                LocalPlayer().BoughtEntities = LocalPlayer().BoughtEntities or {}
+                LocalPlayer().BoughtEntities[itemclass] = LocalPlayer().BoughtEntities[itemclass] or {}
+                table.insert(LocalPlayer().BoughtEntities[itemclass], ent)
+                timer.Remove("pt_buy_" .. entindex)
+            end
+        end)
+    end
+
+    LocalPlayer():SetShopCooldown(itemclass)
 end)
