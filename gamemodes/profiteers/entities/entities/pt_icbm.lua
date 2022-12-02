@@ -9,6 +9,8 @@ ENT.CollisionGroup = COLLISION_GROUP_PROJECTILE
 
 ENT.Model = "models/props_phx/rocket1.mdl"
 
+ENT.BoxSize = Vector(1, 1, 1)
+
 ENT.Drag = false
 ENT.Gravity = true
 ENT.Damping = false
@@ -77,6 +79,10 @@ if SERVER then
 
         Profiteers.ActiveNuke = self
         Profiteers:SyncNuke(true)
+
+        local ang = self:GetAngles()
+        ang:RotateAroundAxis(ang:Right(), -90)
+        self:SetAngles(ang)
     end
 
     function ENT:OnTakeDamage(damage)
