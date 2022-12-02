@@ -5,7 +5,7 @@ ENT.Base = "pt_base_plane"
 ENT.PrintName = "Harrier"
 ENT.Type = "anim"
 ENT.RenderGroup = RENDERGROUP_BOTH
-ENT.Model = "models/profiteers/vehicles/mw3_harrier.mdl"
+ENT.Model = "models/profiteers/vehicles/mw3_a10_warthog.mdl"
 ENT.Dropped = false
 ENT.MyAngle = Angle(0, 0, 0)
 

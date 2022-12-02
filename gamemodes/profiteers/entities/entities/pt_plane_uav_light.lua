@@ -5,7 +5,7 @@ ENT.Base = "pt_base_plane"
 ENT.PrintName = "Light UAV"
 ENT.Type = "anim"
 ENT.RenderGroup = RENDERGROUP_BOTH
-ENT.Model = "models/profiteers/vehicles/mw3_uav.mdl"
+ENT.Model = "models/profiteers/vehicles/bo1_u2.mdl"
 ENT.Dropped = false
 ENT.MyAngle = Angle(0, 0, 0)
 
