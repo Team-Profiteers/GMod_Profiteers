@@ -113,16 +113,17 @@ if SERVER then
         local drunk = false
 
         if self.FireAndForget then
-            if self.ShootEntData.Target and IsValid(self.ShootEntData.Target) then
+            if self.ShootEntData.Target and (IsValid(self.ShootEntData.Target) or isvector(self.ShootEntData.Target)) then
                 local target = self.ShootEntData.Target
-                if target.UnTrackable then self.ShootEntData.Target = nil end
+
+                if isentity(target) and target.UnTrackable then self.ShootEntData.Target = nil end
+
+                local tpos = isvector(target) and target or target:EyePos()
 
                 if self.Airburst and (self:GetPos() - target:GetPos()):Length() < 256 then
                     self:Detonate()
                     return
                 end
-
-                local tpos = target:EyePos()
 
                 if self.TopAttack and !self.TopAttackReached then
                     tpos = tpos + Vector(0, 0, self.TopAttackHeight)
@@ -134,6 +135,8 @@ if SERVER then
                         self.SuperSteerTime = CurTime() + self.SuperSteerBoostTime
                     end
                 end
+
+                print(tpos)
 
                 local dir = (tpos - self:GetPos()):GetNormalized()
                 local dot = dir:Dot(self:GetAngles():Forward())

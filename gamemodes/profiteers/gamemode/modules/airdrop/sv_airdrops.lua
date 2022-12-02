@@ -60,7 +60,7 @@ function Profiteers:GetPlaneEnterPosAng(droppos, size, ideal_ang)
 
                 if !exittrace.HitSky then continue end
 
-                local nowdist = (entertrace.HitPos - exittrace.HitPos):Length()
+                local nowdist = (entertrace.HitPos - tr.HitPos):Length()
 
                 if nowdist > winningdist then
                     winner = angle + j

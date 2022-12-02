@@ -492,6 +492,16 @@ Profiteers.Buyables = {
 
         Category = "Air Support",
     },
+    ["pt_cruise_missile"] = {
+        Name = "Cruise Missile",
+        EntityClass = "pt_cruise_missile_marker",
+        Price = 30000,
+
+        Description = "Launch a cruise missile",
+        Description2 = "Hard to shoot down",
+
+        Category = "Air Support",
+    },
     ["pt_fighter"] = {
         Name = "Fighter Patrol",
         Price = 100000,

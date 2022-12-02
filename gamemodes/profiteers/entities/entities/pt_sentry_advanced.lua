@@ -21,7 +21,7 @@ ENT.AnchorSpikeSize = 200
 ENT.Category = "Profiteers"
 ENT.Spawnable = false
 
-ENT.Range = 10000
+ENT.Range = 8000
 ENT.Damage = 5
 ENT.MagSize = 1000
 
@@ -122,52 +122,45 @@ if SERVER then
         -- local target_pitch = math.NormalizeAngle(targetang.p) - self:GetAngles().p
         -- self:SetPoseParameter("pitch", target_pitch)
 
-        local targetpos = self.Target:GetPos()
-
         local bullet = {
             Attacker = self:CPPIGetOwner(),
             Inflictor = self,
             Damage = self.Damage,
             Force = 1,
-            Num = 4,
+            Num = 1,
             Dir = self:LocalToWorldAngles(self:GetAimAngle()):Forward(),
             Src = self:GetPos() + Vector(0, 0, 64),
             Tracer = 0,
-            HullSize = 8,
-            Spread = Vector(0.01, 0.01, 0.01),
+            HullSize = 32,
+            Spread = Vector(0.05, 0.05, 0.05),
             Callback = function(attacker, tr, dmginfo)
                 local pos = tr.HitPos
-                if !tr.Hit or tr.HitSky then
-                    pos = targetpos
-                else
-                    util.BlastDamage(self, self:CPPIGetOwner(), pos, 128, 6)
 
-                    if tr.Entity.IsProjectile then
-                        if isfunction(tr.Entity.Detonate) then
-                            tr.Entity:Detonate()
-                        else
-                            tr.Entity:Remove()
-                        end
+                if tr.Hit then
+                    util.BlastDamage(self, self:CPPIGetOwner(), pos, 128, 6)
+                end
+
+                if tr.Entity.IsProjectile then
+                    if isfunction(tr.Entity.Detonate) then
+                        tr.Entity:Detonate()
+                    else
+                        tr.Entity:Remove()
                     end
                 end
 
                 local effectdata = EffectData()
-                effectdata:SetOrigin(tr.HitPos)
+                effectdata:SetOrigin(pos)
                 util.Effect("HelicopterMegaBomb", effectdata)
 
-                if self.Bullet % 4 == 0 then
-                    local gunbone = self:LookupBone("m61a1_vulcan")
-                    local gunpos = self:GetBonePosition(gunbone)
+                local gunbone = self:LookupBone("m61a1_vulcan")
+                local gunpos = self:GetBonePosition(gunbone)
 
-                    local fx = EffectData()
-                    fx:SetOrigin(pos)
-                    fx:SetStart(gunpos)
-                    fx:SetScale(10000)
+                local fx = EffectData()
+                fx:SetOrigin(pos)
+                fx:SetStart(gunpos)
+                fx:SetScale(10000)
 
-                    util.Effect("GunshipTracer", fx)
-                end
-
-                self.Bullet = self.Bullet  + 1
+                util.Effect("GunshipTracer", fx)
             end
         }
 
@@ -218,7 +211,13 @@ if SERVER then
                 return
             end
 
-            if self:GetPos():DistToSqr(target:GetPos()) > self.Range * self.Range then
+            local mypos2d = self:GetPos()
+            local targetpos2d = self.Target:GetPos()
+
+            mypos2d.z = 0
+            targetpos2d.z = 0
+
+            if mypos2d:DistToSqr(targetpos2d) > self.Range * self.Range then
                 self.Target = nil
                 return
             end
@@ -247,7 +246,7 @@ if SERVER then
 
                 if self:HasLineOfSight(v) then
                     if v.IsProjectile then
-                        table.insert(planes, {v, 1.5})
+                        table.insert(planes, {v, 900})
                     else
                         if v.IsAirAsset then
                             if v:GetClass() == "pt_missile" then
