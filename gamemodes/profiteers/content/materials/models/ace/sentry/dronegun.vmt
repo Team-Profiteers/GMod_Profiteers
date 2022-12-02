@@ -1,0 +1,9 @@
+vertexlitgeneric
+{
+	"$basetexture"               "models\ace\sentry\dronegun"
+	"$basemapluminancephongmask" "1"
+	"$phong"                     "1"
+	"$phongboost"                "2.7"
+	"$phongexponent"             "25"
+	"$phongdisablehalflambert"   "1"
+}

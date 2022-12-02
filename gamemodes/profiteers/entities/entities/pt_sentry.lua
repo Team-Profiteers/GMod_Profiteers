@@ -2,7 +2,7 @@ AddCSLuaFile()
 
 ENT.Base = "pt_base_anchorable"
 
-ENT.PrintName = "Sentry Gun"
+ENT.PrintName = "Briefcase Sentry"
 ENT.Type = "anim"
 ENT.RenderGroup = RENDERGROUP_BOTH
 ENT.Model = "models/ace/minisentry.mdl"
@@ -19,7 +19,7 @@ ENT.Category = "Profiteers"
 ENT.Spawnable = false
 
 ENT.Range = 2048
-ENT.Damage = 20
+ENT.Damage = 15
 ENT.MagSize = 100
 
 function ENT:SetupDataTables()

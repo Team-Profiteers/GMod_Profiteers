@@ -299,6 +299,18 @@ Profiteers.Buyables = {
 
         Category = "Construction"
     },
+    ["pt_sentry_hmg"] = {
+        Name = "HMG Sentry",
+        EntityClass = "pt_sentry_hmg",
+        Price = 35000,
+        PlaceEntity = true,
+        EntityLimit = 2,
+
+        Description = "Attacks enemies automatically",
+        Description2 = "Equipped with .50 cal machine gun",
+
+        Category = "Construction"
+    },
     ["pt_sentry_missile"] = {
         Name = "Missile Turret",
         EntityClass = "pt_sentry_missile",

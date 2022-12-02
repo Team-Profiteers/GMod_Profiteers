@@ -1,0 +1,16 @@
+VertexLitGeneric
+{
+$baseTexture "models\ace\sentry\50cal"
+$phong 1
+$phongboost 10
+$phongexponent 20
+$basemapalphaphongmask 1
+
+
+
+
+$detail "models\ace\sentry\50cal_detail" 
+$detailscale 1
+$detailblendfactor 0.001 
+$detailblendmode 5
+}
