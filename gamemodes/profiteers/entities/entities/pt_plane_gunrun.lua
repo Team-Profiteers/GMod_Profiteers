@@ -68,6 +68,14 @@ if SERVER then
                     elseif IsValid(tr.Entity) and tr.Entity:IsNPC() then
                         dmginfo:ScaleDamage(4)
                     end
+
+                    if math.random() <= 1 / 2 then
+                    local fx = EffectData()
+                        fx:SetOrigin(tr.HitPos)
+                        fx:SetStart(self:GetPos())
+                        fx:SetScale(100000)
+                        util.Effect("GunshipTracer", fx)
+                    end
                 end
             }
             -- TODO: BRRRRRRRRRRRRRRRRRRRRT
