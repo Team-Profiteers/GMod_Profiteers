@@ -191,7 +191,7 @@ function GM:OnNPCKilled(npc, atk, inf)
 
         -- for every 10 minutes that pass, the money will be increased by 25%
 
-        money = money * math.Clamp(1 + (CurTime() * 0.25 / 600), 1, 1000)
+        money = money * Profiteers:GetMoneyRampUp()
 
         if atk:IsPlayer() then
             atk:AddMoney(math.Round(money * math.Rand(0.9, 1.1)))

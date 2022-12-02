@@ -7,3 +7,7 @@ end
 function Player:GetEarnings()
 	return self:GetNWInt("pt_earnings", 0)
 end
+
+function Profiteers:GetMoneyRampUp()
+	return 1 + (CurTime() * 0.25 / 600)
+end

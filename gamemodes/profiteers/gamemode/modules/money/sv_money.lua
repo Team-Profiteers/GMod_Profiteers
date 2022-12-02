@@ -40,15 +40,6 @@ function Player:LoadMoney()
     end
 end
 
-function Player:SaveMoney()
-    return
-end
-
-function Player:LoadMoney()
-    self:SetNWInt("pt_money", GetConVar("pt_money_starting"):GetInt())
-    self:SetNWInt("pt_earnings", 0)
-end
-
 hook.Add("PlayerInitialSpawn", "pt_money", function(ply)
     ply:LoadMoney()
 end)

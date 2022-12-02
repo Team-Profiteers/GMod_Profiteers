@@ -29,7 +29,7 @@ if SERVER then
         self:SetUseType(CONTINUOUS_USE)
         self.SpawnTime = CurTime()
         -- Money increases by 10% every 10 minutes
-        self:SetAmount(GetConVar("pt_airdrop_amount"):GetInt() * math.Clamp(1 + (CurTime() * 0.1 / 600), 1, 1000))
+        self:SetAmount(GetConVar("pt_airdrop_amount"):GetInt() * Profiteers:GetMoneyRampUp())
         self.NextUse = 0
         self:SetMaxHealth(GetConVar("pt_airdrop_moneyhealth"):GetInt())
         self:SetHealth(self:GetMaxHealth())
