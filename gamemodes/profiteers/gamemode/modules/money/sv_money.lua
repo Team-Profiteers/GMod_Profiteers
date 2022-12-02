@@ -1,7 +1,7 @@
 util.AddNetworkString("pt_updatemoney")
 
 hook.Add("Initialize", "pt_money", function()
-    sql.Query([[DROP TABLE IF IF EXISTS `pt_money`;]])
+    sql.Query([[DROP TABLE IF EXISTS `pt_money`;]])
 
     sql.Query([[CREATE TABLE `pt_money` (
         sid64 BIGINT unsigned,
