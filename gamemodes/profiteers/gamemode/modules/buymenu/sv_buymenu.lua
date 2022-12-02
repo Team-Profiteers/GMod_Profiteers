@@ -89,6 +89,9 @@ net.Receive("pt_buy", function(len, ply)
 
             ent.Bounty = ent.Bounty or itemtbl.Price
 
+            ent.DisableDuplicator = true
+            ent.DoNotDuplicate = true
+
             ply.BoughtEntities = ply.BoughtEntities or {}
             ply.BoughtEntities[itemclass] = ply.BoughtEntities[itemclass] or {}
             table.insert(ply.BoughtEntities[itemclass], ent)

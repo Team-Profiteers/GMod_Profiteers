@@ -15,6 +15,9 @@ ENT.AnchorOffset = Vector(0, 0, 0)
 ENT.AnchorAngle = Angle(0, 0, 0)
 ENT.AnchorSpikeSize = 64
 
+ENT.DisableDuplicator = true
+ENT.DoNotDuplicate = true
+
 function ENT:SetupDataTables()
     self:NetworkVar("Bool", 0, "Anchored")
 end

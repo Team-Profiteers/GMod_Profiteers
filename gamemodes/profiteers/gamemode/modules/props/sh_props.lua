@@ -45,3 +45,10 @@ end)
 hook.Add("OnPhysgunPickup", "Profiteers_PropTrack", function(ply, ent)
     ply.PhysgunProp = ent
 end)
+
+hook.Add("OnEntityCreated", "Profiteers_NoEntityDuping", function(ent)
+    if ent:GetClass() == "prop_physics" then return end
+
+    ent.DisableDuplicator = true
+    ent.DoNotDuplicate = true
+end)
