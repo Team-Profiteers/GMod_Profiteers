@@ -109,7 +109,7 @@ if SERVER then
 
         local nuke = ents.Create("pt_nukeexplosion")
         nuke:SetPos(self:GetPos())
-        nuke:SetOwner(self:CPPIGetOwner())
+        nuke:SetOwner(self:GetOwner())
         nuke:Spawn()
         nuke:Activate()
 
