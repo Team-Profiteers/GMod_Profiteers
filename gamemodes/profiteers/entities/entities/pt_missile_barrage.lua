@@ -27,6 +27,8 @@ ENT.BoostTime = 0
 ENT.FireAndForget = false
 ENT.AirAssetWeight = -1
 
+ENT.IsProjectile = true
+
 DEFINE_BASECLASS(ENT.Base)
 
 if SERVER then

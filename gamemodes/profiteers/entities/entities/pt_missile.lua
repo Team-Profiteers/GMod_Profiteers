@@ -244,6 +244,7 @@ if SERVER then
         end
         -- self:Remove()
 
+        self.Dead = true
         SafeRemoveEntityDelayed(self, self.SmokeTrailTime)
         self:SetRenderMode(RENDERMODE_NONE)
         self:SetMoveType(MOVETYPE_NONE)

@@ -253,7 +253,7 @@ if SERVER then
             rocket:Spawn()
             rocket.Damage = self.Damage
             rocket.ImpactDamage = self.Damage
-            rocket:GetPhysicsObject():SetVelocityInstantaneous(ang:Forward() * self.LaunchVelocity)
+            rocket:GetPhysicsObject():SetVelocityInstantaneous(ang:Forward() * self.LaunchVelocity * 1.1)
 
             debugoverlay.Sphere(self.Target:GetPos(), 64, 5, Color(255, 255, 255, 0), true)
             debugoverlay.Line(self:GetRocketOrigin(), self:GetRocketOrigin() + targetang:Forward() * 1024, 5, Color(255, 0, 0), true)

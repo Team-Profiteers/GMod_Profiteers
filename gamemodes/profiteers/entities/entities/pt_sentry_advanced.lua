@@ -21,8 +21,8 @@ ENT.AnchorSpikeSize = 200
 ENT.Category = "Profiteers"
 ENT.Spawnable = false
 
-ENT.Range = 100000
-ENT.Damage = 10
+ENT.Range = 10000
+ENT.Damage = 5
 ENT.MagSize = 1000
 
 function ENT:SetupDataTables()
@@ -40,6 +40,8 @@ end
 
 if SERVER then
     ENT.Target = nil
+
+    ENT.Bullet = 0
 
     function ENT:Initialize()
         self:SetModel(self.Model)
@@ -127,7 +129,7 @@ if SERVER then
             Inflictor = self,
             Damage = self.Damage,
             Force = 1,
-            Num = 1,
+            Num = 4,
             Dir = self:LocalToWorldAngles(self:GetAimAngle()):Forward(),
             Src = self:GetPos() + Vector(0, 0, 64),
             Tracer = 0,
@@ -138,24 +140,34 @@ if SERVER then
                 if !tr.Hit or tr.HitSky then
                     pos = targetpos
                 else
-                    util.BlastDamage(self, self:CPPIGetOwner(), pos, 128, 25)
+                    util.BlastDamage(self, self:CPPIGetOwner(), pos, 128, 6)
+
+                    if tr.Entity.IsProjectile then
+                        if isfunction(tr.Entity.Detonate) then
+                            tr.Entity:Detonate()
+                        else
+                            tr.Entity:Remove()
+                        end
+                    end
                 end
 
                 local effectdata = EffectData()
                 effectdata:SetOrigin(tr.HitPos)
                 util.Effect("HelicopterMegaBomb", effectdata)
 
-                // Create custom tracer effect
+                if self.Bullet % 4 == 0 then
+                    local gunbone = self:LookupBone("m61a1_vulcan")
+                    local gunpos = self:GetBonePosition(gunbone)
 
-                local gunbone = self:LookupBone("m61a1_vulcan")
-                local gunpos = self:GetBonePosition(gunbone)
+                    local fx = EffectData()
+                    fx:SetOrigin(pos)
+                    fx:SetStart(gunpos)
+                    fx:SetScale(10000)
 
-                local fx = EffectData()
-                fx:SetOrigin(pos)
-                fx:SetStart(gunpos)
-                fx:SetScale(10000)
+                    util.Effect("GunshipTracer", fx)
+                end
 
-                util.Effect("GunshipTracer", fx)
+                self.Bullet = self.Bullet  + 1
             end
         }
 
@@ -201,6 +213,11 @@ if SERVER then
         self.NextFindTarget = CurTime() + 0.2
 
         if IsValid(target) then
+            if self.Target.Dead or self.Target.Defused then
+                self.Target = nil
+                return
+            end
+
             if self:GetPos():DistToSqr(target:GetPos()) > self.Range * self.Range then
                 self.Target = nil
                 return
@@ -217,7 +234,9 @@ if SERVER then
             local planes = {}
             for _, v in pairs(ents.GetAll()) do
                 if v:GetPos().z < self:GetPos().z then continue end
-                if !v.IsAirAsset then continue end
+                if !(GetConVar("pt_dev_airffa"):GetBool() or v:GetOwner() ~= self:CPPIGetOwner()) then continue end
+                if !v.IsAirAsset and !v.IsProjectile then continue end
+                if v.Dead or v.Defused then continue end
                 local mypos2d = self:GetPos()
                 local targetpos2d = v:GetPos()
 
@@ -225,23 +244,27 @@ if SERVER then
                 targetpos2d.z = 0
 
                 if mypos2d:DistToSqr(targetpos2d) > r then continue end
-                if !(GetConVar("pt_dev_airffa"):GetBool() or v:GetOwner() ~= self:CPPIGetOwner()) then continue end
+
                 if self:HasLineOfSight(v) then
-                    if v.IsAirAsset then
-                        if v:GetClass() == "pt_missile" then
-                            if IsValid(v.ShootEntData.Target)
-                            and (v.ShootEntData.Target == self:CPPIGetOwner()
-                                or v.ShootEntData.Target:CPPIGetOwner() == self:CPPIGetOwner()) then
-                                table.insert(planes, {v, 1000})
-                            else
+                    if v.IsProjectile then
+                        table.insert(planes, {v, 1.5})
+                    else
+                        if v.IsAirAsset then
+                            if v:GetClass() == "pt_missile" then
+                                if IsValid(v.ShootEntData.Target)
+                                and (v.ShootEntData.Target == self:CPPIGetOwner()
+                                    or v.ShootEntData.Target:CPPIGetOwner() == self:CPPIGetOwner()) then
+                                    table.insert(planes, {v, 1000})
+                                else
+                                    table.insert(planes, {v, v.AirAssetWeight or 1})
+                                end
+                            elseif (v.AirAssetWeight or 1) > 0 then
                                 table.insert(planes, {v, v.AirAssetWeight or 1})
                             end
-                        elseif (v.AirAssetWeight or 1) > 0 then
-                            table.insert(planes, {v, v.AirAssetWeight or 1})
+                        else
+                            self.Target = v
+                            return
                         end
-                    else
-                        self.Target = v
-                        return
                     end
                 end
             end

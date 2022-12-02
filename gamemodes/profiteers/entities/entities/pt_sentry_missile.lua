@@ -194,6 +194,11 @@ if SERVER then
 
         if IsValid(target) then
 
+            if self.Target.Dead or self.Target.Defused then
+                self.Target = nil
+                return
+            end
+
             if target.IsAirAsset then
                 if !target:Visible(self) or (target.AirAssetWeight or 1) <= 0 then self.Target = nil end
                 return
@@ -225,6 +230,7 @@ if SERVER then
             local planes = {}
             for _, v in pairs(ents.GetAll()) do
                 if !v.IsAirAsset and !self:TestPVS(v) then continue end
+                if v.Dead or v.Defused then continue end
                 if !isbool(v.MissileAlreadyFired) and IsValid(v.MissileAlreadyFired) then continue end
                 if !(((v:IsPlayer() and v:Alive() and v ~= self:CPPIGetOwner()) or (v:IsNPC() and v:Health() > 0)) and v:GetPos():DistToSqr(self:GetPos()) <= r)
                         and !(v.IsAirAsset and (v.AirAssetWeight or 1) > 0 and (GetConVar("pt_dev_airffa"):GetBool() or v:GetOwner() ~= self:CPPIGetOwner()))
