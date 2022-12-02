@@ -264,8 +264,9 @@ Profiteers.Buyables = {
     ["pt_safe"] = {
         Name = "Safe Storage Box",
         EntityClass = "pt_safe",
-        Price = 1000,
+        Price = 4000,
         PlaceEntity = true,
+        EntityLimit = 1,
 
         Description = "Stores money safely",
         Description2 = "Sprint + use to withdraw 10k",
@@ -296,13 +297,13 @@ Profiteers.Buyables = {
     --     Category = "Construction"
     -- },
     ["pt_sentry"] = {
-        Name = "Briefcase Turret",
+        Name = "Briefcase Sentry",
         EntityClass = "pt_sentry",
         Price = 12500,
         PlaceEntity = true,
         EntityLimit = 3,
 
-        Description = "Attacks enemies automatically",
+        Description = "Close range area denial",
         Description2 = "Lightweight emplacement",
 
         Category = "Construction"
@@ -314,13 +315,13 @@ Profiteers.Buyables = {
         PlaceEntity = true,
         EntityLimit = 2,
 
-        Description = "Attacks enemies automatically",
-        Description2 = "Equipped with .50 cal machine gun",
+        Description = "High firepower area denial",
+        Description2 = "Lightweight emplacement",
 
         Category = "Construction"
     },
     ["pt_sentry_missile"] = {
-        Name = "Missile Turret",
+        Name = "Missile Sentry",
         EntityClass = "pt_sentry_missile",
         Price = 25000,
         PlaceEntity = true,
@@ -338,8 +339,8 @@ Profiteers.Buyables = {
         PlaceEntity = true,
         EntityLimit = 2,
 
-        Description = "Anti-air rotary cannon",
-        Description2 = "Durable static emplacement",
+        Description = "Anti-aircraft rotary flak cannon",
+        Description2 = "Durable, cannot target ground",
 
         Category = "Construction"
     },
@@ -351,7 +352,7 @@ Profiteers.Buyables = {
         EntityLimit = 1,
 
         Description = "Launches multi-rocket barrages",
-        Description2 = "Durable static emplacement",
+        Description2 = "Durable, has minimum distance",
 
         Category = "Construction"
     },
@@ -440,7 +441,7 @@ Profiteers.Buyables = {
         EntityLimit = 1,
         PlaceEntity = true,
 
-        Description = "Provides beacon effect without anchoring",
+        Description = "Beacon effect without anchoring",
         Description2 = "Significantly smaller radius",
 
         Category = "Construction"

@@ -30,8 +30,9 @@ ENT.DragCoefficient = 0
 ENT.Damping = true
 ENT.Inertia = nil
 
-ENT.GunshipWorkaround = true
-ENT.HelicopterWorkaround = true
+-- Not adding those to the gamemode for now
+ENT.GunshipWorkaround = false
+ENT.HelicopterWorkaround = false
 
 ENT.Damage = 100
 ENT.Radius = 256
@@ -199,7 +200,7 @@ if SERVER then
 
         -- Gunships have no physics collection, periodically trace to try and blow up in their face
         if self.GunshipWorkaround and (self.GunshipCheck or 0 < CurTime()) then
-            self.GunshipCheck = CurTime() + 0.33
+            self.GunshipCheck = CurTime() + 1
             local tr = util.TraceLine({
                 start = self:GetPos(),
                 endpos = self:GetPos() + (self:GetVelocity() * 6 * engine.TickInterval()),
@@ -228,7 +229,7 @@ if SERVER then
             --self:EmitSound("phx/kaboom.wav", 125, 100, 1, CHAN_AUTO)
         end
 
-        util.BlastDamage(self, IsValid(self:GetOwner()) and self:GetOwner() or self, self:GetPos(), self.Radius, self.DamageOverride or self.Damage)
+        util.BlastDamage(IsValid(self.Inflictor) and self.Inflictor or self, IsValid(self:GetOwner()) and self:GetOwner() or self, self:GetPos(), self.Radius, self.DamageOverride or self.Damage)
 
         if SERVER then
             self:FireBullets({
@@ -260,7 +261,7 @@ if SERVER then
                 local v = colData.OurOldVelocity:Length() ^ 0.5
                 local dmg = DamageInfo()
                 dmg:SetAttacker(IsValid(self:GetOwner()) and self:GetOwner() or self)
-                dmg:SetInflictor(self)
+                dmg:SetInflictor(IsValid(self.Inflictor) and self.Inflictor or self)
                 dmg:SetDamageType(DMG_CRUSH)
                 dmg:SetDamage(v)
                 dmg:SetDamagePosition(colData.HitPos)
@@ -290,8 +291,8 @@ if SERVER then
         if self.ImpactDamage and IsValid(tgt) then
             local dmg = DamageInfo()
             dmg:SetAttacker(IsValid(self:GetOwner()) and self:GetOwner() or self)
-            dmg:SetInflictor(self)
-            dmg:SetDamageType(DMG_BLAST) -- helicopters
+            dmg:SetInflictor(IsValid(self.Inflictor) and self.Inflictor or self)
+            dmg:SetDamageType(DMG_BLAST)
             dmg:SetDamage(self.ImpactDamage)
             dmg:SetDamagePosition(colData.HitPos)
             dmg:SetDamageForce(self:GetForward() * self.ImpactDamage)

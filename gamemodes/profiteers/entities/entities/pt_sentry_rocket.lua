@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
-ENT.Base = "pt_base_anchorable"
+ENT.Base = "pt_base_sentry"
 
-ENT.PrintName = "Rocket Sentry"
+ENT.PrintName = "Rocket Battery"
 ENT.Type = "anim"
 ENT.RenderGroup = RENDERGROUP_BOTH
 ENT.Model = "models/drgordon/black_ops_2/equipment/weapons/rim-116_rolling_airframe_missile_launcher.mdl"
@@ -17,15 +17,14 @@ ENT.AnchorOffset = Vector(0, 0, -4)
 ENT.AllowUnAnchor = false
 
 ENT.AnchorSpikeSize = 200
-
-ENT.Category = "Profiteers"
-ENT.Spawnable = false
+ENT.Mass = 200
 
 ENT.MinRange = 512
 ENT.Range = 15000
 ENT.TopAttackRange = 4096
 ENT.Damage = 100
-ENT.TopAttackDamage = 40
+ENT.TopAttackDamage = 50
+ENT.TopAttackImpactDamage = 25
 ENT.MagSize = 100
 
 ENT.LastBurstTime = 0
@@ -47,12 +46,13 @@ function ENT:CanFunction()
     return self:WithinBeacon() and self:GetAnchored() and self:WaterLevel() == 0
 end
 
-function ENT:GetRocketOrigin()
+function ENT:GetSentryOrigin()
     return self:GetPos() + self:LocalToWorldAngles(self:GetAimAngle()):Forward() * 96 + Vector(0, 0, 128)
 end
 
 if SERVER then
     ENT.Target = nil
+    ENT.TriedTopAttack = {}
 
     local function getpitch(v, d, h)
         local g = -physenv.GetGravity().z
@@ -79,173 +79,142 @@ if SERVER then
     --     end
     -- end
 
-    function ENT:Initialize()
-        self:SetModel(self.Model)
-        self:PhysicsInit(SOLID_VPHYSICS)
-        self:SetMoveType(MOVETYPE_VPHYSICS)
-        self:SetCollisionGroup(COLLISION_GROUP_NONE)
-        self:SetUseType(SIMPLE_USE)
-        self:GetPhysicsObject():SetMass(50)
 
-        self:SetNWInt("PFPropHealth", self.BaseHealth)
-        self:SetNWInt("PFPropMaxHealth", self.BaseHealth)
-        self:SetAmmo(self.MagSize)
-    end
+    function ENT:TargetLogic()
+        if (self.NextFire or 0) > CurTime() and self.UseTopAttackLogic then return end
 
-    function ENT:Think()
-        if !self:CanFunction() then return end
-
-        local owner = self:CPPIGetOwner()
-        local wep = owner:GetActiveWeapon()
         local targetang
-        local origin = self:GetRocketOrigin()
+        local origin = self:GetSentryOrigin()
 
-        if IsValid(wep) and wep:GetClass() == "pt_wrangler" then
-            local tr = owner:GetEyeTrace()
-
-            -- local targetang = self:WorldToLocalAngles((tr.HitPos - self:GetRocketOrigin()):Angle())
-
-            local mypos2d = self:GetRocketOrigin()
-            local tgtpos2d = Vector(tr.HitPos)
-            mypos2d.z = 0
-            tgtpos2d.z = 0
-
-            local d = mypos2d:Distance(tgtpos2d)
-            local h = tr.HitPos.z - origin.z
-
-            local deg = getpitch(self.LaunchVelocity, d, h)
-
-            targetang = self:WorldToLocalAngles((tr.HitPos - origin):Angle())
-            if deg != 0 / 0 then
-                targetang.p = -deg
-            end
-
-
-
-            self.UseTopAttackLogic = false
-
-            self:SetAimAngle(Angle(
-                math.ApproachAngle(self:GetAimAngle().p, targetang.p, engine.TickInterval() * 720),
-                math.ApproachAngle(self:GetAimAngle().y, targetang.y, engine.TickInterval() * 360), 0))
-
-            if owner:KeyDown(IN_ATTACK2) then
-                self:ShootTarget(true)
-            end
-
-            self.Target = nil
-
-            self:NextThink(CurTime() + 0.1)
-        else
-            if (self.NextFire or 0) > CurTime() and self.UseTopAttackLogic then return end
-
-            local oldtgt = self.Target
-            self:FindTarget()
-            if oldtgt ~= self.Target then
-                self:SetLockonTime(0)
-                self.SalvoLeft = self.UseTopAttackLogic and 3 or math.random(3, 5)
-            end
-
-            local pitch = -45
-
-            if IsValid(self.Target) then
-                local tgtpos = self.Target:GetPos() + Vector(0, 0, 16)
-
-                if self.UseTopAttackLogic then
-                    targetang = self:WorldToLocalAngles((tgtpos - self:GetRocketOrigin()):Angle())
-                    targetang.p = pitch
-                else
-                    origin = self:GetRocketOrigin()
-                    local mypos2d = self:GetRocketOrigin()
-                    local tgtpos2d = Vector(tgtpos)
-                    mypos2d.z = 0
-                    tgtpos2d.z = 0
-
-                    local d = mypos2d:Distance(tgtpos2d)
-                    local h = self.Target:GetPos().z - origin.z
-
-                    --self.LaunchVelocity = Lerp(dist / self.Range, 2000, 6000)
-                    local deg = getpitch(self.LaunchVelocity, d, h)
-
-                    if deg == 0 / 0 or h >= 300 then self.UseTopAttackLogic = true return end
-
-                    targetang = self:WorldToLocalAngles((tgtpos - origin):Angle())
-                    targetang.p = -deg
-                end
-            elseif self.LastBurstTime + 5 < CurTime() then
-                targetang = Angle(0, self:WorldToLocalAngles(self:GetAngles()).y + math.sin(CurTime() / math.pi / 3) * 180, 0)
-            else
-                targetang = self:GetAimAngle()
-            end
-
-            self:SetAimAngle(Angle(
-                math.ApproachAngle(self:GetAimAngle().p, targetang.p, engine.TickInterval() * 720),
-                math.ApproachAngle(self:GetAimAngle().y, targetang.y, engine.TickInterval() * 360), 0))
-
-            local dot = targetang:Forward():Dot(self:GetAimAngle():Forward())
-            if self.UseTopAttackLogic then
-                local a = targetang:Forward()
-                a.z = 0
-                local b = self:GetAimAngle():Forward()
-                b.z = 0
-                dot = a:GetNormalized():Dot(b:GetNormalized())
-            end
-            if IsValid(self.Target) and dot >= 0.98 then
-                if self:GetLockonTime() == 0 then
-                    self:SetLockonTime(CurTime() + (self.UseTopAttackLogic and 0.75 or 2))
-                    if self.UseTopAttackLogic then
-                        self:EmitSound("ambient/alarms/klaxon1.wav", 130, 110)
-                    else
-                        self:EmitSound("npc/attack_helicopter/aheli_damaged_alarm1.wav", 130, 90)
-                    end
-                elseif self:GetLockonTime() < CurTime() and dot >= 0.999 then
-                    self:ShootTarget()
-                end
-            end
+        local oldtgt = self.Target
+        self:FindTarget()
+        if oldtgt ~= self.Target then
+            self:SetLockonTime(0)
+            self.SalvoLeft = self.UseTopAttackLogic and 3 or math.random(3, 5)
         end
 
-        self:NextThink(CurTime() + 0.1)
-        return true
+        local pitch = -60
+
+        if IsValid(self.Target) then
+            local tgtpos = self.Target:GetPos() + Vector(0, 0, 16)
+
+            if self.UseTopAttackLogic then
+                targetang = self:WorldToLocalAngles((tgtpos - self:GetSentryOrigin()):Angle())
+                targetang.p = pitch
+            else
+                origin = self:GetSentryOrigin()
+                local mypos2d = self:GetSentryOrigin()
+                local tgtpos2d = Vector(tgtpos)
+                mypos2d.z = 0
+                tgtpos2d.z = 0
+
+                local d = mypos2d:Distance(tgtpos2d)
+                local h = self.Target:GetPos().z - origin.z
+
+                --self.LaunchVelocity = Lerp(dist / self.Range, 2000, 6000)
+                local deg = getpitch(self.LaunchVelocity, d, h)
+
+                if deg == 0 / 0 or h >= 300 then self.UseTopAttackLogic = true return end
+
+                targetang = self:WorldToLocalAngles((tgtpos - origin):Angle())
+                targetang.p = -deg
+            end
+        elseif self.LastBurstTime + 5 < CurTime() then
+            targetang = Angle(0, self:WorldToLocalAngles(self:GetAngles()).y + math.sin(CurTime() / math.pi / 3) * 180, 0)
+        else
+            targetang = self:GetAimAngle()
+        end
+
+        self:SetAimAngle(Angle(
+            math.ApproachAngle(self:GetAimAngle().p, targetang.p, engine.TickInterval() * 720),
+            math.ApproachAngle(self:GetAimAngle().y, targetang.y, engine.TickInterval() * 360), 0))
+
+        local dot = targetang:Forward():Dot(self:GetAimAngle():Forward())
+        if self.UseTopAttackLogic then
+            local a = targetang:Forward()
+            a.z = 0
+            local b = self:GetAimAngle():Forward()
+            b.z = 0
+            dot = a:GetNormalized():Dot(b:GetNormalized())
+        end
+        if IsValid(self.Target) and dot >= 0.95 then
+            if self:GetLockonTime() == 0 then
+                self:SetLockonTime(CurTime() + (self.UseTopAttackLogic and 0.75 or 2))
+                if self.UseTopAttackLogic then
+                    self:EmitSound("ambient/alarms/klaxon1.wav", 130, 110)
+                else
+                    self:EmitSound("npc/attack_helicopter/aheli_damaged_alarm1.wav", 130, 90)
+                end
+            elseif self:GetLockonTime() < CurTime() and dot >= 0.995 then
+                self:ShootTarget()
+            end
+        end
     end
 
-    function ENT:HasLineOfSight(ent)
-        local pos = (ent:IsNPC() or ent:IsPlayer()) and ent:EyePos() or ent:WorldSpaceCenter()
-        local tr = util.TraceLine({
-            start = self:GetPos() + Vector(0, 0, 128),
-            endpos = pos,
-            filter = self,
-            mask = MASK_SOLID,
-        })
-        return tr.Entity == ent or (!IsValid(tr.Entity) and tr.Fraction == 1)
+    function ENT:WrangleLogic()
+        local tr = owner:GetEyeTrace()
+        local targetang = self:WorldToLocalAngles((tr.HitPos - self:GetLOSOrigin()):Angle())
+
+        local mypos2d = self:GetLOSOrigin()
+        local tgtpos2d = Vector(tr.HitPos)
+        mypos2d.z = 0
+        tgtpos2d.z = 0
+
+        local d = mypos2d:Distance(tgtpos2d)
+        local h = tr.HitPos.z - origin.z
+
+        local deg = getpitch(self.LaunchVelocity, d, h)
+
+        targetang = self:WorldToLocalAngles((tr.HitPos - origin):Angle())
+        if deg ~= 0 / 0 then
+            targetang.p = -deg
+        end
+
+        self:SetAimAngle(Angle(
+            math.ApproachAngle(self:GetAimAngle().p, targetang.p, engine.TickInterval() * 720),
+            math.ApproachAngle(self:GetAimAngle().y, targetang.y, engine.TickInterval() * 360), 0))
+
+        if owner:KeyDown(IN_ATTACK2) then
+            self:ShootTarget(true)
+        end
+
+        self.UseTopAttackLogic = false
+        self.Target = nil
     end
 
     function ENT:CanIndirectFire(ent)
         local pos = (ent:IsNPC() or ent:IsPlayer()) and ent:EyePos() or ent:WorldSpaceCenter()
         local tr = util.TraceLine({
-            start = self:GetPos() + Vector(0, 0, 128),
-            endpos = self:GetPos() + Vector(0, 0, 1500),
+            start = self:GetLOSOrigin(),
+            endpos = self:GetLOSOrigin() + Vector(0, 0, 400),
             filter = self,
             mask = MASK_SOLID,
         })
+        debugoverlay.Line(tr.StartPos, tr.HitPos, 0.5, tr.Hit and Color(255, 0, 0) or color_white)
         if tr.Hit then return false end
+        local tr3 = util.TraceLine({
+            start = tr.HitPos,
+            endpos = pos + Vector(0, 0, 1800),
+            mask = MASK_SOLID,
+        })
+        debugoverlay.Line(tr3.StartPos, tr3.HitPos, 0.5, tr3.Fraction < 1 and Color(255, 0, 0) or color_white)
+        if tr3.Fraction < 1 then return false end
         local tr2 = util.TraceLine({
             start = pos,
-            endpos = pos + Vector(0, 0, 15000),
+            endpos = pos + Vector(0, 0, 1800),
             filter = ent,
             mask = MASK_SOLID,
         })
+        debugoverlay.Line(tr2.StartPos, tr2.HitPos, 0.5, tr2.Hit and Color(255, 0, 0) or color_white)
         if tr2.Hit then return false end
-        local tr3 = util.TraceLine({
-            start = tr.HitPos,
-            endpos = tr2.HitPos,
-            mask = MASK_SOLID,
-        })
-        return tr3.Fraction >= 1
+
+        return true
     end
 
     function ENT:ShootTarget(force)
         if !force and !IsValid(self.Target) then return end
         if (self.NextFire or 0) > CurTime() then return end
-        if !force and IsValid(self.Target.RocketFiredAt) and self.UseTopAttackLogic then return end
+        if !force and (IsValid(self.Target.RocketFiredAt) and !self.Target.RocketFiredAt.Dead) and self.UseTopAttackLogic then return end
         if self:GetAmmo() <= 0 then
             self:EmitSound("weapons/ar2/ar2_empty.wav")
             self.NextFire = CurTime() + 1
@@ -261,13 +230,13 @@ if SERVER then
         local rocket
         if self.UseTopAttackLogic then
             rocket = ents.Create("pt_missile")
-            rocket:SetPos(self:GetRocketOrigin())
+            rocket:SetPos(self:GetSentryOrigin())
             rocket.ShootEntData.Target = self.Target
             rocket.FireAndForget = true
             rocket.TopAttack = true
             rocket.TopAttackHeight = 2000
             rocket.TopAttackDistance = 500
-            rocket.ImpactDamage = 0
+            rocket.ImpactDamage = self.TopAttackImpactDamage
             rocket.Damage = self.TopAttackDamage
             rocket.Radius = 128
             rocket.SteerSpeed = 4000
@@ -276,17 +245,18 @@ if SERVER then
             rocket.SuperSteerBoostTime = 5
             rocket.NoReacquire = true
             rocket.DragCoefficient = 0
-
             local ang = Angle(targetang)
             ang:RotateAroundAxis(targetang:Right(), math.Rand(-5, 5))
             ang:RotateAroundAxis(targetang:Up(), math.Rand(-5, 5))
             rocket:SetAngles(ang)
-
             rocket:Spawn()
+
+            rocket:GetPhysicsObject():SetVelocityInstantaneous(ang:Forward() * self.LaunchVelocity * 1)
+
             self:EmitSound("npc/waste_scanner/grenade_fire.wav", 140, 120, 0.85)
         else
             rocket = ents.Create("pt_missile_barrage")
-            rocket:SetPos(self:GetRocketOrigin())
+            rocket:SetPos(self:GetSentryOrigin())
             local ang = Angle(targetang)
             ang:RotateAroundAxis(targetang:Right(), math.Rand(-0.5, 0.5))
             ang:RotateAroundAxis(targetang:Up(), math.Rand(-2, 2))
@@ -299,13 +269,14 @@ if SERVER then
             if !force then
                 debugoverlay.Sphere(self.Target:GetPos(), 64, 5, Color(255, 255, 255, 0), true)
             end
-            debugoverlay.Line(self:GetRocketOrigin(), self:GetRocketOrigin() + targetang:Forward() * 1024, 5, Color(255, 0, 0), true)
+            debugoverlay.Line(self:GetSentryOrigin(), self:GetSentryOrigin() + targetang:Forward() * 1024, 5, Color(255, 0, 0), true)
 
-            -- simulate_projectile(self:GetRocketOrigin(), ang:Forward() * self.LaunchVelocity)
+            -- simulate_projectile(self:GetSentryOrigin(), ang:Forward() * self.LaunchVelocity)
 
             self:EmitSound("weapons/stinger_fire1.wav", 140, 85, 0.85)
         end
 
+        rocket.Inflictor = self
         rocket.Owner = self:CPPIGetOwner()
         rocket:SetOwner(self:CPPIGetOwner())
 
@@ -317,6 +288,7 @@ if SERVER then
                 self.NextFire = CurTime() + 3
                 if self.UseTopAttackLogic then
                     self.Target.RocketFiredAt = rocket
+                    self.TriedTopAttack[self.Target] = true
                     self.Target = nil
                 else
                     self.SalvoLeft = math.random(4, 8) -- better be fucking dead this time
@@ -327,20 +299,6 @@ if SERVER then
         self:SetAmmo(self:GetAmmo() - 1)
     end
 
-    function ENT:OnAnchor(ply)
-        self:EmitSound("npc/roller/blade_cut.wav", 100, 90)
-    end
-
-    function ENT:OnUse(ply)
-        if !self:CanFunction() then return end
-
-        if self:GetAmmo() < self.MagSize then
-            self:SetAmmo(self.MagSize)
-            self:EmitSound("weapons/ar2/npc_ar2_reload.wav")
-            ply:ChatPrint("Sentry gun reloaded.")
-        end
-    end
-
     function ENT:FindTarget()
         if (self.NextFindTarget or 0) > CurTime() then return end
         self.NextFindTarget = CurTime() + 0.25
@@ -348,12 +306,12 @@ if SERVER then
         local target = self.Target
 
         if IsValid(target) then
-            if IsValid(target.RocketFiredAt) and self.UseTopAttackLogic then
+            if IsValid(self.Target.RocketFiredAt) and !self.Target.RocketFiredAt.Dead and self.UseTopAttackLogic then
                 self.Target = nil
                 return
             end
 
-            local dsq = self:GetPos():DistToSqr(target:GetPos())
+            local dsq = self:GetLOSOrigin():DistToSqr(target:GetPos())
 
             if dsq > self.Range * self.Range then
                 self.Target = nil
@@ -372,19 +330,20 @@ if SERVER then
 
             return
         else
-            local targets = ents.FindInSphere(self:GetPos(), self.Range)
+            local targets = ents.FindInSphere(self:GetLOSOrigin(), self.Range)
             for k, v in pairs(targets) do
-                local dsq = self:GetPos():DistToSqr(v:GetPos())
+                local dsq = self:GetLOSOrigin():DistToSqr(v:GetPos())
                 local indirect = nil
                 if dsq > self.Range * self.Range then continue end
                 if dsq < self.MinRange * self.MinRange then continue end
-                if IsValid(v.RocketFiredAt) then continue end
+                if (IsValid(v.RocketFiredAt) and !v.RocketFiredAt.Dead) then continue end
                 if ((v:IsPlayer() and v:Alive() and v ~= self:CPPIGetOwner()) or (v:IsNPC() and v:Health() > 0)) then
                     if self:HasLineOfSight(v) then
                         self.UseTopAttackLogic = false
                         self.Target = v
                         return
-                    elseif !indirect and self:CanIndirectFire(v) and dsq <= self.TopAttackRange * self.TopAttackRange then
+                    elseif !indirect and !self.TriedTopAttack[v] and dsq <= self.TopAttackRange * self.TopAttackRange and self:CanIndirectFire(v) then
+                        self.TriedTopAttack[v] = nil
                         indirect = v
                     end
                 end
@@ -396,6 +355,12 @@ if SERVER then
             end
         end
     end
+
+    hook.Add("PostEntityTakeDamage", "Profiteers_RocketBattery", function(ent, dmginfo)
+        if IsValid(dmginfo:GetInflictor()) and dmginfo:GetInflictor():GetClass() == "pt_sentry_rocket" then
+            dmginfo:GetInflictor().TriedTopAttack[ent] = false -- If we hit them once, we can hit them again!
+        end
+    end)
 end
 
 if CLIENT then
@@ -411,12 +376,6 @@ if CLIENT then
             self:ManipulateBoneAngles(bone, self.AimAngYaw, false)
             self.AimAngPitch = LerpAngle(FrameTime() * 3, self.AimAngPitch or Angle(0, 0, 0), Angle(self:GetAimAngle().p, 0, 0))
             self:ManipulateBoneAngles(bone2, self.AimAngPitch, false)
-
-            -- self.AimAngYaw = math.ApproachAngle(self.AimAngYaw or 0, self:GetAimAngle().y, FrameTime() * 1)
-            -- self:SetPoseParameter("yaw", self.AimAngYaw)
-            -- self.AimAngPitch = math.ApproachAngle(self.AimAngPitch or 0, self:GetAimAngle().p, FrameTime() * 1)
-            -- self:SetPoseParameter("pitch", self.AimAngPitch)
-            -- self:InvalidateBoneCache()
 
             local pos = bonepos + boneang:Up() * 30 + boneang:Forward() * -72 + boneang:Right() * 0
 

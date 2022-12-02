@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
-ENT.Base = "pt_base_anchorable"
+ENT.Base = "pt_base_sentry"
 
-ENT.PrintName = "Missile Turret"
+ENT.PrintName = "Missile Sentry"
 ENT.Type = "anim"
 ENT.RenderGroup = RENDERGROUP_BOTH
 ENT.Model = "models/bo/weapons/sam turret.mdl"
@@ -13,128 +13,79 @@ ENT.BaseHealth = 400
 ENT.PreferredAngle = Angle(0, 0, 0)
 ENT.AnchorRequiresBeacon = true
 ENT.AllowUnAnchor = false
-
 ENT.AnchorOffset = Vector(0, 0, 0)
 
-ENT.Category = "Profiteers"
-ENT.Spawnable = false
+ENT.Mass = 100
 
 ENT.Range = 4096
-ENT.Damage = 20
+ENT.Damage = 100
 ENT.MagSize = 2
 
-function ENT:SetupDataTables()
-    self:NetworkVar("Bool", 0, "Anchored")
-    self:NetworkVar("Int", 0, "Ammo")
-    self:NetworkVar("Angle", 0, "AimAngle")
-    self:NetworkVar("Float", 0, "LockonTime")
-
-    self:SetAimAngle(Angle(0, 0, 0))
-end
-
-
-function ENT:CanFunction()
-    return self:WithinBeacon() and self:GetAnchored() and self:GetAngles():Up():Dot(Vector(0, 0, 1)) > 0.6 and self:WaterLevel() == 0
-end
-
 if SERVER then
-    ENT.Target = nil
+    function ENT:TargetLogic()
+        local oldtgt = self.Target
+        self:FindTarget()
+        if oldtgt ~= self.Target then
+            self:SetLockonTime(0)
+            if !IsValid(oldtgt) then
+                self:EmitSound("npc/turret_floor/active.wav", 120, 110)
+            else
+                self:EmitSound("buttons/combine_button1.wav", 120, 110)
+            end
+        end
 
-    function ENT:Initialize()
-        self:SetModel(self.Model)
-        self:PhysicsInitBox(Vector(-24, -24, 0), Vector(24, 24, 56))
-        self:SetCollisionGroup(COLLISION_GROUP_NONE)
-        self:SetUseType(SIMPLE_USE)
-        self:GetPhysicsObject():SetMass(50)
+        local targetang
+        if IsValid(self.Target) then
+            local tgtpos = self.Target:EyePos()
+            targetang = self:WorldToLocalAngles((tgtpos - (self:GetPos() + Vector(0, 0, 32))):Angle())
+        else
+            targetang = Angle(0, self:WorldToLocalAngles(self:GetAngles()).y + math.sin(CurTime() / math.pi / 10) * 180, 0)
+        end
 
-        self:SetNWInt("PFPropHealth", self.BaseHealth)
-        self:SetNWInt("PFPropMaxHealth", self.BaseHealth)
-        self:SetAmmo(self.MagSize)
+        self:RotateTowards(targetang)
 
-        -- self:SetOwner(self:CPPIGetOwner())
+        debugoverlay.Line(self:GetPos(), self:GetPos() + self:LocalToWorldAngles(self:GetAimAngle()):Forward() * 32, 1, Color(255, 0, 0))
 
-        self.NextFire = 0
+        local dot = targetang:Forward():Dot(self:GetAimAngle():Forward())
+        if IsValid(self.Target) and dot >= 0.99 then
+            if self:GetLockonTime() == 0 then
+                if self.Target.IsAirAsset then
+                    self:SetLockonTime(CurTime() + math.Rand(0.15, 0.5))
+                else
+                    self:SetLockonTime(CurTime() + 2)
+                end
+                self:EmitSound("buttons/button3.wav", 120, 110)
+                self.NextBeep = CurTime() + 0.55
+            elseif self:GetLockonTime() < CurTime() then
+                self:ShootTarget()
+                self.Target = nil
+            elseif (self.NextBeep or 0) <= CurTime() then
+                self.NextBeep = CurTime() + 0.19
+                self:EmitSound("buttons/blip1.wav", 120, 100)
+            end
+        elseif self:GetLockonTime() > 0 and dot <= 0.75 then
+            self.Target = nil
+            self:SetLockonTime(0)
+            self:EmitSound("buttons/combine_button2.wav", 120, 110)
+        end
     end
 
-    function ENT:Think()
-        if !self:CanFunction() then return end
+    function ENT:WrangleLogic()
+        local tr = self:CPPIGetOwner():GetEyeTrace()
+        local targetang = self:WorldToLocalAngles((tr.HitPos - (self:GetPos() + Vector(0, 0, 32))):Angle())
 
-        local owner = self:CPPIGetOwner()
-        local wep = owner:GetActiveWeapon()
+        self:RotateTowards(targetang)
 
-        if IsValid(wep) and wep:GetClass() == "pt_wrangler" then
-            local tr = owner:GetEyeTrace()
-
-            local targetang = self:WorldToLocalAngles((tr.HitPos - (self:GetPos() + Vector(0, 0, 32))):Angle())
-
-            self:SetAimAngle(Angle(
-                math.ApproachAngle(self:GetAimAngle().p, targetang.p, engine.TickInterval() * 720),
-                math.ApproachAngle(self:GetAimAngle().y, targetang.y, engine.TickInterval() * 720), 0))
-
-            if owner:KeyDown(IN_ATTACK2) then
-                if tr.Entity and !tr.HitWorld then
-                    self.Target = tr.Entity
-                else
-                    self.Target = nil
-                end
-                self:ShootTarget(true)
-            end
-
-            self:NextThink(CurTime() + 0.1)
-        else
-            if (self.NextFire or 0) > CurTime() then return end
-
-            local oldtgt = self.Target
-            self:FindTarget()
-            if oldtgt ~= self.Target then
-                self:SetLockonTime(0)
-                if !IsValid(oldtgt) then
-                    self:EmitSound("npc/turret_floor/active.wav", 120, 110)
-                else
-                    self:EmitSound("buttons/combine_button1.wav", 120, 110)
-                end
-            end
-
-            local targetang
-            if IsValid(self.Target) then
-                local tgtpos = self.Target:EyePos()
-                targetang = self:WorldToLocalAngles((tgtpos - (self:GetPos() + Vector(0, 0, 32))):Angle())
+        if owner:KeyDown(IN_ATTACK2) then
+            if tr.Entity and !tr.HitWorld then
+                self.Target = tr.Entity
             else
-                targetang = Angle(0, self:WorldToLocalAngles(self:GetAngles()).y + math.sin(CurTime() / math.pi / 10) * 180, 0)
-            end
-
-            self:SetAimAngle(Angle(
-                math.ApproachAngle(self:GetAimAngle().p, targetang.p, engine.TickInterval() * 720),
-                math.ApproachAngle(self:GetAimAngle().y, targetang.y, engine.TickInterval() * 720), 0))
-
-            debugoverlay.Line(self:GetPos(), self:GetPos() + self:LocalToWorldAngles(self:GetAimAngle()):Forward() * 32, 1, Color(255, 0, 0))
-
-            local dot = targetang:Forward():Dot(self:GetAimAngle():Forward())
-            if IsValid(self.Target) and dot >= 0.99 then
-                if self:GetLockonTime() == 0 then
-                    if self.Target.IsAirAsset then
-                        self:SetLockonTime(CurTime() + math.Rand(0.15, 0.5))
-                    else
-                        self:SetLockonTime(CurTime() + 2)
-                    end
-                    self:EmitSound("buttons/button3.wav", 120, 110)
-                    self.NextBeep = CurTime() + 0.55
-                elseif self:GetLockonTime() < CurTime() then
-                    self:ShootTarget()
-                    self.Target = nil
-                elseif (self.NextBeep or 0) <= CurTime() then
-                    self.NextBeep = CurTime() + 0.19
-                    self:EmitSound("buttons/blip1.wav", 120, 100)
-                end
-            elseif self:GetLockonTime() > 0 and dot <= 0.75 then
                 self.Target = nil
-                self:SetLockonTime(0)
-                self:EmitSound("buttons/combine_button2.wav", 120, 110)
             end
-
-            self:NextThink(CurTime() + 0.2)
+            self:ShootTarget(true)
         end
-        return true
+
+        self.Target = nil
     end
 
     function ENT:ShootTarget(force)
@@ -163,6 +114,7 @@ if SERVER then
 
         rocket:Spawn()
         rocket.Owner = self:CPPIGetOwner()
+        rocket.Damage = self.Damage
         rocket:SetOwner(self:CPPIGetOwner())
 
         self.Target.MissileAlreadyFired = rocket
@@ -174,21 +126,6 @@ if SERVER then
 
         self:EmitSound("weapons/rpg/rocketfire1.wav", 100, 120)
         self:SetAmmo(self:GetAmmo() - 1)
-        --[[]
-        local attpos = self:GetAttachment(0)
-
-        local ang = attpos.Ang
-
-        ang:RotateAroundAxis(ang:Right(), 90)
-
-        local muzzle = EffectData()
-        muzzle:SetOrigin(attpos.Pos)
-        muzzle:SetAngles(ang)
-        muzzle:SetEntity(self)
-        muzzle:SetAttachment(1)
-        muzzle:SetScale(2)
-        util.Effect("MuzzleEffect", muzzle)
-        ]]
     end
 
     function ENT:OnAnchor(ply)

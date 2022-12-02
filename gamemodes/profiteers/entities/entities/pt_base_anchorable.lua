@@ -73,6 +73,11 @@ if SERVER then
             endpos = self:WorldSpaceCenter() - Vector(0, 0, 1) * self.AnchorSpikeSize,
             mask = MASK_SOLID_BRUSHONLY,
         })
+        if !tr.Hit then
+            self:EmitSound("npc/roller/code2.wav", 100, 90)
+            GAMEMODE:Hint(ply, 1, "Cannot find solid ground to anchor on.")
+            return
+        end
         local pos = tr.HitPos + self.AnchorOffset
         local mins, maxs = self:GetCollisionBounds()
         local tr2 = util.TraceHull({
@@ -83,7 +88,7 @@ if SERVER then
             filter = self,
             ignoreworld = true
         })
-        if tr.Hit and !tr2.Hit then
+        if !tr2.Hit then
             self:SetPos(pos)
             self:SetAngles(Angle(0, self:GetAngles().y, 0) + self.AnchorAngle)
             GAMEMODE:FreezeProp(self, true)
@@ -91,7 +96,7 @@ if SERVER then
             self:OnAnchor(ply)
         else
             self:EmitSound("npc/roller/code2.wav", 100, 90)
-            GAMEMODE:Hint(ply, 3, "This can only be deployed on solid ground.")
+            GAMEMODE:Hint(ply, 1, "Cannot anchor because something is in the way.")
         end
     end
 
