@@ -125,7 +125,7 @@ if SERVER then
         rocket.ImpactDamage = 100
         rocket.SteerSpeed = 1000
         rocket.SeekerAngle = math.cos(math.rad(90))
-        rocket.LifeTime = 15
+        rocket.LifeTime = 30
         rocket.Boost = 1500
         rocket:Spawn()
         rocket.Owner = self:GetOwner()
