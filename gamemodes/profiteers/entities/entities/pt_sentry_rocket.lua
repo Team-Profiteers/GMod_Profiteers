@@ -54,7 +54,6 @@ end
 if SERVER then
     ENT.Target = nil
 
-
     local function getpitch(v, d, h)
         local g = -physenv.GetGravity().z
         v = v * 0.8 -- Our physics function doesn't perfectly align at long distances, so just compensate for it a little
@@ -98,11 +97,30 @@ if SERVER then
 
         local owner = self:CPPIGetOwner()
         local wep = owner:GetActiveWeapon()
+        local targetang
+        local origin = self:GetRocketOrigin()
 
         if IsValid(wep) and wep:GetClass() == "pt_wrangler" then
             local tr = owner:GetEyeTrace()
 
-            local targetang = self:WorldToLocalAngles((tr.HitPos - self:GetRocketOrigin()):Angle())
+            -- local targetang = self:WorldToLocalAngles((tr.HitPos - self:GetRocketOrigin()):Angle())
+
+            local mypos2d = self:GetRocketOrigin()
+            local tgtpos2d = Vector(tr.HitPos)
+            mypos2d.z = 0
+            tgtpos2d.z = 0
+
+            local d = mypos2d:Distance(tgtpos2d)
+            local h = tr.HitPos.z - origin.z
+
+            local deg = getpitch(self.LaunchVelocity, d, h)
+
+            targetang = self:WorldToLocalAngles((tr.HitPos - origin):Angle())
+            if deg != 0 / 0 then
+                targetang.p = -deg
+            end
+
+
 
             self.UseTopAttackLogic = false
 
@@ -128,7 +146,6 @@ if SERVER then
             end
 
             local pitch = -45
-            local targetang
 
             if IsValid(self.Target) then
                 local tgtpos = self.Target:GetPos() + Vector(0, 0, 16)
@@ -137,7 +154,7 @@ if SERVER then
                     targetang = self:WorldToLocalAngles((tgtpos - self:GetRocketOrigin()):Angle())
                     targetang.p = pitch
                 else
-                    local origin = self:GetRocketOrigin()
+                    origin = self:GetRocketOrigin()
                     local mypos2d = self:GetRocketOrigin()
                     local tgtpos2d = Vector(tgtpos)
                     mypos2d.z = 0
@@ -205,14 +222,14 @@ if SERVER then
         local pos = (ent:IsNPC() or ent:IsPlayer()) and ent:EyePos() or ent:WorldSpaceCenter()
         local tr = util.TraceLine({
             start = self:GetPos() + Vector(0, 0, 128),
-            endpos = self:GetPos() + Vector(0, 0, 2500),
+            endpos = self:GetPos() + Vector(0, 0, 1500),
             filter = self,
             mask = MASK_SOLID,
         })
         if tr.Hit then return false end
         local tr2 = util.TraceLine({
             start = pos,
-            endpos = pos + Vector(0, 0, 2500),
+            endpos = pos + Vector(0, 0, 15000),
             filter = ent,
             mask = MASK_SOLID,
         })
