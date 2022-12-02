@@ -1,3 +1,27 @@
+local function trytrace(tr, vec, size)
+    local entertrace = util.TraceHull({
+        start = tr.HitPos,
+        endpos = tr.HitPos + vec * 100000,
+        mask = MASK_NPCWORLDSTATIC,
+        mins = Vector(-1, -1, -1) * size,
+        maxs = Vector(1, 1, 1) * size,
+    })
+
+    if !entertrace.HitSky then return end
+
+    local exittrace = util.TraceLine({
+        start = tr.HitPos,
+        endpos = tr.HitPos + vec * -100000,
+        mask = MASK_NPCWORLDSTATIC,
+        mins = Vector(-1, -1, -1) * size,
+        maxs = Vector(1, 1, 1) * size,
+    })
+
+    if !exittrace.HitSky then return end
+
+    return entertrace.HitPos
+end
+
 function Profiteers:GetPlaneEnterPosAng(droppos, size, ideal_ang)
     size = size or 100
 
@@ -37,35 +61,33 @@ function Profiteers:GetPlaneEnterPosAng(droppos, size, ideal_ang)
             local winningenterpos = nil
 
 
-            for j = (ideal_ang and -15 or 0), (ideal_ang and 15 or 359) do
+            for j = (ideal_ang and -10 or 0), (ideal_ang and 10 or 359) do
                 local vec = Vector(math.cos(math.rad(angle + j)), math.sin(math.rad(angle + j)), 0)
-
-                entertrace = util.TraceHull({
-                    start = tr.HitPos,
-                    endpos = tr.HitPos + vec * 100000,
-                    mask = MASK_NPCWORLDSTATIC,
-                    mins = Vector(-1, -1, -1) * size,
-                    maxs = Vector(1, 1, 1) * size,
-                })
-
-                if !entertrace.HitSky then continue end
-
-                local exittrace = util.TraceLine({
-                    start = tr.HitPos,
-                    endpos = tr.HitPos + vec * -100000,
-                    mask = MASK_NPCWORLDSTATIC,
-                    mins = Vector(-1, -1, -1) * size,
-                    maxs = Vector(1, 1, 1) * size,
-                })
-
-                if !exittrace.HitSky then continue end
-
-                local nowdist = (entertrace.HitPos - tr.HitPos):Length()
+                local enterTraceHit = trytrace(tr, vec, size)
+                if !enterTraceHit then continue end
+                local nowdist = (enterTraceHit - tr.HitPos):Length()
 
                 if nowdist > winningdist then
                     winner = angle + j
                     winningdist = nowdist
-                    winningenterpos = entertrace.HitPos
+                    winningenterpos = enterTraceHit
+                end
+            end
+
+            if ideal_ang then
+                angle = math.NormalizeAngle(angle + 180)
+                for j = -10, 10 do
+                    local vec = Vector(math.cos(math.rad(angle + j)), math.sin(math.rad(angle + j)), 0)
+                    local enterTraceHit = trytrace(tr, vec, size)
+                    if !enterTraceHit then continue end
+
+                    local nowdist = (enterTraceHit - tr.HitPos):Length()
+
+                    if nowdist > winningdist then
+                        winner = angle + j
+                        winningdist = nowdist
+                        winningenterpos = enterTraceHit
+                    end
                 end
             end
 

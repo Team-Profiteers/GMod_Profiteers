@@ -46,7 +46,7 @@ if SERVER then
             bomb:SetOwner(self:GetOwner())
             bomb:Spawn()
 
-            bomb:GetPhysicsObject():SetVelocityInstantaneous(self:GetRight() * 500000 + self:GetUp() * -5000000 + forward)
+            bomb:GetPhysicsObject():SetVelocityInstantaneous(self:GetRight() * 100000 + self:GetUp() * -5000000 + forward)
 
             local bomb2 = ents.Create("pt_attack_bomb")
             bomb2:SetPos((self.DiagonalDrop or self.DropPos) - Vector(0, 0, 32) + self:GetRight() * -32)
@@ -54,7 +54,7 @@ if SERVER then
             bomb2:SetOwner(self:GetOwner())
             bomb2:Spawn()
 
-            bomb2:GetPhysicsObject():SetVelocityInstantaneous(self:GetRight() * -500000 + self:GetUp() * -5000000 + forward)
+            bomb2:GetPhysicsObject():SetVelocityInstantaneous(self:GetRight() * -100000 + self:GetUp() * -5000000 + forward)
 
             if self.DiagonalDrop then
                 bomb2.TargetPos = self.DropPos

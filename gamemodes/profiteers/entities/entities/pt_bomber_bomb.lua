@@ -56,7 +56,7 @@ if SERVER then
 
         self:EmitSound("ambient/explosions/explode_4.wav", 125)
 
-        util.BlastDamage(self, self:GetOwner(), self:GetPos(), 1536, 1000)
+        util.BlastDamage(self, self:GetOwner(), self:GetPos(), 2048, 3000)
 
         local groundtrace = util.TraceLine({
             start = self:GetPos(),
@@ -80,7 +80,7 @@ if SERVER then
                     effectdata2:SetOrigin(blastpos)
                     util.Effect("Explosion", effectdata2)
 
-                    util.BlastDamage(self, owner, blastpos, 1024, 150)
+                    util.BlastDamage(self, owner, blastpos, 1024, 500)
                 end
             end
         end
