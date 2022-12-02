@@ -139,8 +139,6 @@ local function createEnemyNPC()
             mask = MASK_SOLID_BRUSHONLY
         })
 
-        print(tr.Fraction)
-
         if tr.StartSolid or tr.Hit or tr.Fraction < 1 then continue end
 
         local enemy = ents.Create(squad["class_type"])
