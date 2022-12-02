@@ -110,7 +110,7 @@ local function createEnemyNPC()
         debugoverlay.Text((a - k:GetPos()):GetNormalized() * 16, dot)
         debugoverlay.Line(k:GetPos(), a, 30, distSqr >= maxdist and Color(0, 255, 0) or (distSqr <= mindist and Color(255, 0, 0) or Color(255, 255, 0)), true)
 
-        if (distSqr <= mindist) and not (distSqr >= maxdist or (k:GetPos() - a):Dot(k:GetAngles():Forward()) > 0) then return end --k:VisibleVec( a )
+        if (distSqr < mindist) or (distSqr > maxdist --[[ or (k:GetPos() - a):Dot(k:GetAngles():Forward()) > 0 ]]) then return end --k:VisibleVec( a )
 
         debugoverlay.Sphere(a, 128, 30, Color(0, 255, 0, 0), true)
     end
@@ -125,7 +125,7 @@ local function createEnemyNPC()
             wp = table.Random(squad["wpn"])
         end
 
-        local va = a
+        local va = a + Vector(0, 0, 8)
         -- Spawn enemies in a circle
         local ang = i * (360 / tospawn)
         va.x = va.x + math.cos(math.rad(ang)) * 128
@@ -139,7 +139,9 @@ local function createEnemyNPC()
             mask = MASK_SOLID_BRUSHONLY
         })
 
-        if tr.StartSolid or tr.Hit or tr.Fraction > 0 then continue end
+        print(tr.Fraction)
+
+        if tr.StartSolid or tr.Hit or tr.Fraction < 1 then continue end
 
         local enemy = ents.Create(squad["class_type"])
         if not enemy:IsValid() then return end
