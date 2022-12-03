@@ -579,6 +579,7 @@ Profiteers.Buyables = {
         Price = 100,
         EntityClass = "prop_vehicle_prisoner_pod",
         PlaceEntity = true,
+        EntityLimit = 1,
 
         Description = "Sit in it",
 
