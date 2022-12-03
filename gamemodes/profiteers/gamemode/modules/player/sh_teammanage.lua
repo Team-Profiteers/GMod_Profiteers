@@ -18,3 +18,16 @@ hook.Add("InitPostEntity", "ProfiteersTeamInit", function()
     local col = team.GetColor(TEAM_UNASSIGNED)
     team.SetUp(TEAM_UNASSIGNED, "Profiteers", col, true)
 end)
+
+function Profiteers:DisbandTeam(teamid)
+    local teamstable = team.GetAllTeams()
+
+    if SERVER then
+        for k, v in pairs(team.GetPlayers(teamid)) do
+            v:SetTeam(TEAM_UNASSIGNED)
+        end
+        Profiteers:SyncTeamDisband(teamid)
+    end
+
+    teamstable[teamid] = nil
+end
