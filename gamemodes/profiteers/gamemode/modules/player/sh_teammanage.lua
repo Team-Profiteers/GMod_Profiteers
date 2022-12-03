@@ -15,5 +15,6 @@ end)
 // Make changes to base teams at map load
 
 hook.Add("InitPostEntity", "ProfiteersTeamInit", function()
-    team.SetUp(TEAM_UNASSIGNED, "Profiteers", Color(255, 255, 255), true)
+    local col = team.GetColor(TEAM_UNASSIGNED)
+    team.SetUp(TEAM_UNASSIGNED, "Profiteers", col, true)
 end)
