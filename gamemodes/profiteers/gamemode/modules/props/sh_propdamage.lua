@@ -9,7 +9,7 @@ GM.PropDamageMultipliers = {
 }
 
 function Entity:CanTakePropDamage()
-    return self:GetClass() == "prop_physics" or self.TakePropDamage
+    return self:GetClass() == "prop_physics" or self.TakePropDamage or (CLIENT and self:GetNWInt("PFPropMaxHealth", -1) ~= -1)
 end
 
 function Entity:IsVulnerableProp()

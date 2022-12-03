@@ -73,19 +73,24 @@ net.Receive("pt_buy", function(len, ply)
                 return
             end]]
 
-            ent = ents.Create( itemtbl.EntityClass )
-            if not IsValid( ent ) then return end
+            if itemtbl.CreateEntity then
+                ent = itemtbl:CreateEntity(ply, tr)
+                if not IsValid( ent ) then return end
+            else
+                ent = ents.Create( itemtbl.EntityClass )
+                if not IsValid( ent ) then return end
 
-            local ang = ply:EyeAngles()
-            ang.yaw = ang.yaw + 180 -- Rotate it 180 degrees in my favour
-            ang.roll = 0
-            ang.pitch = 0
+                local ang = ply:EyeAngles()
+                ang.yaw = ang.yaw + 180 -- Rotate it 180 degrees in my favour
+                ang.roll = 0
+                ang.pitch = 0
 
-            if ent.PreferredAngle then ang = ang - ent.PreferredAngle end
+                if ent.PreferredAngle then ang = ang - ent.PreferredAngle end
 
-            ent:SetAngles( ang )
-            ent:SetPos( tr.HitPos )
-            ent:Spawn()
+                ent:SetAngles( ang )
+                ent:SetPos( tr.HitPos )
+                ent:Spawn()
+            end
 
             ent:CPPISetOwner(ply)
 

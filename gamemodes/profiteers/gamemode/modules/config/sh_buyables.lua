@@ -21,6 +21,7 @@ Profiteers.Buyables = {
     --  Icon = nil, -- taken from EntityClass
     --  CanBuy = nil, -- function(self, ply)
     --  OnBuy = nil, -- function(self, ply)
+    --  OnPlaceEntity = nil, -- function(self, ply, tr)
     --  GetCooldown = nil, -- function(self, ply)
     -- },
 
@@ -572,6 +573,60 @@ Profiteers.Buyables = {
         OnBuy = function(self, ply)
             Profiteers:SpawnICBMPlane(ply)
         end
+    },
+    ["pt_seat_jeep"] = {
+        Name = "Jeep Seat",
+        Price = 100,
+        EntityClass = "prop_vehicle_prisoner_pod",
+        PlaceEntity = true,
+
+        Description = "Sit in it",
+
+        Seat_Model = "models/nova/jeep_seat.mdl",
+        Seat_KeyValues = {
+            vehiclescript = "scripts/vehicles/prisoner_pod.txt",
+            limitview = "0"
+        },
+        Seat_Members = nil,
+
+        CreateEntity = function(self, ply, tr)
+            local ent = ents.Create(self.EntityClass or "prop_vehicle_prisoner_pod")
+            print(ent)
+            if !IsValid(ent) then return NULL end
+            ent:SetModel(self.Seat_Model)
+
+            -- Fill in the keyvalues if we have them
+            for k, v in pairs(Seat_KeyValues or {}) do
+                local kLower = string.lower(k)
+
+                if kLower == "vehiclescript" or kLower == "limitview" or kLower == "vehiclelocked" or kLower == "cargovisible" or kLower == "enablegun" then
+                    ent:SetKeyValue(k, v)
+                end
+            end
+
+            ent:SetAngles(ply:EyeAngles())
+            ent:SetPos(tr.HitPos)
+            DoPropSpawnedEffect(ent)
+            ent:Spawn()
+            ent:Activate()
+            -- Some vehicles reset this in Spawn()
+            -- if ( data and data.ColGroup ) then ent:SetCollisionGroup( data.ColGroup ) end
+            -- if ( ent.SetVehicleClass && VName ) then ent:SetVehicleClass( VName ) end
+            -- ent.VehicleName = VName
+            -- ent.VehicleTable = VTable
+            -- We need to override the class in the case of the Jeep, because it
+            -- actually uses a different class than is reported by GetClass
+            ent.ClassOverride = self.EntityClass
+
+            ent.TakePropDamage = true
+            ent.AllowPhysgun = true
+
+            ent:CalculatePropHealth()
+
+            return ent
+        end,
+
+        Category = "Miscellaneous",
     },
 }
 
