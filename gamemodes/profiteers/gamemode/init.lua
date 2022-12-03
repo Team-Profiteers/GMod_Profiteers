@@ -36,7 +36,7 @@ function GM:GetFallDamage(ply, speed)
             dmg:SetDamagePosition(ply:GetPos())
             ply:GetGroundEntity():TakeDamageInfo(dmg)
             ply:EmitSound("profiteers/mario_coin.wav", 80, 100, 0.2)
-
+            ply:AddMoney(1)
         end
         return 0
     end
