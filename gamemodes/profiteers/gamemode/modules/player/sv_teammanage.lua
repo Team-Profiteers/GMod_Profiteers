@@ -52,6 +52,7 @@ net.Receive("pt_team_update", function(len, ply)
     if string.len(name) > 64 then
         name = string.sub(name, 1, 64)
     end
+    if name == "Profiteers" then return end
     team.SetUp(id, name, col, open or false)
     ply:SetTeam(id)
     net.Start("pt_team_update")
