@@ -34,6 +34,21 @@ net.Receive("pt_team_invite", function(len, ply)
     Profiteers.ActiveTeamInvites[p_team] = allow
 end)
 
+net.Receive("pt_team_disband", function(len, ply)
+    local p_team = net.ReadUInt(8)
+    Profiteers:DisbandTeam(p_team)
+end)
+
+concommand.Add("pt_team_disband", function(ply, cmd, args)
+    local p_team = ply:UserID()
+    if p_team == TEAM_UNASSIGNED then return end
+
+    Profiteers:DisbandTeam(p_team)
+
+    net.Start("pt_team_disband")
+    net.SendToServer()
+end)
+
 concommand.Add("pt_team_update", function(ply, cmd, args)
     local name = GetConVar("pt_team_update_name"):GetString()
     local col = Color(GetConVar("pt_team_update_col_r"):GetInt(), GetConVar("pt_team_update_col_g"):GetInt(), GetConVar("pt_team_update_col_b"):GetInt())
@@ -173,6 +188,8 @@ hook.Add("PopulateToolMenu", "ProfiteersTeamMenu", function()
         panel:Button("Create/Update", "pt_team_update")
 
         panel:Help("This will join your team if you are not already in it")
+
+        panel:Button("Disband Team", "pt_team_disband")
     end)
 
     spawnmenu.AddToolMenuOption("Profiteers", "Teams", "Invite", "Invite", "", "", function(panel)

@@ -14,7 +14,6 @@ util.AddNetworkString("pt_team_join")
 -- Try to join a team
 -- - Team ID
 util.AddNetworkString("pt_team_invite")
-
 -- TO SERVER:
 -- Update player invite to team
 -- - Player ID
@@ -23,12 +22,26 @@ util.AddNetworkString("pt_team_invite")
 -- Update player's invite status to a team
 -- - Team ID
 -- - Whether they are allowed or not
+util.AddNetworkString("pt_team_disband")
+-- TO SERVER:
+-- Disband a team
+-- - Team ID
+-- TO CLIENT:
+-- Disband a team
+-- - Team ID
+
 function Profiteers:CanJoinTeam(ply, p_team)
     if team.Joinable(p_team) then return true end
     if Profiteers.ActiveTeamInvites[p_team] and Profiteers.ActiveTeamInvites[p_team][ply:UserID()] then return true end
     if ply:UserID() == p_team then return true end
 
     return false
+end
+
+function Profiteers:SyncTeamDisband(teamid)
+    net.Start("pt_team_disband")
+    net.WriteUInt(teamid, 8)
+    net.Broadcast()
 end
 
 function Profiteers:SyncTeams()
@@ -42,6 +55,12 @@ function Profiteers:SyncTeams()
         net.Broadcast(v)
     end
 end
+
+net.Receive("pt_team_disband", function(len, ply)
+    local p_team = ply:UserID()
+
+    Profiteers:DisbandTeam(p_team)
+end)
 
 net.Receive("pt_team_update", function(len, ply)
     local name = net.ReadString()
@@ -98,14 +117,6 @@ hook.Add("PlayerDisconnected", "ProfiteersTeamDisband", function(ply)
     local id = ply:UserID()
     Profiteers:DisbandTeam(id)
 end)
-
-function Profiteers:DisbandTeam(teamid)
-    if Profiteers.ActiveTeamInvites[id] then
-        Profiteers.ActiveTeamInvites[id] = nil
-    end
-
-    team.SetUp(id, "", Color(0, 0, 0), false)
-end
 
 hook.Add("PlayerCanJoinTeam", "ProfiteersTeamJoin", function(ply, teamid)
     print(teamid)
