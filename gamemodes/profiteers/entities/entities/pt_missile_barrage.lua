@@ -19,6 +19,10 @@ ENT.DragCoefficient = 0
 ENT.AngleDragCoefficient = 0
 ENT.Inertia = Vector(0, 0, 0)
 
+ENT.SmokeTrail = true
+ENT.SmokeTrailSize = 16
+ENT.SmokeTrailTime = 4
+
 ENT.Damage = 100
 ENT.Radius = 256
 ENT.ImpactDamage = 0
@@ -31,9 +35,15 @@ ENT.IsProjectile = true
 
 DEFINE_BASECLASS(ENT.Base)
 
-if SERVER then
-    function ENT:Think()
-        BaseClass.Think(self)
-        --self:GetPhysicsObject():AddVelocity(Vector(0, 0, 68)) -- ???
+if CLIENT then
+    function ENT:Draw()
+        self:DrawModel()
+
+        local eff = EffectData()
+        eff:SetOrigin(self:GetPos())
+        eff:SetAngles(self:GetAngles())
+        eff:SetEntity(self)
+        eff:SetScale(0.4)
+        util.Effect("MuzzleEffect", eff)
     end
 end

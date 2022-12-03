@@ -41,12 +41,12 @@ function Player:OwnsBoughtEntity(ent)
 end
 
 function Player:GetShopCooldown(class)
+    if GetConVar("pt_dev_wtf"):GetBool() then return 0 end
     self.ShopCooldown = self.ShopCooldown or {}
     return self.ShopCooldown[class] or 0
 end
 
 function Player:IsOnShopCooldown(class)
-    if GetConVar("pt_dev_wtf"):GetBool() then return end
     self.ShopCooldown = self.ShopCooldown or {}
     return (self.ShopCooldown[class] or 0) > CurTime()
 end

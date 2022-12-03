@@ -27,6 +27,11 @@ ENT.TopAttackDamage = 50
 ENT.TopAttackImpactDamage = 25
 ENT.MagSize = 100
 
+ENT.TurnRate = 180
+ENT.TurnRatePitch = 90
+ENT.PitchMin = -30
+ENT.PitchMax = 75
+
 ENT.LastBurstTime = 0
 
 ENT.LaunchVelocity = 5000
@@ -48,6 +53,23 @@ end
 
 function ENT:GetSentryOrigin()
     return self:GetPos() + self:LocalToWorldAngles(self:GetAimAngle()):Forward() * 96 + Vector(0, 0, 128)
+end
+
+function ENT:GetLOSOrigin()
+    return self:GetPos() + Vector(0, 0, 128)
+end
+
+function ENT:HasLineOfSight(ent)
+    local pos = (ent:IsNPC() or ent:IsPlayer()) and ent:EyePos() or ent:WorldSpaceCenter()
+    local tr = util.TraceHull({
+        start = self:GetLOSOrigin(),
+        endpos = pos,
+        filter = {self},
+        mins = Vector(-16, -16, 0),
+        maxs = Vector(16, 16, 32),
+        mask = MASK_SHOT,
+    })
+    return tr.Entity == ent
 end
 
 if SERVER then
@@ -125,9 +147,7 @@ if SERVER then
             targetang = self:GetAimAngle()
         end
 
-        self:SetAimAngle(Angle(
-            math.ApproachAngle(self:GetAimAngle().p, targetang.p, engine.TickInterval() * 720),
-            math.ApproachAngle(self:GetAimAngle().y, targetang.y, engine.TickInterval() * 360), 0))
+        self:RotateTowards(targetang)
 
         local dot = targetang:Forward():Dot(self:GetAimAngle():Forward())
         if self.UseTopAttackLogic then
@@ -152,6 +172,7 @@ if SERVER then
     end
 
     function ENT:WrangleLogic()
+        local owner = self:CPPIGetOwner()
         local tr = owner:GetEyeTrace()
         local targetang = self:WorldToLocalAngles((tr.HitPos - self:GetLOSOrigin()):Angle())
 
@@ -161,18 +182,17 @@ if SERVER then
         tgtpos2d.z = 0
 
         local d = mypos2d:Distance(tgtpos2d)
-        local h = tr.HitPos.z - origin.z
+        local h = tr.HitPos.z - self:GetLOSOrigin().z
 
         local deg = getpitch(self.LaunchVelocity, d, h)
 
-        targetang = self:WorldToLocalAngles((tr.HitPos - origin):Angle())
-        if deg ~= 0 / 0 then
+        -- Got a crash here when firing rocket with an invalid angle. Dunno if this fixes it for sure or not.
+        targetang = self:WorldToLocalAngles((tr.HitPos - self:GetLOSOrigin()):Angle())
+        if deg ~= 0 / 0 and self:GetAimAngle().p ~= 0 / 0 and self:GetAimAngle().y ~= 0 / 0 then
             targetang.p = -deg
         end
 
-        self:SetAimAngle(Angle(
-            math.ApproachAngle(self:GetAimAngle().p, targetang.p, engine.TickInterval() * 720),
-            math.ApproachAngle(self:GetAimAngle().y, targetang.y, engine.TickInterval() * 360), 0))
+        self:RotateTowards(targetang)
 
         if owner:KeyDown(IN_ATTACK2) then
             self:ShootTarget(true)
@@ -299,60 +319,54 @@ if SERVER then
         self:SetAmmo(self:GetAmmo() - 1)
     end
 
+
+    function ENT:IsTargetLockable(v, current)
+        if !IsValid(v) then return false end
+
+        if self:IsFriendly(v) then return false end
+
+        local rangedelta = v:IsPlayer() and 0.5 or 1
+
+        if self:TestPVS(v)
+            or v:GetPos():DistToSqr(self:GetLOSOrigin()) > self.Range * self.Range * rangedelta
+            or !v:IsValidCombatTarget() then return false end
+
+        if self.UseTopAttackLogic and !isbool(v.MissileAlreadyFired) and IsValid(v.MissileAlreadyFired) then return false end
+
+        if !self.UseTopAttackLogic and !self:HasLineOfSight(v) then
+            return false, v:GetPos():DistToSqr(self:GetLOSOrigin()) < self.TopAttackRange * self.TopAttackRange * rangedelta and self:CanIndirectFire(v)
+        end
+
+        return true
+    end
+
     function ENT:FindTarget()
+
         if (self.NextFindTarget or 0) > CurTime() then return end
         self.NextFindTarget = CurTime() + 0.25
 
         local target = self.Target
 
-        if IsValid(target) then
-            if IsValid(self.Target.RocketFiredAt) and !self.Target.RocketFiredAt.Dead and self.UseTopAttackLogic then
-                self.Target = nil
-                return
-            end
+        local direct, indirect = self:IsTargetLockable(target, true)
 
-            local dsq = self:GetLOSOrigin():DistToSqr(target:GetPos())
+        if !IsValid(target) or (!self.UseTopAttackLogic and !direct) or (self.UseTopAttackLogic and !indirect) then
+            self.UseTopAttackLogic = false
+            self.Target = nil
+            local indirect_target = nil
+            for _, v in pairs(ents.GetAll()) do
+                local d, id = self:IsTargetLockable(v, false)
 
-            if dsq > self.Range * self.Range then
-                self.Target = nil
-                return
-            end
-
-            if dsq < self.MinRange * self.MinRange then
-                self.Target = nil
-                return
-            end
-
-            if !self.UseTopAttackLogic and !self:HasLineOfSight(target) then
-                self.Target = nil
-                return
-            end
-
-            return
-        else
-            local targets = ents.FindInSphere(self:GetLOSOrigin(), self.Range)
-            for k, v in pairs(targets) do
-                local dsq = self:GetLOSOrigin():DistToSqr(v:GetPos())
-                local indirect = nil
-                if dsq > self.Range * self.Range then continue end
-                if dsq < self.MinRange * self.MinRange then continue end
-                if (IsValid(v.RocketFiredAt) and !v.RocketFiredAt.Dead) then continue end
-                if ((v:IsPlayer() and v:Alive() and v ~= self:CPPIGetOwner()) or (v:IsNPC() and v:Health() > 0)) then
-                    if self:HasLineOfSight(v) then
-                        self.UseTopAttackLogic = false
-                        self.Target = v
-                        return
-                    elseif !indirect and !self.TriedTopAttack[v] and dsq <= self.TopAttackRange * self.TopAttackRange and self:CanIndirectFire(v) then
-                        self.TriedTopAttack[v] = nil
-                        indirect = v
-                    end
-                end
-                if IsValid(indirect) then
-                    self.UseTopAttackLogic = true
-                    self.Target = indirect
+                if !indirect_target and id then
+                    indirect_target = v
+                elseif d then
+                    self.Target = v
+                    self.UseTopAttackLogic = false
                     return
                 end
             end
+            self.Target = indirect_target
+            self.UseTopAttackLogic = true
+            return
         end
     end
 

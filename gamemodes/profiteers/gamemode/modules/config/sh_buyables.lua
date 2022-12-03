@@ -38,7 +38,7 @@ Profiteers.Buyables = {
         Price = 4000,
 
         Description = "Pump-Action Grenade Launcher",
-        Description2 = "Poor firepower but cheap",
+        Description2 = "Slow, loads multiple rounds",
         Category = "Explosives",
     },
     ["arc9_bo1_m202"] = {
@@ -78,7 +78,7 @@ Profiteers.Buyables = {
         Price = 6000,
 
         Description = "Anti-Tank Rocket Launcher",
-        Description2 = "Dumb-fire rocket launcher",
+        Description2 = "Powerful and accurate, no lock",
         Category = "Explosives",
     },
     ["arc9_bo1_law"] = {
@@ -91,11 +91,19 @@ Profiteers.Buyables = {
     },
     ["arc9_bo2_m32"] = {
         EntityClass = "arc9_bo2_m32",
-        Price = 10000,
+        Price = 40000,
 
         Description = "Multiple Grenade Launcher",
-        Description2 = "Fast-firing, high damage",
+        Description2 = "Fast-firing, slow to load",
         Category = "Explosives",
+    },
+    ["arc9_waw_flamethrower"] = {
+        EntityClass = "arc9_waw_flamethrower",
+        Price = 80000,
+
+        Description = "Extreme close range \"fire\"power",
+        Description2 = "Napalm sweet as wine",
+        Category = "Special Weapons",
     },
     ["arc9_bo2_raygunmk2"] = {
         EntityClass = "arc9_bo2_raygunmk2",
@@ -103,14 +111,6 @@ Profiteers.Buyables = {
 
         Description = "Mysterious Alien Artifact",
         Description2 = "The ultimate weapon",
-        Category = "Special Weapons",
-    },
-    ["arc9_waw_flamethrower"] = {
-        EntityClass = "arc9_waw_flamethrower",
-        Price = 50000,
-
-        Description = "Extreme close range \"fire\"power",
-        Description2 = "Napalm sweet as wine",
         Category = "Special Weapons",
     },
     ["arc9_bo1_raygun"] = {

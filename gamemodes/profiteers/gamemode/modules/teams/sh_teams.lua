@@ -19,7 +19,7 @@ function Entity:IsFriendly(ent)
     if !IsValid(ent) then return false end
 
     local override = hook.Run("Profiteers_IsFriendly", self, ent)
-    if override then return override end
+    if override ~= nil then return override end
 
     -- Never trust an NPC.
     if (self:IsPlayer() and ent:IsNPC()) or (ent:IsNPC() and self:IsPlayer()) then

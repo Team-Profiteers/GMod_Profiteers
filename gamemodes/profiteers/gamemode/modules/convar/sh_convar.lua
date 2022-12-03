@@ -36,3 +36,9 @@ CreateConVar("pt_npc_max", 60, FCVAR_REPLICATED, "Total amount of NPCs that can 
 CreateConVar("pt_dev_airffa", 0, FCVAR_REPLICATED, "Make aircraft and anti-air engage everything.", 0, 1)
 CreateConVar("pt_dev_wtf", 0, FCVAR_REPLICATED, "Bypass shop cooldowns.", 0, 1)
 CreateConVar("pt_dev_communism", 0, FCVAR_REPLICATED, "It's all free, comrade!", 0, 1)
+
+hook.Add("Profiteers_IsFriendly", "airffa", function(ent1, ent2)
+    if GetConVar("pt_dev_airffa"):GetBool() and (ent1.IsAirAsset or ent2.IsAirAsset) then
+        return false
+    end
+end)

@@ -5,18 +5,15 @@ local extralongrangeshot = 3937 * 2.5 -- 250m
 if SERVER then
     util.AddNetworkString("profiteers_hitmark")
     util.AddNetworkString("profiteers_gothit")
-
     local npcheadshotted = false -- fuck you garry
 
     local function hitmark(ent, dmginfo, took)
         local attacker = dmginfo:GetAttacker()
 
-        if took and IsValid(ent) and IsValid(attacker) and attacker:IsPlayer() then
+        if took and IsValid(ent) and IsValid(attacker) and attacker:IsPlayer() and !attacker:IsFriendly(ent) then
             local distance = ent:GetPos():Distance(attacker:GetPos())
-
             -- if distance > longrangeshot blabla give more moneys                     btw and check if ent is player because everyone can kill static npcs on long range
             -- if distance > extralongrangeshot blabla give more more moneys and type something in chat about attacker's crazy sniper skills
-            
             net.Start("profiteers_hitmark")
             net.WriteUInt(dmginfo:GetDamage(), 16)
             net.WriteBool(ent:IsPlayer() or ent:IsNPC())
@@ -28,11 +25,12 @@ if SERVER then
             npcheadshotted = false
         end
 
-		if took and IsValid(ent) and IsValid(attacker) and ent:IsPlayer() then -- hit indicators
-			net.Start("profiteers_gothit")
-			net.WriteEntity(dmginfo:GetInflictor())
-			net.Send(ent)
-		end
+        -- hit indicators
+        if took and IsValid(ent) and IsValid(attacker) and ent:IsPlayer() then
+            net.Start("profiteers_gothit")
+            net.WriteEntity(dmginfo:GetInflictor())
+            net.Send(ent)
+        end
     end
 
     -- fuck you garry
@@ -57,16 +55,16 @@ else
     local hmmat2 = Material("profiteers/headmark.png", "noclamp smooth")
     local hmmat3 = Material("profiteers/hitprop.png", "noclamp smooth")
     local matgear = Material("profiteers/gear.png", "noclamp smooth")
-
-	local hitindicators = {}
+    local hitindicators = {}
     local matgothit = Material("profiteers/hiteffect.png", "noclamp smooth")
 
     hook.Add("HUDPaint", "profiteers_hitmark_paint", function()
         local lp = LocalPlayer()
         local ct = CurTime()
-		local scrw, scrh = ScrW(), ScrH()
+        local scrw, scrh = ScrW(), ScrH()
 
-        if lasthm > ct then -- any hitmarkers
+        -- any hitmarkers
+        if lasthm > ct then
             local state = (lasthm - ct) / hmlength
 
             if lasthmprop then
@@ -85,13 +83,15 @@ else
 
             surface.DrawTexturedRect(scrw / 2 - 18 - 25 * state, scrh / 2 - 18 - 25 * state, 36 + 50 * state, 36 + 50 * state)
 
-			if lasthmprop then -- prop damage
+            -- prop damage
+            if lasthmprop then
                 surface.SetMaterial(matgear)
-				surface.DrawTexturedRect(scrw / 2 + 96, scrh / 2 -12, 24, 24)
-			end
+                surface.DrawTexturedRect(scrw / 2 + 96, scrh / 2 - 12, 24, 24)
+            end
         end
 
-        if lastdistantshot > ct then -- long range hits
+        -- long range hits
+        if lastdistantshot > ct then
             local state = (lastdistantshot - ct) * 2
             local message = (lasthmkill and lasthmhead) and "Long range HEADSHOT!!" or lasthmkill and "Long range kill!" or "Long range hit"
             surface.SetFont("CGHUD_7_Shadow")
@@ -109,20 +109,21 @@ else
             surface.DrawText(lasthmdistance .. " m")
         end
 
+        -- hit indicators
+        for k, v in ipairs(hitindicators) do
+            local decay = math.max(0, v.time - ct) * 30
 
-		for k, v in ipairs(hitindicators) do -- hit indicators
-			local decay = math.max(0, (v.time - ct)) * 30
+            if decay <= 0 then
+                table.remove(hitindicators, k)
+            end
 
-			if decay <= 0 then table.remove(hitindicators, k) end
-
-			local hitVec = v.hitvec
-			local ang = math.atan2(hitVec.x, hitVec.y) + math.rad(lp:EyeAngles().y) + 3.14
-			local x, y = scrw/2 + math.cos(ang) * scrh/6, scrh/2 + math.sin(ang) * scrh/6
-			
-			surface.SetDrawColor(255, 255, 255, decay)
-			surface.SetMaterial(matgothit)
-			surface.DrawTexturedRectRotated(x, y, scrh/14, scrh/14, math.deg(-ang) - 90)  
-		end
+            local hitVec = v.hitvec
+            local ang = math.atan2(hitVec.x, hitVec.y) + math.rad(lp:EyeAngles().y) + 3.14
+            local x, y = scrw / 2 + math.cos(ang) * scrh / 6, scrh / 2 + math.sin(ang) * scrh / 6
+            surface.SetDrawColor(255, 255, 255, decay)
+            surface.SetMaterial(matgothit)
+            surface.DrawTexturedRectRotated(x, y, scrh / 14, scrh / 14, math.deg(-ang) - 90)
+        end
     end)
 
     local function hitmarker()
@@ -139,7 +140,7 @@ else
         lasthmkill = killed
         lasthmarmor = armored
         lasthmdistance = math.Round(distance * ARC9.HUToM, 1)
-        lasthmprop = !isliving
+        lasthmprop = not isliving
         hmlength = killed and 0.5 or 0.22
 
         if isliving and distance > longrangeshot then
@@ -176,15 +177,17 @@ else
 
     net.Receive("profiteers_hitmark", hitmarker)
 
-	local function addgothit(attacker)
-		local lp = LocalPlayer()
-		if !attacker:IsValid() or attacker == lp then return end
+    local function addgothit(attacker)
+        local lp = LocalPlayer()
+        if not attacker:IsValid() or attacker == lp then return end
 
-		table.insert(hitindicators, {
-		    time = CurTime() + 3,
-			hitvec = attacker:GetPos() - lp:GetPos(),
-		})
-	end
+        table.insert(hitindicators, {
+            time = CurTime() + 3,
+            hitvec = attacker:GetPos() - lp:GetPos(),
+        })
+    end
 
-	net.Receive("profiteers_gothit", function() addgothit(net.ReadEntity()) end)
+    net.Receive("profiteers_gothit", function()
+        addgothit(net.ReadEntity())
+    end)
 end
