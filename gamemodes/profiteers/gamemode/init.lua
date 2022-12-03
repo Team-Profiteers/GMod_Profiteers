@@ -26,14 +26,17 @@ function GM:GetFallDamage(ply, speed)
     if IsValid(ply:GetGroundEntity()) and ply:GetGroundEntity():IsValidCombatTarget() then
         ply:SetVelocity(Vector(0, 0, speed))
         if !ply:IsFriendly(ply:GetGroundEntity()) then
+            ply:GetGroundEntity().GoombaStomped = true
             local dmg = DamageInfo()
+            dmg:SetAttacker(ply)
+            dmg:SetInflictor(ply)
             dmg:SetDamage(math.min(speed / 5, 1000))
             dmg:SetDamageType(DMG_CRUSH + DMG_NEVERGIB)
             dmg:SetDamageForce(Vector(0, 0, math.min(speed / 10, 1000) * -5))
             dmg:SetDamagePosition(ply:GetPos())
             ply:GetGroundEntity():TakeDamageInfo(dmg)
-            ply:EmitSound("profiteers/mario_coin.wav", 80, 100, 0.5)
-            ply:GetGroundEntity().GoombaStomp = CurTime()
+            ply:EmitSound("profiteers/mario_coin.wav", 80, 100, 0.2)
+
         end
         return 0
     end
@@ -41,7 +44,10 @@ function GM:GetFallDamage(ply, speed)
 end
 
 hook.Add("PostEntityTakeDamage", "Profiteers_GoombaStomp", function(ent, dmginfo, took)
-    if took and ent.GoombaStomp == CurTime() and dmginfo:GetDamageType() == DMG_CRUSH + DMG_NEVERGIB and ent:Health() < 0 then
-        ent:EmitSound("profiteers/mario_death.wav", 80, 100, 0.5)
+    if took and ent.GoombaStomped == true and dmginfo:GetDamageType() == DMG_CRUSH + DMG_NEVERGIB then
+        if ent:Health() < 0 then
+            ent:EmitSound("profiteers/mario_death.wav", 100, 100, 0.3)
+        end
+        ent.GoombaStomped = false
     end
 end)
