@@ -72,9 +72,9 @@ hook.Add("EntityTakeDamage", "___Profiteers_PropDamage", function(ent, dmginfo)
         return true
     elseif dmginfo:GetInflictor():IsPlayer() and IsValid(dmginfo:GetInflictor():GetActiveWeapon()) and dmginfo:GetInflictor():GetActiveWeapon():GetClass() == "weapon_crowbar" and dmginfo:GetDamageType() == DMG_CLUB then
         -- Crowbar does extra prop damage
-        local damage = 30 + ent:GetNWInt("PFPropMaxHealth") * 0.005
+        local damage = 50 + ent:GetNWInt("PFPropMaxHealth") * 0.005
         if !ent:WithinBeacon() then
-            damage = 75 + ent:GetNWInt("PFPropMaxHealth") * 0.015
+            damage = 150 + ent:GetNWInt("PFPropMaxHealth") * 0.02
         end
         dmginfo:SetDamage(damage)
     elseif dmginfo:GetInflictor():GetClass() == "entityflame" then
