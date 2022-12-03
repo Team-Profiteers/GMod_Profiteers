@@ -23,7 +23,7 @@ ENT.Category = "Profiteers"
 ENT.Spawnable = false
 
 ENT.Range = 8000
-ENT.Damage = 15
+ENT.Damage = 50
 ENT.MagSize = 1000
 
 function ENT:SetupDataTables()
@@ -117,7 +117,7 @@ if SERVER then
                 if tr.IsAirAsset then dmginfo:ScaleDamage(2) end
 
                 if tr.Hit then
-                    util.BlastDamage(self, self:CPPIGetOwner(), pos, 128, 25)
+                    util.BlastDamage(self, self:CPPIGetOwner(), pos, 128, 75)
                 end
 
                 if tr.Entity.IsProjectile then
