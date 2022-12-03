@@ -11,22 +11,6 @@ if Pixie then
 end
 
 Pixie = nil
-local playee = {}
-
-for i = 1, 20 do
-    local teeam = math.random(1, 3)
-
-    table.insert(playee, {
-        Name = "Subject #" .. i,
-        Score = i * 10000,
-        Kills = 100,
-        Deaths = 100,
-        Ping = 500,
-        Team = teeam == 1 and 1 or teeam == 2 and 2 or 1002,
-        Entity = NULL,
-    })
-end
-
 local pliskin = {}
 
 hook.Add("ScoreboardShow", "TDMScore2_ScoreboardShow", function()
@@ -48,10 +32,6 @@ hook.Add("ScoreboardHide", "TDMScore2_ScoreboardHide", function()
 
     return true
 end)
-
-local tshow = {
-    [1002] = true
-}
 
 local function ShadowText(text, font, x, y, color, t, l, glow)
     local c = CGSS(1)
@@ -153,17 +133,13 @@ hook.Add("HUDDrawScoreBoard", "Profiteers_HUDDrawScoreBoard", function()
                 ShadowText("Cash", "CGHUD_6", bog_x + bog_w - bbl - (c * 160), bog_y + bbl, SCORE_W, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
 
                 --ShadowText("Score", "CGHUD_6", bog_x + (bog_w) - bbl	- (c*170), bog_y + bbl, SCORE_W, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
-                for t, __ in pairs(tshow) do
-                    local collect = {}
-
-                    for index, p in ipairs(player.GetAll()) do
-                        table.insert(collect, p)
-                    end
+                for t, teamdata in pairs(team.GetAllTeams()) do
+                    local collect = team.GetPlayers(t)
 
                     if #collect > 0 then
                         local tc = team.GetColor(t)
                         tc = Color(Lerp(0.5, 255, tc.r), Lerp(0.5, 255, tc.g), Lerp(0.5, 255, tc.b), Lerp(SCORE_FADE, 0, 255))
-                        ShadowText("Profiteers", "CGHUD_5", bog_x + (bog_w * 0.5) + bbl, bog_y + bbl + ybump, tc, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+                        ShadowText(teamdata.Name, "CGHUD_5", bog_x + (bog_w * 0.5) + bbl, bog_y + bbl + ybump, tc, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
                         ybump = ybump + (c * 28)
                         ShadowBox(bog_x + (bog_w * 0.5) + bbl, bog_y + bbl + ybump, (bog_w * 0.5) - (bbl * 2), c * 2, tc)
                         ybump = ybump + (c * 8)
@@ -180,10 +156,9 @@ hook.Add("HUDDrawScoreBoard", "Profiteers_HUDDrawScoreBoard", function()
                             ShadowText(p:Deaths(), "CGHUD_6", bog_x + bog_w - bbl - (c * 50), bog_y + bbl + ybump, SCORE_W, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
                             ShadowText(p:Frags(), "CGHUD_6", bog_x + bog_w - bbl - (c * 110), bog_y + bbl + ybump, SCORE_W, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
                             ShadowText("$" .. tostring(p:GetMoney()), "CGHUD_6", bog_x + bog_w - bbl - (c * 160), bog_y + bbl + ybump, SCORE_W, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
-
                             --ShadowText("0", "CGHUD_6", bog_x + (bog_w) - bbl - (c*170), bog_y + bbl + ybump, SCORE_W, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
                             -- Bump y
-							ybump = ybump + (c * 30)
+                            ybump = ybump + (c * 30)
                         end
                     end
                 end
@@ -191,8 +166,8 @@ hook.Add("HUDDrawScoreBoard", "Profiteers_HUDDrawScoreBoard", function()
                 ShadowText("How to Play?", "CGHUD_5", bog_x + bbl + (c * 2), bog_y + (bog_h * 0.5) + bbl, SCORE_W, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
                 ShadowText("IT'S SIMPLE!", "CGHUD_2", bog_x + bbl, bog_y + (bog_h * 0.5) + bbl + (c * 18), Color(255, 50, 50), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
                 ShadowText("1. Kill NPCs", "CGHUD_5", bog_x + bbl + (c * 8), bog_y + (bog_h * 0.5) + bbl + (c * 62), SCORE_W, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-				ShadowText("2. Get money", "CGHUD_5", bog_x + bbl + (c * 8), bog_y + (bog_h * 0.5) + bbl + (c * 84), SCORE_W, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-				ShadowText("3. Buy a nuke", "CGHUD_5", bog_x + bbl + (c * 8), bog_y + (bog_h * 0.5) + bbl + (c * 106), SCORE_W, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+                ShadowText("2. Get money", "CGHUD_5", bog_x + bbl + (c * 8), bog_y + (bog_h * 0.5) + bbl + (c * 84), SCORE_W, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+                ShadowText("3. Buy a nuke", "CGHUD_5", bog_x + bbl + (c * 8), bog_y + (bog_h * 0.5) + bbl + (c * 106), SCORE_W, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
             end
         end
     else
