@@ -20,11 +20,14 @@ ENT.Spawnable = false
 
 ENT.ThinkInterval = 0.1
 ENT.Mass = 50
+ENT.LockAirAssets = false
+ENT.NoRepeatLock = false
 
 ENT.Range = 2048
 ENT.Damage = 15
 ENT.MagSize = 100
 ENT.TurnRate = 360
+ENT.TurnRatePitch = nil
 
 function ENT:SetupDataTables()
     self:NetworkVar("Bool", 0, "Anchored")
@@ -50,17 +53,16 @@ function ENT:HasLineOfSight(ent)
     return tr.Fraction >= 1
 end
 
+function ENT:GetSentryOrigin()
+    return self:GetPos()
+end
+
+function ENT:GetLOSOrigin()
+    return self:WorldSpaceCenter()
+end
+
 if SERVER then
     ENT.Target = nil
-
-    function ENT:GetSentryOrigin()
-        return self:GetPos()
-    end
-
-    function ENT:GetLOSOrigin()
-        return self:WorldSpaceCenter()
-    end
-
 
     function ENT:Initialize()
         self:SetModel(self.Model)
@@ -78,7 +80,7 @@ if SERVER then
 
     function ENT:RotateTowards(targetang)
         self:SetAimAngle(Angle(
-            math.ApproachAngle(self:GetAimAngle().p, targetang.p, self.ThinkInterval * self.TurnRate),
+            math.ApproachAngle(self:GetAimAngle().p, targetang.p, self.ThinkInterval * (self.TurnRatePitch or self.TurnRate)),
             math.ApproachAngle(self:GetAimAngle().y, targetang.y, self.ThinkInterval * self.TurnRate), 0))
     end
 
@@ -156,46 +158,53 @@ if SERVER then
         if self:GetAmmo() < self.MagSize then
             self:SetAmmo(self.MagSize)
             self:EmitSound("weapons/ar2/npc_ar2_reload.wav")
-            ply:ChatPrint("Sentry gun reloaded.")
+            GAMEMODE:Hint(ply, 0, "Reloaded " .. self.PrintName .. ".")
         end
     end
 
+    function ENT:IsTargetLockable(v, current)
+        if !IsValid(v) then return false end
+
+        if self:IsFriendly(v) then return false end
+
+        local isairasset = self.LockAirAssets and v:IsValidAirAsset(current)
+        if !isairasset and (
+            !self:TestPVS(v)
+            or v:GetPos():DistToSqr(self:GetLOSOrigin()) > self.Range * self.Range
+            or !v:IsValidCombatTarget()) then return false end
+
+        if self.NoRepeatLock and !isbool(v.MissileAlreadyFired) and IsValid(v.MissileAlreadyFired) then return false end
+
+        if !self:HasLineOfSight(v) then return false end
+
+        return true
+    end
+
     function ENT:FindTarget()
+
         if (self.NextFindTarget or 0) > CurTime() then return end
         self.NextFindTarget = CurTime() + 0.25
 
         local target = self.Target
 
-        if IsValid(target) then
-            if target:Health() <= 0 then
-                self.Target = nil
-                return
-            end
+        if !IsValid(target) or !self:IsTargetLockable(target, true) then
+            self.Target = nil
+            local planes = {}
+            for _, v in pairs(ents.GetAll()) do
+                if !self:IsTargetLockable(v, false) then continue end
 
-            if self:GetPos():DistToSqr(target:GetPos()) > self.Range * self.Range then
-                self.Target = nil
-                return
-            end
-
-            if !target:Visible(self) then
-                self.Target = nil
-                return
-            end
-
-            if target:IsPlayer() and target:OwnsBoughtEntity(self) then
-                self.Target = nil
-                return
-            end
-
-            return
-        else
-            local targets = ents.FindInSphere(self:GetPos(), self.Range)
-            for k, v in pairs(targets) do
-                if ((v:IsPlayer() and v:Alive() and v ~= self:CPPIGetOwner()) or (v:IsNPC() and v:Health() > 0)) and self:HasLineOfSight(v) then
+                if self.LockAirAssets and v:IsValidAirAsset(current) then
+                    table.insert(planes, {v, v.AirAssetWeight or 1})
+                else
                     self.Target = v
                     return
                 end
             end
+            if #planes > 0 then
+                table.sort(planes, function(a, b) return a[2] > b[2] end)
+                self.Target = planes[1][1]
+            end
+            return
         end
     end
 end

@@ -11,18 +11,33 @@ ENT.TakePropDamage = true
 ENT.BaseHealth = 400
 
 ENT.PreferredAngle = Angle(0, 0, 0)
-ENT.AnchorRequiresBeacon = true
-ENT.AllowUnAnchor = false
+ENT.AnchorRequiresBeacon = false
+ENT.AllowUnAnchor = true
 ENT.AnchorOffset = Vector(0, 0, 0)
 
 ENT.Mass = 100
+ENT.LockAirAssets = true
+ENT.NoRepeatLock = true
 
 ENT.Range = 4096
 ENT.Damage = 100
 ENT.MagSize = 2
 
+ENT.TurnRate = 180
+ENT.TurnRatePitch = 720
+
+function ENT:GetSentryOrigin()
+    return self:GetPos()  + self:LocalToWorldAngles(self:GetAimAngle()):Forward() * 32 + Vector(0, 0, 32)
+end
+
+function ENT:GetLOSOrigin()
+    return self:WorldSpaceCenter()
+end
+
+
 if SERVER then
     function ENT:TargetLogic()
+        if (self.NextFire or 0) > CurTime() then return end
         local oldtgt = self.Target
         self:FindTarget()
         if oldtgt ~= self.Target then
@@ -49,21 +64,17 @@ if SERVER then
         local dot = targetang:Forward():Dot(self:GetAimAngle():Forward())
         if IsValid(self.Target) and dot >= 0.99 then
             if self:GetLockonTime() == 0 then
-                if self.Target.IsAirAsset then
-                    self:SetLockonTime(CurTime() + math.Rand(0.15, 0.5))
+                if self.Target:IsValidAirAsset(true) then
+                    self:SetLockonTime(CurTime() + 0.5)
                 else
-                    self:SetLockonTime(CurTime() + 2)
+                    self:SetLockonTime(CurTime() + (self.Target:IsPlayer() and 2 or 1))
                 end
                 self:EmitSound("buttons/button3.wav", 120, 110)
                 self.NextBeep = CurTime() + 0.55
             elseif self:GetLockonTime() < CurTime() then
                 self:ShootTarget()
-                self.Target = nil
-            elseif (self.NextBeep or 0) <= CurTime() then
-                self.NextBeep = CurTime() + 0.19
-                self:EmitSound("buttons/blip1.wav", 120, 100)
             end
-        elseif self:GetLockonTime() > 0 and dot <= 0.75 then
+        elseif self:GetLockonTime() > 0 and dot <= 0.5 then
             self.Target = nil
             self:SetLockonTime(0)
             self:EmitSound("buttons/combine_button2.wav", 120, 110)
@@ -72,11 +83,11 @@ if SERVER then
 
     function ENT:WrangleLogic()
         local tr = self:CPPIGetOwner():GetEyeTrace()
-        local targetang = self:WorldToLocalAngles((tr.HitPos - (self:GetPos() + Vector(0, 0, 32))):Angle())
+        local targetang = self:WorldToLocalAngles((tr.HitPos - self:GetLOSOrigin()):Angle())
 
         self:RotateTowards(targetang)
 
-        if owner:KeyDown(IN_ATTACK2) then
+        if self:CPPIGetOwner():KeyDown(IN_ATTACK2) then
             if tr.Entity and !tr.HitWorld then
                 self.Target = tr.Entity
             else
@@ -95,6 +106,7 @@ if SERVER then
         if self:GetAmmo() <= 0 then
             self:EmitSound("weapons/ar2/ar2_empty.wav")
             self.NextFire = CurTime() + 3
+            self.Target = nil
             return
         end
         self.NextFire = CurTime() + 1
@@ -107,7 +119,7 @@ if SERVER then
 
         if self.Target then
             rocket.ShootEntData.Target = self.Target
-            rocket.Airburst = self.Target.IsAirAsset
+            rocket.Airburst = self.Target:IsValidAirAsset(true)
         else
             rocket.FireAndForget = false
         end
@@ -117,8 +129,6 @@ if SERVER then
         rocket.Damage = self.Damage
         rocket:SetOwner(self:CPPIGetOwner())
 
-        self.Target.MissileAlreadyFired = rocket
-
         local phys = rocket:GetPhysicsObject()
         if phys:IsValid() then
             phys:AddVelocity(targetang:Forward() * 1000)
@@ -126,97 +136,10 @@ if SERVER then
 
         self:EmitSound("weapons/rpg/rocketfire1.wav", 100, 120)
         self:SetAmmo(self:GetAmmo() - 1)
-    end
 
-    function ENT:OnAnchor(ply)
-        self:EmitSound("npc/roller/blade_cut.wav", 100, 90)
-    end
-
-    function ENT:OnUse(ply)
-        if !self:CanFunction() then return end
-
-        if self:GetAmmo() < self.MagSize then
-            self:SetAmmo(self.MagSize)
-            self:EmitSound("weapons/ar2/npc_ar2_reload.wav")
-            ply:ChatPrint("Sentry gun reloaded.")
-        end
-    end
-
-    function ENT:HasLineOfSight(ent)
-        local pos = (ent:IsNPC() or ent:IsPlayer()) and ent:EyePos() or ent:WorldSpaceCenter()
-        local tr = util.TraceLine({
-            start = self:GetPos(),
-            endpos = pos,
-            filter = self,
-            mask = MASK_BLOCKLOS_AND_NPCS,
-        })
-        return tr.Entity == ent or (!IsValid(tr.Entity) and tr.Fraction == 1)
-    end
-
-    function ENT:FindTarget()
-
-        if (self.NextFindTarget or 0) > CurTime() then return end
-        self.NextFindTarget = CurTime() + 0.25
-
-        local target = self.Target
-
-        if IsValid(target) then
-
-            if self.Target.Dead or self.Target.Defused then
-                self.Target = nil
-                return
-            end
-
-            if target.IsAirAsset then
-                if !target:Visible(self) or (target.AirAssetWeight or 1) <= 0 then self.Target = nil end
-                return
-            end
-
-            if target:Health() <= 0 then
-                self.Target = nil
-                return
-            end
-
-            if self:GetPos():DistToSqr(target:GetPos()) > self.Range * self.Range then
-                self.Target = nil
-                return
-            end
-
-            if !target:Visible(self) then
-                self.Target = nil
-                return
-            end
-
-            if target:IsPlayer() and target:OwnsBoughtEntity(self) then
-                self.Target = nil
-                return
-            end
-
-            return
-        else
-            local r = self.Range * self.Range
-            local planes = {}
-            for _, v in pairs(ents.GetAll()) do
-                if !v.IsAirAsset and !self:TestPVS(v) then continue end
-                if v.Dead or v.Defused then continue end
-                if !isbool(v.MissileAlreadyFired) and IsValid(v.MissileAlreadyFired) then continue end
-                if !(((v:IsPlayer() and v:Alive() and v ~= self:CPPIGetOwner()) or (v:IsNPC() and v:Health() > 0)) and v:GetPos():DistToSqr(self:GetPos()) <= r)
-                        and !(v.IsAirAsset and (v.AirAssetWeight or 1) > 0 and (GetConVar("pt_dev_airffa"):GetBool() or v:GetOwner() ~= self:CPPIGetOwner()))
-                        and v:GetClass() ~= "pt_missile" then continue end
-                if self:HasLineOfSight(v) then
-                    if v.IsAirAsset then
-                        table.insert(planes, {v, v.AirAssetWeight or 1})
-                    else
-                        self.Target = v
-                        return
-                    end
-                end
-            end
-            if #planes > 0 then
-                table.sort(planes, function(a, b) return a[2] > b[2] end)
-                self.Target = planes[1][1]
-            end
-            return
+        if IsValid(self.Target) then
+            self.Target.MissileAlreadyFired = rocket
+            self.Target = nil
         end
     end
 end
@@ -224,6 +147,13 @@ end
 if CLIENT then
 
     local mat_missile = Material("tdm/missile.png", "mips")
+
+    function ENT:Think()
+        if self:GetLockonTime() > CurTime() and (self.NextBeep or 0) <= CurTime() then
+            self.NextBeep = CurTime() + 0.15
+            self:EmitSound("buttons/blip1.wav", 120, 100)
+        end
+    end
 
     function ENT:Draw()
         self:DrawModel()
