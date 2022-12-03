@@ -1,9 +1,9 @@
 "VertexlitGeneric"
 {
-	"$basetexture" "models/profiteers/vehicles/mw3_littlebird/littlebird"
-	"$bumpmap" "models/profiteers/vehicles/mw3_littlebird/littlebird_n"
-	"$phongexponenttexture" "models/profiteers/vehicles/mw3_littlebird/littlebird_s"
-	"$envmapmask" "models/profiteers/vehicles/mw3_littlebird/littlebird_s"
+	"$basetexture" "models/profiteers/vehicles/mw3_littlebird/littlebird_glass"
+	"$bumpmap" "models/profiteers/vehicles/mw3_littlebird/littlebird_glass_n"
+	"$phongexponenttexture" "models/profiteers/vehicles/mw3_littlebird/littlebird_glass_s"
+	"$envmapmask" "models/profiteers/vehicles/mw3_littlebird/littlebird_glass_s"
 	"$normalmapalphaenvmapmask" "1"
 	
 	//"$color2" "[ .4 .4 .4 ]"
@@ -15,7 +15,7 @@
 	"$envmap" "env_cubemap"
 //	"$basemapalphaenvmapmask" "1"
 	"$envmapfresnel" "0.01"
-	"$envmaptint" "[ .01 .01 .01 ]"
-	"$nocull" "0"
+	"$envmaptint" "[ .1 .1 .1 ]"
 
+	"$translucent" "1"
 }

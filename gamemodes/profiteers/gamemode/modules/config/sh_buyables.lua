@@ -574,6 +574,17 @@ Profiteers.Buyables = {
             Profiteers:SpawnICBMPlane(ply)
         end
     },
+    ["pt_flyable_littlebird"] = {
+        Name = "Little Bird",
+        Price = 50000,
+        EntityClass = "pt_flyable_littlebird",
+        PlaceEntity = true,
+        EntityLimit = 1,
+
+        Description = "Flyable light helicopter",
+
+        Category = "Vehicles"
+    },
     ["pt_seat_jeep"] = {
         Name = "Jeep Seat",
         Price = 100,
@@ -626,7 +637,7 @@ Profiteers.Buyables = {
             return ent
         end,
 
-        Category = "Miscellaneous",
+        Category = "Vehicles",
     },
 }
 
