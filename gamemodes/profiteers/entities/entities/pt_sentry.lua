@@ -22,6 +22,9 @@ ENT.Range = 2048
 ENT.Damage = 18
 ENT.MagSize = 100
 
+ENT.PitchMin = -15
+ENT.PitchMax = 30
+
 if SERVER then
 
     function ENT:ShootTarget(force)

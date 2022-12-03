@@ -8,7 +8,7 @@ ENT.RenderGroup = RENDERGROUP_BOTH
 ENT.Model = "models/ace/sentry.mdl"
 
 ENT.TakePropDamage = true
-ENT.BaseHealth = 750
+ENT.BaseHealth = 800
 
 ENT.PreferredAngle = Angle(0, -90, 0)
 ENT.AnchorRequiresBeacon = true
@@ -18,8 +18,11 @@ ENT.AllowUnAnchor = true
 ENT.Mass = 125
 
 ENT.Range = 4096
-ENT.Damage = 30
+ENT.Damage = 40
 ENT.MagSize = 200
+
+ENT.PitchMin = -15
+ENT.PitchMax = 30
 
 function ENT:SetupDataTables()
     self:NetworkVar("Bool", 0, "Anchored")
@@ -41,7 +44,7 @@ if SERVER then
             self.NextFire = CurTime() + 0.3
             return
         end
-        self.NextFire = CurTime() + 0.12
+        self.NextFire = CurTime() + 0.11
 
         local bullet = {
             Attacker = self:CPPIGetOwner(),
@@ -52,7 +55,7 @@ if SERVER then
             Dir = self:LocalToWorldAngles(self:GetAimAngle()):Forward(),
             Src = self:GetPos() + Vector(0, 0, 48),
             Tracer = 1,
-            HullSize = 0,
+            HullSize = 4,
             Spread = Vector(0.02, 0.02, 0.01)
         }
 

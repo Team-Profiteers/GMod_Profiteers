@@ -29,6 +29,8 @@ ENT.MagSize = 100
 
 ENT.TurnRate = 180
 ENT.TurnRatePitch = 90
+ENT.PitchMin = -30
+ENT.PitchMax = 75
 
 ENT.LastBurstTime = 0
 

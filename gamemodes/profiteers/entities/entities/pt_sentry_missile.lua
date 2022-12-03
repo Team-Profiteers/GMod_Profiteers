@@ -26,6 +26,9 @@ ENT.MagSize = 2
 ENT.TurnRate = 180
 ENT.TurnRatePitch = 720
 
+ENT.PitchMin = -30
+ENT.PitchMax = 90
+
 function ENT:GetSentryOrigin()
     return self:GetPos()  + self:LocalToWorldAngles(self:GetAimAngle()):Forward() * 32 + Vector(0, 0, 32)
 end
@@ -54,7 +57,7 @@ if SERVER then
             local tgtpos = self.Target:EyePos()
             targetang = self:WorldToLocalAngles((tgtpos - (self:GetPos() + Vector(0, 0, 32))):Angle())
         else
-            targetang = Angle(0, self:WorldToLocalAngles(self:GetAngles()).y + math.sin(CurTime() / math.pi / 10) * 180, 0)
+            targetang = Angle(-self.PitchMin, self:WorldToLocalAngles(self:GetAngles()).y + math.sin(CurTime() / math.pi / 10) * 180, 0)
         end
 
         self:RotateTowards(targetang)

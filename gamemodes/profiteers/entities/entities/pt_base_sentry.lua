@@ -29,6 +29,10 @@ ENT.MagSize = 100
 ENT.TurnRate = 360
 ENT.TurnRatePitch = nil
 
+-- inverted from gmod so positive = upwards
+ENT.PitchMin = -180
+ENT.PitchMax = 180
+
 function ENT:SetupDataTables()
     self:NetworkVar("Bool", 0, "Anchored")
     self:NetworkVar("Int", 0, "Ammo")
@@ -80,7 +84,7 @@ if SERVER then
 
     function ENT:RotateTowards(targetang)
         self:SetAimAngle(Angle(
-            math.ApproachAngle(self:GetAimAngle().p, targetang.p, self.ThinkInterval * (self.TurnRatePitch or self.TurnRate)),
+            math.ApproachAngle(self:GetAimAngle().p, math.Clamp(targetang.p, -self.PitchMax, -self.PitchMin), self.ThinkInterval * (self.TurnRatePitch or self.TurnRate)),
             math.ApproachAngle(self:GetAimAngle().y, targetang.y, self.ThinkInterval * self.TurnRate), 0))
     end
 

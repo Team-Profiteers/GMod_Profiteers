@@ -23,8 +23,14 @@ ENT.Category = "Profiteers"
 ENT.Spawnable = false
 
 ENT.Range = 8000
-ENT.Damage = 50
+ENT.Damage = 25
 ENT.MagSize = 1000
+
+ENT.LockAirAssets = true
+ENT.TurnRate = 360
+ENT.TurnRatePitch = 180
+ENT.PitchMin = 10
+ENT.PitchMax = 90
 
 function ENT:SetupDataTables()
     self:NetworkVar("Bool", 0, "Anchored")
@@ -114,10 +120,10 @@ if SERVER then
             Callback = function(attacker, tr, dmginfo)
                 local pos = tr.HitPos
 
-                if tr.IsAirAsset then dmginfo:ScaleDamage(2) end
+                if tr.IsAirAsset then dmginfo:ScaleDamage(4) end
 
                 if tr.Hit then
-                    util.BlastDamage(self, self:CPPIGetOwner(), pos, 128, 75)
+                    util.BlastDamage(self, self:CPPIGetOwner(), pos, 128, 50)
                 end
 
                 if tr.Entity.IsProjectile then
@@ -150,78 +156,33 @@ if SERVER then
     end
 
     function ENT:FindTarget()
+
         if (self.NextFindTarget or 0) > CurTime() then return end
+        self.NextFindTarget = CurTime() + 0.25
+
         local target = self.Target
 
-        self.NextFindTarget = CurTime() + 0.2
-
-        if IsValid(target) then
-            if self.Target.Dead or self.Target.Defused then
-                self.Target = nil
-                return
-            end
-
-            local mypos2d = self:GetPos()
-            local targetpos2d = self.Target:GetPos()
-
-            mypos2d.z = 0
-            targetpos2d.z = 0
-
-            if mypos2d:DistToSqr(targetpos2d) > self.Range * self.Range then
-                self.Target = nil
-                return
-            end
-
-            if !target:Visible(self) then
-                self.Target = nil
-                return
-            end
-
-            return
-        else
-            local r = self.Range * self.Range
-            local planes = {}
+        if !IsValid(target) or !self:IsTargetLockable(target, true) then
+            self.Target = nil
+            local targets = {}
             for _, v in pairs(ents.GetAll()) do
-                if v:GetPos().z < self:GetPos().z then continue end
-                if !(GetConVar("pt_dev_airffa"):GetBool() or v:GetOwner() ~= self:CPPIGetOwner()) then continue end
-                if !v.IsAirAsset and !v.IsProjectile then continue end
-                if v.Dead or v.Defused then continue end
-                local mypos2d = self:GetPos()
-                local targetpos2d = v:GetPos()
+                if !self:IsTargetLockable(v, false) then continue end
 
-                mypos2d.z = 0
-                targetpos2d.z = 0
-
-                if mypos2d:DistToSqr(targetpos2d) > r then continue end
-
-                if self:HasLineOfSight(v) then
-                    if v.IsProjectile then
-                        table.insert(planes, {v, 900})
+                if self.LockAirAssets and v:IsValidAirAsset(current) then
+                    if scripted_ents.IsBasedOn(v:GetClass(), "pt_missile") and IsValid() and self:IsFriendly( v.ShootEntData.Target) then
+                        table.insert(targets, {v, 100 + math.max(4000000 - v:GetPos():DistToSqr(self:GetLOSOrigin(), 0))})
                     else
-                        if v.IsAirAsset then
-                            if v:GetClass() == "pt_missile" then
-                                if IsValid(v.ShootEntData.Target)
-                                and (v.ShootEntData.Target == self:CPPIGetOwner()
-                                    or v.ShootEntData.Target:CPPIGetOwner() == self:CPPIGetOwner()) then
-                                    table.insert(planes, {v, 1000})
-                                else
-                                    table.insert(planes, {v, v.AirAssetWeight or 1})
-                                end
-                            elseif (v.AirAssetWeight or 1) > 0 then
-                                table.insert(planes, {v, v.AirAssetWeight or 1})
-                            end
-                        else
-                            self.Target = v
-                            return
-                        end
+                        table.insert(targets, {v, v.AirAssetWeight or 1})
                     end
+                else
+                    table.insert(targets, {v, v:IsPlayer() and 2 or 0.1})
+                    return
                 end
             end
-            if #planes > 0 then
-                table.sort(planes, function(a, b) return a[2] > b[2] end)
-                self.Target = planes[1][1]
+            if #targets > 0 then
+                table.sort(targets, function(a, b) return a[2] > b[2] end)
+                self.Target = targets[1][1]
             end
-
             return
         end
     end
