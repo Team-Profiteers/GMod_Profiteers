@@ -63,7 +63,7 @@ net.Receive("pt_buy", function(len, ply)
 
             local trace = {}
             trace.start = vStart
-            trace.endpos = vStart + ( vForward * 2048 )
+            trace.endpos = vStart + ( vForward * 512 )
             trace.filter = ply
 
             local tr = util.TraceLine( trace )
