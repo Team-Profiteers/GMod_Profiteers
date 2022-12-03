@@ -591,7 +591,6 @@ Profiteers.Buyables = {
 
         CreateEntity = function(self, ply, tr)
             local ent = ents.Create(self.EntityClass or "prop_vehicle_prisoner_pod")
-            print(ent)
             if !IsValid(ent) then return NULL end
             ent:SetModel(self.Seat_Model)
 
