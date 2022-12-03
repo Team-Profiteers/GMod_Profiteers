@@ -21,7 +21,7 @@ ENT.Mass = 200
 
 ENT.MinRange = 512
 ENT.Range = 15000
-ENT.TopAttackRange = 4096
+ENT.TopAttackRange = 5000
 ENT.Damage = 100
 ENT.TopAttackDamage = 50
 ENT.TopAttackImpactDamage = 25
@@ -329,6 +329,7 @@ if SERVER then
 
         if self:TestPVS(v)
             or v:GetPos():DistToSqr(self:GetLOSOrigin()) > self.Range * self.Range * rangedelta
+            or v:GetPos():DistToSqr(self:GetLOSOrigin()) <= self.MinRange * self.MinRange
             or !v:IsValidCombatTarget() then return false end
 
         if self.UseTopAttackLogic and !isbool(v.MissileAlreadyFired) and IsValid(v.MissileAlreadyFired) then return false end

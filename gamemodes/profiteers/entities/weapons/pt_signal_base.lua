@@ -22,6 +22,7 @@ SWEP.MarkerEntity = "pt_marker_base"
 
 function SWEP:SetupDataTables()
     self:NetworkVar("Bool", 0, "Armed")
+    self:NetworkVar("Bool", 1, "AltThrow")
 end
 
 function SWEP:Initialize()
@@ -55,6 +56,21 @@ function SWEP:PrimaryAttack()
     self:SetNextPrimaryFire(CurTime() + 10000)
 end
 
+function SWEP:SecondaryAttack()
+    if self:GetNextPrimaryFire() > CurTime() then return end
+
+    local vm = self:GetOwner():GetViewModel()
+    vm:SendViewModelMatchingSequence(vm:LookupSequence("throw"))
+    vm:SetPlaybackRate(1)
+
+    self:SetArmed(true)
+    self:SetNextSecondaryFire(CurTime() + 0.5)
+    self:SetAltThrow(true)
+
+    self:SetNextPrimaryFire(CurTime() + 10000)
+end
+
+
 function SWEP:Throw()
     local owner = self:GetOwner()
 
@@ -69,15 +85,12 @@ function SWEP:Throw()
         local phys = ent:GetPhysicsObject()
 
         if phys:IsValid() then
-            phys:ApplyForceCenter(self:GetOwner():GetAimVector() * 5000)
+            phys:ApplyForceCenter(self:GetOwner():GetAimVector() * (self:GetAltThrow() and 4000 or 8000))
             phys:AddAngleVelocity(VectorRand() * 500)
         end
 
         owner:StripWeapon(self:GetClass())
     end
-end
-
-function SWEP:SecondaryAttack()
 end
 
 function SWEP:Think()

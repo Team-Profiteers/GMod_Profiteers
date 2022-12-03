@@ -30,7 +30,7 @@ if SERVER then
     end
 
     function ENT:PhysicsCollide(colData, collider)
-        if not self.Welded and colData.HitNormal:Dot(Vector(0, 0, -1)) >= 0.5 then
+        if not self.Welded and (IsValid(colData.HitEntity) or colData.HitNormal:Dot(Vector(0, 0, -1)) >= 0.5) then
             self.Welded = true
             self.WeldTime = CurTime()
             timer.Simple(0, function()

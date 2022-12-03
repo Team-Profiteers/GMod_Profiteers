@@ -475,7 +475,7 @@ Profiteers.Buyables = {
     ["pt_uav_light"] = {
         Name = "UAV",
         Price = 10000,
-        Cooldown = 90,
+        Cooldown = 120,
 
         Description = "Spots NPCs only",
         Description2 = "Slow and fragile",
@@ -488,7 +488,7 @@ Profiteers.Buyables = {
     },
     ["pt_uav"] = {
         Name = "Advanced UAV",
-        Price = 60000,
+        Price = 50000,
         Cooldown = 180,
 
         Description = "Spots players, NPCs, and bases",
@@ -503,7 +503,7 @@ Profiteers.Buyables = {
     ["pt_gunrun"] = {
         Name = "Gun Run",
         EntityClass = "pt_gunrun_marker",
-        Price = 12000,
+        Price = 8000,
         Cooldown = 60,
 
         Description = "Attack jet strafes target area",
@@ -514,7 +514,7 @@ Profiteers.Buyables = {
     ["pt_attacker"] = {
         Name = "CAS Bomber",
         EntityClass = "pt_rocket_marker",
-        Price = 15000,
+        Price = 12000,
         Cooldown = 60,
 
         Description = "Attack jet drops a pair of bombs",
@@ -588,7 +588,7 @@ Profiteers.Buyables = {
     ["pt_artillery"] = {
         Name = "Artillery Strike",
         EntityClass = "pt_signal_artillery",
-        Price = 18000,
+        Price = 15000,
         Cooldown = 300,
 
         Description = "Signals a slow artillery barrage",
@@ -599,7 +599,7 @@ Profiteers.Buyables = {
     ["pt_mortar"] = {
         Name = "Mortar Strike",
         EntityClass = "pt_signal_mortar",
-        Price = 5000,
+        Price = 4000,
         Cooldown = 180,
 
         Description = "Signals a light mortar bombardment",

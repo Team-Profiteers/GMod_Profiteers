@@ -9,7 +9,7 @@ ENT.TargetPos = Vector(0, 0, 0)
 ENT.IsAirAsset = true
 ENT.AirAssetWeight = 2
 
-ENT.BaseHealth = 100
+ENT.BaseHealth = 300
 
 if SERVER then
     function ENT:Initialize()

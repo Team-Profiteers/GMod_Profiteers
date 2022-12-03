@@ -58,7 +58,8 @@ if SERVER then
 
         self:EmitSound("ambient/explosions/explode_4.wav", 125)
 
-        util.BlastDamage(self, self:GetOwner(), self:GetPos(), 1024, 400)
+        util.BlastDamage(self, self:GetOwner(), self:GetPos(), 2048, 400)
+        util.BlastDamage(self, self:GetOwner(), self:GetPos(), 512, 600)
 
         self:Remove()
     end
