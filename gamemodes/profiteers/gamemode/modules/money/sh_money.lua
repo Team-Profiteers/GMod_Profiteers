@@ -9,5 +9,5 @@ function Player:GetEarnings()
 end
 
 function Profiteers:GetMoneyRampUp()
-	return 1 + (CurTime() * 0.25 / 600)
+	return 1 + (CurTime() * 0.5 / 600)
 end
