@@ -18,6 +18,8 @@ SWEP.Secondary.Automatic   = false
 SWEP.Secondary.Ammo        = "none"
 SWEP.Secondary.Delay       = 5
 
+SWEP.MarkerEntity = "pt_marker_base"
+
 function SWEP:SetupDataTables()
     self:NetworkVar("Bool", 0, "Armed")
 end
@@ -57,7 +59,8 @@ function SWEP:Throw()
     local owner = self:GetOwner()
 
     if SERVER then
-        local ent = ents.Create("pt_bomber_marker")
+        local ent = ents.Create(self.MarkerEntity)
+        if !IsValid(ent) then return end
         ent:SetPos(self:GetOwner():EyePos() + self:GetOwner():EyeAngles():Forward() * 16)
         ent:SetAngles(Angle(0, self:GetOwner():EyeAngles().y, 0))
         ent:SetOwner(owner)

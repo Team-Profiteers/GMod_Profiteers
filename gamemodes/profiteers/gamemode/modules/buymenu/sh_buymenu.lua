@@ -47,6 +47,7 @@ function Player:GetShopCooldown(class)
 end
 
 function Player:IsOnShopCooldown(class)
+    if GetConVar("pt_dev_wtf"):GetBool() then return false end
     self.ShopCooldown = self.ShopCooldown or {}
     return (self.ShopCooldown[class] or 0) > CurTime()
 end

@@ -463,14 +463,14 @@ Profiteers.Buyables = {
     },
     ["pt_bomb_marker"] = {
         Name = "Bunker Buster",
-        EntityClass = "pt_bomb_marker",
+        EntityClass = "pt_marker_bomber",
         Price = 35000,
         Cooldown = 120,
 
         Description = "Bomber drops anti-structure bomb",
         Description2 = "Penetrates surfaces, high damage",
 
-        Category = "Air Support"
+        Category = "Fire Support"
     },
     ["pt_uav_light"] = {
         Name = "UAV",
@@ -480,7 +480,7 @@ Profiteers.Buyables = {
         Description = "Spots NPCs only",
         Description2 = "Slow and fragile",
 
-        Category = "Air Support",
+        Category = "Fire Support",
 
         OnBuy = function(self, ply)
             Profiteers:SpawnUAVLightPlane(ply)
@@ -494,7 +494,7 @@ Profiteers.Buyables = {
         Description = "Spots players, NPCs, and bases",
         Description2 = "Slow and fragile",
 
-        Category = "Air Support",
+        Category = "Fire Support",
 
         OnBuy = function(self, ply)
             Profiteers:SpawnUAVPlane(ply)
@@ -509,7 +509,7 @@ Profiteers.Buyables = {
         Description = "Attack jet strafes target area",
         Description2 = "Fast anti-personnel strike",
 
-        Category = "Air Support",
+        Category = "Fire Support",
     },
     ["pt_attacker"] = {
         Name = "CAS Bomber",
@@ -520,7 +520,7 @@ Profiteers.Buyables = {
         Description = "Attack jet drops a pair of bombs",
         Description2 = "Fast all-purpose strike",
 
-        Category = "Air Support",
+        Category = "Fire Support",
     },
     ["pt_cruise_missile"] = {
         Name = "Cruise Missile",
@@ -531,7 +531,7 @@ Profiteers.Buyables = {
         Description = "Launch a cruise missile",
         Description2 = "Hard to shoot down",
 
-        Category = "Air Support",
+        Category = "Fire Support",
     },
     ["pt_fighter"] = {
         Name = "Fighter Patrol",
@@ -541,7 +541,7 @@ Profiteers.Buyables = {
         Description = "Fighter jet eliminates air targets",
         --Description2 = "",
 
-        Category = "Air Support",
+        Category = "Fire Support",
 
         OnBuy = function(self, ply)
             Profiteers:SpawnFighterPlane(ply)
@@ -555,7 +555,7 @@ Profiteers.Buyables = {
         Description = "Call in a helicopter gunship",
         Description2 = "Loiters and fires missiles",
 
-        Category = "Air Support",
+        Category = "Fire Support",
 
         OnBuy = function(self, ply)
             Profiteers:SpawnPaveLowPlane(ply)
@@ -568,11 +568,33 @@ Profiteers.Buyables = {
         Description = "Intercontinental ballistic missile",
         Description2 = "Guaranteed instant victory",
 
-        Category = "Air Support",
+        Category = "Fire Support",
 
         OnBuy = function(self, ply)
             Profiteers:SpawnICBMPlane(ply)
         end
+    },
+    ["pt_artillery"] = {
+        Name = "Artillery Strike",
+        EntityClass = "pt_signal_artillery",
+        Price = 18000,
+        Cooldown = 300,
+
+        Description = "Signals a slow artillery barrage",
+        Description2 = "Cost-effective but inaccurate",
+
+        Category = "Fire Support",
+    },
+    ["pt_mortar"] = {
+        Name = "Mortar Strike",
+        EntityClass = "pt_signal_mortar",
+        Price = 5000,
+        Cooldown = 180,
+
+        Description = "Signals a light mortar bombardment",
+        Description2 = "Cheap and fast, low firepower",
+
+        Category = "Fire Support",
     },
     ["pt_seat_jeep"] = {
         Name = "Jeep Seat",
