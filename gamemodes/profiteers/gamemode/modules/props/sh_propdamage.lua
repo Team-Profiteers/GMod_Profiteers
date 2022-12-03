@@ -21,7 +21,12 @@ function Entity:CalculatePropHealth()
     local volume = (maxs.z - mins.z) * (maxs.y - mins.y) * (maxs.x - mins.x)
     local health = math.Clamp(math.ceil(volume ^ 0.5 / 50) * 50, 100, 5000)
 
-    health = math.Clamp(health * math.Clamp(self:GetPhysicsObject():GetMass() / 500, 1, 3), 50, 5000)
+    local mass = 100
+    if IsValid(self:GetPhysicsObject()) then
+        mass = self:GetPhysicsObject():GetMass()
+    end
+
+    health = math.Clamp(health * math.Clamp(mass / 500, 1, 3), 50, 5000)
 
     self:SetNWInt("PFPropHealth", health)
     self:SetNWInt("PFPropMaxHealth", health)

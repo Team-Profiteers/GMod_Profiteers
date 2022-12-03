@@ -1,4 +1,4 @@
-function Profiteers:SpawnBunkerBusterPlane(droppos, ply)
+function Profiteers:SpawnBunkerBusterPlane(ply, droppos)
     local pos, ang = Profiteers:GetPlaneEnterPosAng(droppos, 500)
 
     if !pos then
