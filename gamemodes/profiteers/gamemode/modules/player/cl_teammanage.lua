@@ -91,6 +91,7 @@ hook.Add("PopulateToolMenu", "ProfiteersTeamMenu", function()
         local teamlist = vgui.Create("DListView", panel)
         teamlist:SetMultiSelect( false )
         teamlist:AddColumn("Team")
+        teamlist:AddColumn("Leader")
         teamlist:AddColumn("Open")
         teamlist:AddColumn("Invited")
         teamlist:SetTall(300)
@@ -105,8 +106,12 @@ hook.Add("PopulateToolMenu", "ProfiteersTeamMenu", function()
                 if not v.Name then continue end
                 if k == TEAM_SPECTATOR then continue end
                 if k == TEAM_CONNECTING then continue end
-                print(k)
-                local l = teamlist:AddLine(v.Name, v.Joinable and "Yes" or "No", Profiteers.ActiveTeamInvites[k] and "Yes" or "No")
+                local teamleader = Player(k)
+                local teamleadername = ""
+                if IsValid(teamleader) then
+                    teamleadername = teamleader:Nick()
+                end
+                local l = teamlist:AddLine(v.Name, teamleadername, v.Joinable and "Yes" or "No", Profiteers.ActiveTeamInvites[k] and "Yes" or "No")
                 l.ID = k
             end
         end
