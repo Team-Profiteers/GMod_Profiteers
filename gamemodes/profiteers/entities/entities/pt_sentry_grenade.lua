@@ -22,12 +22,12 @@ ENT.Mass = 100
 
 ENT.Range = 4096
 ENT.Damage = 90
-ENT.MagSize = 40
+ENT.MagSize = 50
 
-ENT.PitchMin = -10
+ENT.PitchMin = -30
 ENT.PitchMax = 60
 
-ENT.LaunchVelocity = 2500
+ENT.LaunchVelocity = 2000
 
 function ENT:GetSentryOrigin()
     return self:GetPos() + self:LocalToWorldAngles(self:GetAimAngle()):Forward() * 4 + Vector(0, 0, 32)
@@ -40,6 +40,21 @@ end
 if SERVER then
     ENT.Target = nil
     ENT.LastBurstTime = 0
+
+    function ENT:Initialize()
+        self:SetModel(self.Model)
+        self:PhysicsInitBox(Vector(-25, -25, -2), Vector(25, 25, 45))
+        self:SetMoveType(MOVETYPE_VPHYSICS)
+        self:SetCollisionGroup(COLLISION_GROUP_NONE)
+        self:SetUseType(SIMPLE_USE)
+        self:GetPhysicsObject():SetMass(self.Mass)
+        self:GetPhysicsObject():Wake()
+
+        self:SetNWInt("PFPropHealth", self.BaseHealth)
+        self:SetNWInt("PFPropMaxHealth", self.BaseHealth)
+        self:SetAmmo(self.MagSize)
+    end
+
 
     function ENT:TargetLogic()
         if (self.NextFire or 0) > CurTime() and self.UseTopAttackLogic then return end
@@ -73,7 +88,7 @@ if SERVER then
             targetang = self:WorldToLocalAngles((tgtpos - origin):Angle())
             targetang.p = -deg
         elseif self.LastBurstTime + 5 < CurTime() then
-            targetang = Angle(0, self:WorldToLocalAngles(self:GetAngles()).y + math.sin(CurTime() / math.pi / 3) * 180, 0)
+            targetang = Angle(0, self:WorldToLocalAngles(self:GetAngles()).y + math.sin(CurTime() / math.pi / 3) * 90, 0)
         else
             targetang = self:GetAimAngle()
         end
@@ -150,7 +165,7 @@ if SERVER then
         debugoverlay.Line(self:GetSentryOrigin(), self:GetSentryOrigin() + targetang:Forward() * 1024, 5, Color(255, 0, 0), true)
 
 
-        self:EmitSound("^weapons/pistol/pistol_fire3.wav", 125, 150, 0.85)
+        self:EmitSound("^weapons/ar2/npc_ar2_altfire.wav", 125, 130, 0.85)
         self:SetAmmo(self:GetAmmo() - 1)
 
         if force then
