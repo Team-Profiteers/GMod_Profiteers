@@ -122,7 +122,7 @@ if SERVER then
                 local h = self.Target:GetPos().z - origin.z
 
                 --self.LaunchVelocity = Lerp(dist / self.Range, 2000, 6000)
-                local deg = GAMEMODE:CalculateProjectilePitch(self.LaunchVelocity, d, h)
+                local deg = GAMEMODE:CalculateProjectilePitch(self.LaunchVelocity * 0.75, d, h)
 
                 if deg == 0 / 0 or h >= 300 then self.UseTopAttackLogic = true return end
 
@@ -172,7 +172,7 @@ if SERVER then
         local d = mypos2d:Distance(tgtpos2d)
         local h = tr.HitPos.z - self:GetLOSOrigin().z
 
-        local deg = GAMEMODE:CalculateProjectilePitch(self.LaunchVelocity, d, h)
+        local deg = GAMEMODE:CalculateProjectilePitch(self.LaunchVelocity * 0.75, d, h)
 
         -- Got a crash here when firing rocket with an invalid angle. Dunno if this fixes it for sure or not.
         targetang = self:WorldToLocalAngles((tr.HitPos - self:GetLOSOrigin()):Angle())
