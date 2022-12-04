@@ -6,6 +6,16 @@ local WarpRequired = function(self, ply)
     return true
 end
 
+Profiteers.BuyableCategoryIcons = {
+    ["Construction"]    = "icon16/house.png",
+    ["Equipment"]       = "icon16/wrench.png",
+    ["Explosives"]      = "icon16/bomb.png",
+    ["Fire Support"]    = "icon16/find.png",
+    ["Special Weapons"] = "icon16/wand.png",
+    ["Supplies"]        = "icon16/box.png",
+    ["Vehicles"]        = "icon16/car.png",
+}
+
 Profiteers.Buyables = {
     -- ["arccw_ud_m79"] = {
     --  Name = nil, -- auto-generate from EntityClass
