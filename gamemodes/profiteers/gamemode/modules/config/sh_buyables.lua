@@ -14,6 +14,7 @@ Profiteers.BuyableCategoryIcons = {
     ["Special Weapons"] = "icon16/wand.png",
     ["Supplies"]        = "icon16/box.png",
     ["Vehicles"]        = "icon16/car.png",
+    ["Win Condition"]   = "icon16/star.png",
 }
 
 Profiteers.Buyables = {
@@ -226,7 +227,7 @@ Profiteers.Buyables = {
         Description = "1.2mt fission bomb",
         Description2 = "End it all and watch it burn",
 
-        Category = "Explosives"
+        Category = "Win Condition"
     },
     ["pt_beacon"] = {
         Name = "Base Beacon",
@@ -578,7 +579,7 @@ Profiteers.Buyables = {
         Description = "Intercontinental ballistic missile",
         Description2 = "Guaranteed instant victory",
 
-        Category = "Fire Support",
+        Category = "Win Condition",
 
         OnBuy = function(self, ply)
             Profiteers:SpawnICBMPlane(ply)

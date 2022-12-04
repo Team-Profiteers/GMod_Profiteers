@@ -144,7 +144,7 @@ local Player = FindMetaTable("Player")
 function Player:SellEntity(ent)
     if not IsValid(ent) or ent:CPPIGetOwner() ~= self then return end
     local itemtbl = Profiteers.Buyables[Profiteers.BuyableEntities[ent:GetClass()]]
-    if not itemtbl then return end
+    if not itemtbl or itemtbl.CannotSell then return end
     local money
     if ent:GetClass() == "pt_nuke" then
         money = itemtbl.Price * GetConVar("pt_money_nukemult"):GetFloat()
