@@ -5,7 +5,7 @@ hook.Add("PlayerTick", "ProfiteersPlayerTickRegen", function(ply)
         local tps = 1 / engine.TickInterval()
 
         local healthpersecond = 5
-        if ply:HasBoughtEntity("pt_regen_boost", true, true) then
+        if ply:HasBoughtEntity("pt_regen_boost", true, false) then
             healthpersecond = 25
         end
 

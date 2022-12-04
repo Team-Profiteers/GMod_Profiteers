@@ -21,7 +21,7 @@ ENT.Mass = 200
 
 ENT.MinRange = 512
 ENT.Range = 15000
-ENT.TopAttackRange = 4096
+ENT.TopAttackRange = 5000
 ENT.Damage = 100
 ENT.TopAttackDamage = 50
 ENT.TopAttackImpactDamage = 25
@@ -61,10 +61,12 @@ end
 
 function ENT:HasLineOfSight(ent)
     local pos = (ent:IsNPC() or ent:IsPlayer()) and ent:EyePos() or ent:WorldSpaceCenter()
+    local filter = {self}
+    table.Add(filter, ents.FindByClass("pt_missile_barrage"))
     local tr = util.TraceHull({
         start = self:GetLOSOrigin(),
         endpos = pos,
-        filter = {self},
+        filter = filter,
         mins = Vector(-16, -16, 0),
         maxs = Vector(16, 16, 32),
         mask = MASK_SHOT,
@@ -75,19 +77,6 @@ end
 if SERVER then
     ENT.Target = nil
     ENT.TriedTopAttack = {}
-
-    local function getpitch(v, d, h)
-        local g = -physenv.GetGravity().z
-        v = v * 0.8 -- Our physics function doesn't perfectly align at long distances, so just compensate for it a little
-
-        local term = (v ^ 4 - g * (g * d ^ 2 + 2 * h * v ^ 2)) ^ 0.5
-        local theta_high = math.atan2(v ^ 2 + term, g * d) / math.pi * 180
-        local theta_low = math.atan2(v ^ 2 - term, g * d) / math.pi * 180
-
-        -- print(v, d, h, theta_low, theta_high)
-
-        return theta_low, theta_high
-    end
 
     -- local function simulate_projectile(pos, vel)
     --     local p = Vector(pos)
@@ -100,7 +89,6 @@ if SERVER then
     --         v = v + physenv.GetGravity() * interval
     --     end
     -- end
-
 
     function ENT:TargetLogic()
         if (self.NextFire or 0) > CurTime() and self.UseTopAttackLogic then return end
@@ -134,7 +122,7 @@ if SERVER then
                 local h = self.Target:GetPos().z - origin.z
 
                 --self.LaunchVelocity = Lerp(dist / self.Range, 2000, 6000)
-                local deg = getpitch(self.LaunchVelocity, d, h)
+                local deg = GAMEMODE:CalculateProjectilePitch(self.LaunchVelocity, d, h)
 
                 if deg == 0 / 0 or h >= 300 then self.UseTopAttackLogic = true return end
 
@@ -184,7 +172,7 @@ if SERVER then
         local d = mypos2d:Distance(tgtpos2d)
         local h = tr.HitPos.z - self:GetLOSOrigin().z
 
-        local deg = getpitch(self.LaunchVelocity, d, h)
+        local deg = GAMEMODE:CalculateProjectilePitch(self.LaunchVelocity, d, h)
 
         -- Got a crash here when firing rocket with an invalid angle. Dunno if this fixes it for sure or not.
         targetang = self:WorldToLocalAngles((tr.HitPos - self:GetLOSOrigin()):Angle())
@@ -284,7 +272,7 @@ if SERVER then
             rocket:Spawn()
             rocket.Damage = self.Damage
             rocket.ImpactDamage = self.Damage
-            rocket:GetPhysicsObject():SetVelocityInstantaneous(ang:Forward() * self.LaunchVelocity * 1.1)
+            rocket:GetPhysicsObject():SetVelocityInstantaneous(ang:Forward() * self.LaunchVelocity * 1)
 
             if !force then
                 debugoverlay.Sphere(self.Target:GetPos(), 64, 5, Color(255, 255, 255, 0), true)
@@ -329,6 +317,7 @@ if SERVER then
 
         if self:TestPVS(v)
             or v:GetPos():DistToSqr(self:GetLOSOrigin()) > self.Range * self.Range * rangedelta
+            or v:GetPos():DistToSqr(self:GetLOSOrigin()) <= self.MinRange * self.MinRange
             or !v:IsValidCombatTarget() then return false end
 
         if self.UseTopAttackLogic and !isbool(v.MissileAlreadyFired) and IsValid(v.MissileAlreadyFired) then return false end

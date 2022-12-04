@@ -1,10 +1,21 @@
 local WarpRequired = function(self, ply)
-    if !ply:WithinBeacon() and !ply:HasBoughtEntity("pt_supply_warp", true, true) then
+    if !ply:WithinBeacon() and !ply:HasBoughtEntity("pt_supply_warp", true, false) then
         if CLIENT then GAMEMODE:Hint(ply, 1 ,"This can only be bought if you are near a Beacon or own a Supply Warp.") end
         return false
     end
     return true
 end
+
+Profiteers.BuyableCategoryIcons = {
+    ["Construction"]    = "icon16/house.png",
+    ["Equipment"]       = "icon16/wrench.png",
+    ["Explosives"]      = "icon16/bomb.png",
+    ["Fire Support"]    = "icon16/find.png",
+    ["Special Weapons"] = "icon16/wand.png",
+    ["Supplies"]        = "icon16/box.png",
+    ["Vehicles"]        = "icon16/car.png",
+    ["Win Condition"]   = "icon16/star.png",
+}
 
 Profiteers.Buyables = {
     -- ["arccw_ud_m79"] = {
@@ -216,7 +227,7 @@ Profiteers.Buyables = {
         Description = "1.2mt fission bomb",
         Description2 = "End it all and watch it burn",
 
-        Category = "Explosives"
+        Category = "Win Condition"
     },
     ["pt_beacon"] = {
         Name = "Base Beacon",
@@ -307,7 +318,7 @@ Profiteers.Buyables = {
         EntityLimit = 3,
 
         Description = "Close range area denial",
-        Description2 = "Lightweight emplacement",
+        Description2 = "Lightweight, fragile",
 
         Category = "Construction"
     },
@@ -319,7 +330,7 @@ Profiteers.Buyables = {
         EntityLimit = 2,
 
         Description = "High firepower area denial",
-        Description2 = "Lightweight emplacement",
+        Description2 = "Well rounded emplacement",
 
         Category = "Construction"
     },
@@ -330,15 +341,27 @@ Profiteers.Buyables = {
         PlaceEntity = true,
         EntityLimit = 2,
 
-        Description = "Locks onto planes and enemies",
-        Description2 = "Lightweight emplacement",
+        Description = "Locks onto aircraft and enemies",
+        Description2 = "Powerful, only two shots",
+
+        Category = "Construction"
+    },
+    ["pt_sentry_grenade"] = {
+        Name = "Grenade Sentry",
+        EntityClass = "pt_sentry_grenade",
+        Price = 45000,
+        PlaceEntity = true,
+        EntityLimit = 2,
+
+        Description = "Automatic grenade launcher",
+        Description2 = "Powerful but inaccurate",
 
         Category = "Construction"
     },
     ["pt_sentry_advanced"] = {
         Name = "Air Defense Turret",
         EntityClass = "pt_sentry_advanced",
-        Price = 70000,
+        Price = 90000,
         PlaceEntity = true,
         EntityLimit = 2,
 
@@ -350,7 +373,7 @@ Profiteers.Buyables = {
     ["pt_sentry_rocket"] = {
         Name = "Rocket Battery",
         EntityClass = "pt_sentry_rocket",
-        Price = 120000,
+        Price = 150000,
         PlaceEntity = true,
         EntityLimit = 1,
 
@@ -475,7 +498,7 @@ Profiteers.Buyables = {
     ["pt_uav_light"] = {
         Name = "UAV",
         Price = 10000,
-        Cooldown = 90,
+        Cooldown = 120,
 
         Description = "Spots NPCs only",
         Description2 = "Slow and fragile",
@@ -488,7 +511,7 @@ Profiteers.Buyables = {
     },
     ["pt_uav"] = {
         Name = "Advanced UAV",
-        Price = 60000,
+        Price = 50000,
         Cooldown = 180,
 
         Description = "Spots players, NPCs, and bases",
@@ -503,7 +526,7 @@ Profiteers.Buyables = {
     ["pt_gunrun"] = {
         Name = "Gun Run",
         EntityClass = "pt_gunrun_marker",
-        Price = 12000,
+        Price = 8000,
         Cooldown = 60,
 
         Description = "Attack jet strafes target area",
@@ -514,7 +537,7 @@ Profiteers.Buyables = {
     ["pt_attacker"] = {
         Name = "CAS Bomber",
         EntityClass = "pt_rocket_marker",
-        Price = 15000,
+        Price = 12000,
         Cooldown = 60,
 
         Description = "Attack jet drops a pair of bombs",
@@ -568,7 +591,7 @@ Profiteers.Buyables = {
         Description = "Intercontinental ballistic missile",
         Description2 = "Guaranteed instant victory",
 
-        Category = "Fire Support",
+        Category = "Win Condition",
 
         OnBuy = function(self, ply)
             Profiteers:SpawnICBMPlane(ply)
@@ -588,7 +611,7 @@ Profiteers.Buyables = {
     ["pt_artillery"] = {
         Name = "Artillery Strike",
         EntityClass = "pt_signal_artillery",
-        Price = 18000,
+        Price = 15000,
         Cooldown = 300,
 
         Description = "Signals a slow artillery barrage",
@@ -599,7 +622,7 @@ Profiteers.Buyables = {
     ["pt_mortar"] = {
         Name = "Mortar Strike",
         EntityClass = "pt_signal_mortar",
-        Price = 5000,
+        Price = 4000,
         Cooldown = 180,
 
         Description = "Signals a light mortar bombardment",
@@ -667,5 +690,5 @@ Profiteers.BuyableEntities = {}
 
 for k, v in pairs(Profiteers.Buyables) do
     if !v.EntityClass then continue end
-    Profiteers.BuyableEntities[v.EntityClass] = true
+    Profiteers.BuyableEntities[v.EntityClass] = k
 end

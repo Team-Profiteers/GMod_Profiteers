@@ -92,6 +92,10 @@ net.Receive("pt_buy", function(len, ply)
                 ent:Spawn()
             end
 
+            if IsValid(ent:GetPhysicsObject()) then
+                ent:PhysWake()
+            end
+
             ent:CPPISetOwner(ply)
 
             ent.Bounty = ent.Bounty or itemtbl.Price
@@ -137,28 +141,59 @@ net.Receive("pt_buy", function(len, ply)
 end)
 
 local Player = FindMetaTable("Player")
-function Player:SellEntities(class)
-    local itemtbl = Profiteers.Buyables[class]
-    if not itemtbl then return end
-    local money = 0
-    self.BoughtEntities = self.BoughtEntities or {}
-    for i, ent in pairs(self.BoughtEntities[class] or {}) do
-        if IsValid(ent) then
-            if ent:GetClass() == "pt_nuke" then
-                money = money + itemtbl.Price * GetConVar("pt_money_nukemult"):GetFloat()
-            else
-                money = money + itemtbl.Price * GetConVar("pt_money_sellmult"):GetFloat()
-            end
-            if ent.OnPropDestroyed then
-                ent:OnPropDestroyed(DamageInfo())
-            end
-            ent:Remove()
-        end
+function Player:SellEntity(ent)
+    if not IsValid(ent) or ent:CPPIGetOwner() ~= self then return end
+    local itemtbl = Profiteers.Buyables[Profiteers.BuyableEntities[ent:GetClass()]]
+    if not itemtbl or itemtbl.CannotSell then return end
+    local money
+    if ent:GetClass() == "pt_nuke" then
+        money = itemtbl.Price * GetConVar("pt_money_nukemult"):GetFloat()
+    else
+        money = itemtbl.Price * GetConVar("pt_money_sellmult"):GetFloat()
     end
+
+    for i = 1, math.Clamp(math.Round((money / 100) ^ 0.5), 3, 25) do
+        local eff = EffectData()
+        eff:SetOrigin(ent:WorldSpaceCenter() + VectorRand() * 4)
+        eff:SetNormal((VectorRand() + Vector(0, 0, 1)):GetNormalized())
+        eff:SetMagnitude(math.Rand(64, 256))
+        util.Effect("pt_moneyeff", eff, true)
+    end
+
+    -- if ent.OnPropDestroyed then
+    --     ent:OnPropDestroyed(DamageInfo())
+    -- end
+    ent:Remove()
     if money > 0 then
         self:AddMoney(money)
     end
 end
+
+function Player:SellEntities(class)
+    local itemtbl = Profiteers.Buyables[class]
+    if not itemtbl then return end
+    self.BoughtEntities = self.BoughtEntities or {}
+    for i, ent in pairs(self.BoughtEntities[class] or {}) do
+        if IsValid(ent) and ent:CPPIGetOwner() == self then
+            self:SellEntity(ent)
+        end
+    end
+end
+
+hook.Add("CanTool", "Profiteers_Sell", function(ply, tr, toolname, tool, button)
+    if toolname == "remover" and IsValid(tr.Entity) and tr.Entity:CPPIGetOwner() == ply and Profiteers.BuyableEntities[tr.Entity:GetClass()] then
+        ply:SellEntity(tr.Entity)
+        return false
+    end
+end)
+
+hook.Add("CanProperty", "Profiteers_Sell", function(ply, property, ent)
+    if property == "remover" and IsValid(ent) and ent:CPPIGetOwner() == ply and Profiteers.BuyableEntities[ent:GetClass()] then
+        ply:SellEntity(ent)
+        return false
+    end
+end)
+
 
 net.Receive("pt_sell", function(len, ply)
     local itemclass = net.ReadString()

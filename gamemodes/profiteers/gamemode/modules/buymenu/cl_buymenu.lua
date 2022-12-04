@@ -31,7 +31,7 @@ hook.Add("PopulateShop", "AddShopContent", function(pnlContent, tree, _)
     --
     for CategoryName, v in SortedPairs(categorized) do
         -- Add a node to the tree
-        local node = tree:AddNode(CategoryName, "icon16/gun.png")
+        local node = tree:AddNode(CategoryName, Profiteers.BuyableCategoryIcons[CategoryName] or "icon16/brick.png")
 
         -- When we click on the node - populate it using this function
         node.DoPopulate = function(self)

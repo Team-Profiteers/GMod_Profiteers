@@ -248,9 +248,11 @@ if SERVER then
 
         self.Dead = true
         SafeRemoveEntityDelayed(self, self.SmokeTrailTime)
-        self:SetRenderMode(RENDERMODE_NONE)
-        self:SetMoveType(MOVETYPE_NONE)
-        self:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
+        timer.Simple(0, function()
+            self:SetRenderMode(RENDERMODE_NONE)
+            self:SetMoveType(MOVETYPE_NONE)
+            self:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
+        end)
     end
 
     function ENT:PhysicsCollide(colData, physobj)

@@ -4,13 +4,14 @@ function Profiteers:SpawnArtillery(pos, ply)
         endpos = pos + Vector(0, 0, 1000000),
         mins = Vector(-16, -16, 0),
         maxs = Vector(16, 16, 72),
-        mask = MASK_PLAYERSOLID,
+        mask = MASK_NPCWORLDSTATIC,
     })
     if tr.HitSky then
         for i = 1, 10 do
-            timer.Simple(i * 5 + math.Rand(0, 5), function()
+            timer.Simple(i * 5 + math.Rand(0, 2), function()
+                local spread = 256 + ((10 - i) / 10) * 512
                 local shell = ents.Create("pt_shell_artillery")
-                shell:SetPos(tr.HitPos + Vector(math.Rand(-728, 728), math.Rand(-728, 728), -32))
+                shell:SetPos(tr.HitPos + Vector(math.Rand(-spread, spread), math.Rand(-spread, spread), -32))
                 shell:SetAngles(Angle(90, 0, 0))
                 shell:SetOwner(ply)
                 shell:Spawn()
@@ -30,18 +31,19 @@ function Profiteers:SpawnMortar(pos, ply)
         endpos = pos + Vector(0, 0, 1000000),
         mins = Vector(-16, -16, 0),
         maxs = Vector(16, 16, 72),
-        mask = MASK_PLAYERSOLID,
+        mask = MASK_NPCWORLDSTATIC,
     })
     if tr.HitSky then
         for i = 1, 5 do
-            timer.Simple(i * 3 + math.Rand(0, 2), function()
+            timer.Simple(i * 3 + math.Rand(0, 1), function()
+                local spread = (i / 5) * 512
                 local shell = ents.Create("pt_shell_mortar")
-                shell:SetPos(tr.HitPos + Vector(math.Rand(-512, 512), math.Rand(-512, 512), -32))
+                shell:SetPos(tr.HitPos + Vector(math.Rand(-spread, spread), math.Rand(-spread, spread), -32))
                 shell:SetAngles(Angle(90, 0, 0))
                 shell:SetOwner(ply)
                 shell:Spawn()
                 shell:Activate()
-                shell:GetPhysicsObject():SetVelocity(Vector(0, 0, -9000000))
+                shell:GetPhysicsObject():SetVelocity(Vector(0, 0, -8000000))
             end)
         end
     else

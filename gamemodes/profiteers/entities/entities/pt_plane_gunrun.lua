@@ -53,7 +53,7 @@ if SERVER then
             local bullet = {
                 Attacker = self:GetOwner(),
                 Inflictor = self,
-                Damage = 25,
+                Damage = 40,
                 Force = 20,
                 Num = 8,
                 Dir = shootang,
@@ -64,9 +64,9 @@ if SERVER then
                 filter = self,
                 Callback = function(attacker, tr, dmginfo)
                     if IsValid(tr.Entity) and tr.Entity:IsPlayer() then
-                        dmginfo:ScaleDamage(2)
+                        dmginfo:ScaleDamage(1.25)
                     elseif IsValid(tr.Entity) and tr.Entity:IsNPC() then
-                        dmginfo:ScaleDamage(4)
+                        dmginfo:ScaleDamage(5)
                     end
 
                     if math.random() <= 1 / 2 then
