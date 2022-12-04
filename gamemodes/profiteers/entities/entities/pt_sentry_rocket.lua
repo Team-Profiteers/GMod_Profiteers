@@ -61,10 +61,12 @@ end
 
 function ENT:HasLineOfSight(ent)
     local pos = (ent:IsNPC() or ent:IsPlayer()) and ent:EyePos() or ent:WorldSpaceCenter()
+    local filter = {self}
+    table.Add(filter, ents.FindByClass("pt_missile_barrage"))
     local tr = util.TraceHull({
         start = self:GetLOSOrigin(),
         endpos = pos,
-        filter = {self},
+        filter = filter,
         mins = Vector(-16, -16, 0),
         maxs = Vector(16, 16, 32),
         mask = MASK_SHOT,
