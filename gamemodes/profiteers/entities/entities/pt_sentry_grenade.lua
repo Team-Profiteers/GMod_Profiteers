@@ -30,7 +30,7 @@ ENT.PitchMax = 60
 ENT.LaunchVelocity = 2500
 
 function ENT:GetSentryOrigin()
-    return self:GetPos() + self:LocalToWorldAngles(self:GetAimAngle()):Forward() * 48 + Vector(0, 0, 32)
+    return self:GetPos() + self:LocalToWorldAngles(self:GetAimAngle()):Forward() * 4 + Vector(0, 0, 32)
 end
 
 function ENT:GetLOSOrigin()
@@ -38,7 +38,8 @@ function ENT:GetLOSOrigin()
 end
 
 if SERVER then
-
+    ENT.Target = nil
+    ENT.LastBurstTime = 0
 
     function ENT:TargetLogic()
         if (self.NextFire or 0) > CurTime() and self.UseTopAttackLogic then return end
@@ -170,20 +171,19 @@ if CLIENT then
     function ENT:Draw()
         self:DrawModel()
 
-        local bone = self:LookupBone("yaw")
-        local bone2 = self:LookupBone("pitch")
+        local bone = self:LookupBone("tag_pivot")
+        local bone2 = self:LookupBone("mg01")
 
         if bone and bone2 then
-            local bonepos, boneang = self:GetBonePosition(bone)
-            self.AimAngYaw = LerpAngle(FrameTime() * 3, self.AimAngYaw or Angle(0, 0, 0), Angle(self:GetAimAngle().y, 0, 0))
+            local bonepos, boneang = self:GetBonePosition(bone2)
+            self.AimAngYaw = LerpAngle(FrameTime() * 3, self.AimAngYaw or Angle(0, 0, 0), Angle(0, self:GetAimAngle().y, 0))
             self:ManipulateBoneAngles(bone, self.AimAngYaw, false)
-            self.AimAngPitch = LerpAngle(FrameTime() * 3, self.AimAngPitch or Angle(0, 0, 0), Angle(0, 0, self:GetAimAngle().p))
+            self.AimAngPitch = LerpAngle(FrameTime() * 3, self.AimAngPitch or Angle(0, 0, 0), Angle(self:GetAimAngle().p, 0, 0))
             self:ManipulateBoneAngles(bone2, self.AimAngPitch, false)
 
-            local pos = bonepos + boneang:Up() * 24 + boneang:Forward() * 0 + boneang:Right() * 0
+            local pos = bonepos + boneang:Up() * 3 + boneang:Forward() * -17 + boneang:Right() * 3
 
-            boneang:RotateAroundAxis(boneang:Forward(), 0)
-            boneang:RotateAroundAxis(boneang:Up(), 0)
+            boneang:RotateAroundAxis(boneang:Forward(), 90)
 
             cam.Start3D2D(pos, boneang, 0.05)
                 if self:CanFunction() then
