@@ -70,7 +70,7 @@ if SERVER then
         end
 
         if IsValid(self.Target) then
-            local tgtpos = self.Target:GetPos() + Vector(0, 0, 16)
+            local tgtpos = self.Target:GetPos() + Vector(0, 0, 32)
             origin = self:GetSentryOrigin()
             local mypos2d = self:GetSentryOrigin()
             local tgtpos2d = Vector(tgtpos)
@@ -82,11 +82,12 @@ if SERVER then
 
             --self.LaunchVelocity = Lerp(dist / self.Range, 2000, 6000)
             local deg = GAMEMODE:CalculateProjectilePitch(self.LaunchVelocity, d, h)
-
-            if deg == 0 / 0 or h >= 300 then self.UseTopAttackLogic = true return end
-
             targetang = self:WorldToLocalAngles((tgtpos - origin):Angle())
-            targetang.p = -deg
+            if deg ~= 0 / 0 then
+                targetang.p = -deg
+            end
+
+
         elseif self.LastBurstTime + 5 < CurTime() then
             targetang = Angle(0, self:WorldToLocalAngles(self:GetAngles()).y + math.sin(CurTime() / math.pi / 3) * 90, 0)
         else
@@ -99,7 +100,7 @@ if SERVER then
         if IsValid(self.Target) and dot >= 0.95 then
             if self:GetLockonTime() == 0 then
                 self:SetLockonTime(CurTime() + 2)
-                self:EmitSound("npc/turret_floor/ping.wav", 120, 92)
+                self:EmitSound("npc/turret_floor/ping.wav", 120, 100)
             elseif self:GetLockonTime() < CurTime() and dot >= 0.995 then
                 self:ShootTarget()
             end
@@ -144,7 +145,7 @@ if SERVER then
             self.NextFire = CurTime() + 0.5
             return
         end
-        self.NextFire = CurTime() + 0.2
+        self.NextFire = CurTime() + 0.25
         self.LastBurstTime = CurTime()
 
         local targetang = self:LocalToWorldAngles(self:GetAimAngle())
