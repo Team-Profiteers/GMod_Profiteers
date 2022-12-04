@@ -37,6 +37,7 @@ if SERVER then
         util.Effect("explosion", effectdata)
         self:EmitSound("npc/turret_floor/die.wav", 120, 110, 0.8)
 
+        --[[]
         for i = 1, math.floor(self:GetCharge() * self.ChargeRatio * math.Rand(0.5, 1)) do
             local ent = ents.Create("item_rpg_round")
             ent:SetPos(self:GetPos() + VectorRand() * 8)
@@ -45,5 +46,6 @@ if SERVER then
             ent:GetPhysicsObject():ApplyForceCenter(VectorRand() * 256)
             SafeRemoveEntityDelayed(ent, 120)
         end
+        ]]
     end
 end

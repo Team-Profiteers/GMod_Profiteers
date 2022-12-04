@@ -36,6 +36,7 @@ if SERVER then
         util.Effect("explosion", effectdata)
         self:EmitSound("npc/turret_floor/die.wav", 120, 110, 0.8)
 
+        --[[]
         for i = 1, math.floor(self:GetCharge() * self.ChargeRatio / 20) do
             local ent = ents.Create("item_battery")
             ent:SetPos(self:GetPos() + VectorRand() * 8)
@@ -44,5 +45,6 @@ if SERVER then
             ent:GetPhysicsObject():ApplyForceCenter(VectorRand() * 256)
             SafeRemoveEntityDelayed(ent, 120)
         end
+        ]]
     end
 end

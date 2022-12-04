@@ -70,11 +70,15 @@ if SERVER then
         effectdata:SetOrigin(self:GetPos())
         util.Effect("explosion", effectdata)
         self:EmitSound("npc/manhack/gib.wav", 120, 110, 0.8)
+    end
 
-        local ent = ents.Create("pt_money")
-        ent:SetPos(self:GetPos() + Vector(0, 0, 20))
-        ent:SetAmount(self:GetCash())
-        ent:Spawn()
+    function ENT:OnRemove()
+        if self:GetCash() > 0 then
+            local ent = ents.Create("pt_money")
+            ent:SetPos(self:GetPos() + Vector(0, 0, 20))
+            ent:SetAmount(self:GetCash())
+            ent:Spawn()
+        end
     end
 end
 

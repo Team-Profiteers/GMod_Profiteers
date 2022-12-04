@@ -65,14 +65,6 @@ if SERVER then
     end
 
     function ENT:OnConsume(ply)
-
-    end
-
-    function ENT:OnPropDestroyed(dmginfo)
-        local effectdata = EffectData()
-        effectdata:SetOrigin(self:GetPos())
-        util.Effect("explosion", effectdata)
-        self:EmitSound("npc/turret_floor/die.wav", 120, 110, 0.8)
     end
 else
     function ENT:Draw()

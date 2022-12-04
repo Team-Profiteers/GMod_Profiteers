@@ -1,5 +1,5 @@
 local WarpRequired = function(self, ply)
-    if !ply:WithinBeacon() and !ply:HasBoughtEntity("pt_supply_warp", true, true) then
+    if !ply:WithinBeacon() and !ply:HasBoughtEntity("pt_supply_warp", true, false) then
         if CLIENT then GAMEMODE:Hint(ply, 1 ,"This can only be bought if you are near a Beacon or own a Supply Warp.") end
         return false
     end
@@ -677,5 +677,5 @@ Profiteers.BuyableEntities = {}
 
 for k, v in pairs(Profiteers.Buyables) do
     if !v.EntityClass then continue end
-    Profiteers.BuyableEntities[v.EntityClass] = true
+    Profiteers.BuyableEntities[v.EntityClass] = k
 end

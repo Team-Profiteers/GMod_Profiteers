@@ -87,7 +87,7 @@ CPPI.ToolBlacklist = {
     ["colour"] = true, -- can make invisible
 }
 CPPI.EntityToolBlacklist = {
-    ["remover"] = true,
+    --["remover"] = true,
     ["material"] = true,
 }
 

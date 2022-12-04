@@ -18,15 +18,6 @@ ENT.AnchorOffset = Vector(0, 0, 12)
 ENT.Category = "Profiteers"
 ENT.Spawnable = false
 
-if SERVER then
-    function ENT:OnPropDestroyed(dmginfo)
-        local effectdata = EffectData()
-        effectdata:SetOrigin(self:GetPos())
-        util.Effect("explosion", effectdata)
-        self:EmitSound("npc/manhack/gib.wav", 120, 110, 0.8)
-    end
-end
-
 if CLIENT then
     function ENT:Draw()
         self:DrawModel()
