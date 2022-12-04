@@ -318,7 +318,7 @@ Profiteers.Buyables = {
         EntityLimit = 3,
 
         Description = "Close range area denial",
-        Description2 = "Lightweight emplacement",
+        Description2 = "Lightweight, fragile",
 
         Category = "Construction"
     },
@@ -330,7 +330,7 @@ Profiteers.Buyables = {
         EntityLimit = 2,
 
         Description = "High firepower area denial",
-        Description2 = "Lightweight emplacement",
+        Description2 = "Well rounded emplacement",
 
         Category = "Construction"
     },
@@ -341,15 +341,27 @@ Profiteers.Buyables = {
         PlaceEntity = true,
         EntityLimit = 2,
 
-        Description = "Locks onto planes and enemies",
-        Description2 = "Lightweight emplacement",
+        Description = "Locks onto aircraft and enemies",
+        Description2 = "Powerful, only two shots",
+
+        Category = "Construction"
+    },
+    ["pt_sentry_grenade"] = {
+        Name = "Grenade Sentry",
+        EntityClass = "pt_sentry_grenade",
+        Price = 45000,
+        PlaceEntity = true,
+        EntityLimit = 2,
+
+        Description = "Automatic grenade launcher",
+        Description2 = "Powerful but inaccurate",
 
         Category = "Construction"
     },
     ["pt_sentry_advanced"] = {
         Name = "Air Defense Turret",
         EntityClass = "pt_sentry_advanced",
-        Price = 70000,
+        Price = 90000,
         PlaceEntity = true,
         EntityLimit = 2,
 
@@ -361,7 +373,7 @@ Profiteers.Buyables = {
     ["pt_sentry_rocket"] = {
         Name = "Rocket Battery",
         EntityClass = "pt_sentry_rocket",
-        Price = 120000,
+        Price = 150000,
         PlaceEntity = true,
         EntityLimit = 1,
 

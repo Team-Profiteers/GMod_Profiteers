@@ -78,19 +78,6 @@ if SERVER then
     ENT.Target = nil
     ENT.TriedTopAttack = {}
 
-    local function getpitch(v, d, h)
-        local g = -physenv.GetGravity().z
-        v = v * 0.8 -- Our physics function doesn't perfectly align at long distances, so just compensate for it a little
-
-        local term = (v ^ 4 - g * (g * d ^ 2 + 2 * h * v ^ 2)) ^ 0.5
-        local theta_high = math.atan2(v ^ 2 + term, g * d) / math.pi * 180
-        local theta_low = math.atan2(v ^ 2 - term, g * d) / math.pi * 180
-
-        -- print(v, d, h, theta_low, theta_high)
-
-        return theta_low, theta_high
-    end
-
     -- local function simulate_projectile(pos, vel)
     --     local p = Vector(pos)
     --     local v = Vector(vel) * 1
@@ -102,7 +89,6 @@ if SERVER then
     --         v = v + physenv.GetGravity() * interval
     --     end
     -- end
-
 
     function ENT:TargetLogic()
         if (self.NextFire or 0) > CurTime() and self.UseTopAttackLogic then return end
@@ -136,7 +122,7 @@ if SERVER then
                 local h = self.Target:GetPos().z - origin.z
 
                 --self.LaunchVelocity = Lerp(dist / self.Range, 2000, 6000)
-                local deg = getpitch(self.LaunchVelocity, d, h)
+                local deg = GAMEMODE:CalculateProjectilePitch(self.LaunchVelocity, d, h)
 
                 if deg == 0 / 0 or h >= 300 then self.UseTopAttackLogic = true return end
 
@@ -186,7 +172,7 @@ if SERVER then
         local d = mypos2d:Distance(tgtpos2d)
         local h = tr.HitPos.z - self:GetLOSOrigin().z
 
-        local deg = getpitch(self.LaunchVelocity, d, h)
+        local deg = GAMEMODE:CalculateProjectilePitch(self.LaunchVelocity, d, h)
 
         -- Got a crash here when firing rocket with an invalid angle. Dunno if this fixes it for sure or not.
         targetang = self:WorldToLocalAngles((tr.HitPos - self:GetLOSOrigin()):Angle())
@@ -286,7 +272,7 @@ if SERVER then
             rocket:Spawn()
             rocket.Damage = self.Damage
             rocket.ImpactDamage = self.Damage
-            rocket:GetPhysicsObject():SetVelocityInstantaneous(ang:Forward() * self.LaunchVelocity * 1.1)
+            rocket:GetPhysicsObject():SetVelocityInstantaneous(ang:Forward() * self.LaunchVelocity * 1)
 
             if !force then
                 debugoverlay.Sphere(self.Target:GetPos(), 64, 5, Color(255, 255, 255, 0), true)

@@ -53,3 +53,11 @@ function GM:ParsePlayerName(str)
     end
     return candidate
 end
+
+function GM:CalculateProjectilePitch(v, d, h)
+    local g = -physenv.GetGravity().z
+    --v = v * 0.8 -- Our physics function doesn't perfectly align at long distances, so just compensate for it a little
+
+    local term = (v ^ 4 - g * (g * d ^ 2 + 2 * h * v ^ 2)) ^ 0.5
+    return math.atan2(v ^ 2 - term, g * d) / math.pi * 180, math.atan2(v ^ 2 + term, g * d) / math.pi * 180
+end
