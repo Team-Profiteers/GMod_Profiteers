@@ -234,5 +234,6 @@ function GM:OnNPCKilled(npc, atk, inf)
 end
 
 timer.Create("Profiteers - Spawn NPCs", 5, 0, function()
+    if GetConVar("pt_dev_lonely"):GetBool() then return end
     createEnemyNPC()
 end)

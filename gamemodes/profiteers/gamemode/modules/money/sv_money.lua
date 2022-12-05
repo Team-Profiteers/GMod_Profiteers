@@ -86,29 +86,27 @@ function Player:AddMoney(amt, no_notify, not_earnings)
 end
 
 hook.Add("DoPlayerDeath", "pt_money", function(ply, attacker, dmginfo)
-    --[[]
-    if attacker:IsPlayer() and attacker ~= ply and attacker:Team() ~= ply:Team() and GetConVar("pt_money_per_kill"):GetInt() > 0 then
-        local reward = GetConVar("pt_money_per_kill"):GetInt()
-        local class = dmginfo:GetInflictor():IsWeapon() and dmginfo:GetInflictor():GetClass() or attacker:GetActiveWeapon():GetClass()
-
-        reward = reward * (Profiteers.WeaponRewardMultipliers[class] or 1)
-
-        attacker:AddMoney(reward)
-    end
-    ]]
-
     -- Drop money
     local loss = math.Round((ply:GetMoney() - GetConVar("pt_money_dropondeath_min"):GetInt()) * GetConVar("pt_money_dropondeath"):GetFloat())
     local max = GetConVar("pt_money_dropondeath_max"):GetInt()
-    loss = math.min(loss, max)
+    if max > 0 then
+        loss = math.min(loss, max)
+    end
 
     if loss > 0 then
         ply:AddMoney(-loss)
+        if attacker ~= ply and attacker:IsPlayer() and GetConVar("pt_money_dropondeath_takemult"):GetFloat() > 0 then
+            local give = math.ceil(loss * GetConVar("pt_money_dropondeath_takemult"):GetFloat())
+            attacker:AddMoney(give)
+            loss = loss - give
+        end
 
-        local ent = ents.Create("pt_money")
-        ent:SetPos(ply:GetPos() + Vector(0, 0, 20))
-        ent:SetAmount(loss)
-        ent:Spawn()
+        if loss > 0 then
+            local ent = ents.Create("pt_money")
+            ent:SetPos(ply:GetPos() + Vector(0, 0, 32))
+            ent:SetAmount(loss)
+            ent:Spawn()
+        end
     end
 end)
 
