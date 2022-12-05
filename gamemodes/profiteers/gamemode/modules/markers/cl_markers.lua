@@ -6,6 +6,7 @@ net.Receive("pt_marker_add", function()
     Profiteers.ActiveMarkers[id].pos = net.ReadVector()
     Profiteers.ActiveMarkers[id].ent = net.ReadEntity()
     Profiteers.ActiveMarkers[id].timeout = net.ReadFloat()
+    Profiteers.ActiveMarkers[id].starttime = CurTime()
 
     if Profiteers.ActiveMarkers[id].pos == Vector(0, 0, 0) then Profiteers.ActiveMarkers[id].pos = nil end
     if Profiteers.ActiveMarkers[id].timeout < 0 then Profiteers.ActiveMarkers[id].pos = nil end
@@ -22,6 +23,18 @@ net.Receive("pt_marker_add", function()
     end
 end)
 
+net.Receive("pt_marker_kill", function()
+    local id = net.ReadUInt(9)
+    if !Profiteers.ActiveMarkers[id] then return end
+    local instant = net.ReadBool()
+    if instant then
+        Profiteers.ActiveMarkers[id] = nil
+    else
+        Profiteers.ActiveMarkers[id].timeout = CurTime() + 5
+        Profiteers.ActiveMarkers[id].killed = true
+    end
+end)
+
 local CLR_B2 = Color(0, 0, 0, 100)
 
 hook.Add("HUDPaint", "Profiteers_Markers", function()
@@ -31,12 +44,23 @@ hook.Add("HUDPaint", "Profiteers_Markers", function()
     local marker_pos = {}
     cam.Start3D()
         for id, v in pairs(Profiteers.ActiveMarkers) do
-            if Profiteers.ActiveMarkers[id].timeout and CurTime() >= Profiteers.ActiveMarkers[id].timeout then
+            if Profiteers.ActiveMarkers[id].killed then
+                if CurTime() >= Profiteers.ActiveMarkers[id].timeout then
+                    Profiteers.ActiveMarkers[id] = nil
+                    continue
+                else
+                    Profiteers.ActiveMarkers[id].alpha = Lerp((math.sin(CurTime() * math.pi * 5) + 1) / 2, 0.5, 1)
+                end
+            elseif Profiteers.ActiveMarkers[id].timeout and CurTime() >= Profiteers.ActiveMarkers[id].timeout then
                 Profiteers.ActiveMarkers[id].alpha = Lerp((CurTime() - Profiteers.ActiveMarkers[id].timeout) / 3, 1, 0)
                 if Profiteers.ActiveMarkers[id].alpha == 0 then
                     Profiteers.ActiveMarkers[id] = nil
                     continue
                 end
+            elseif CurTime() - Profiteers.ActiveMarkers[id].starttime <= 0.5 then
+                Profiteers.ActiveMarkers[id].alpha = Lerp((CurTime() - Profiteers.ActiveMarkers[id].starttime) / 0.5, 0, 1)
+            else
+                Profiteers.ActiveMarkers[id].alpha = 1
             end
             if IsValid(v.ent) then
                 marker_pos[id] = {v.ent:WorldSpaceCenter(), v.ent:WorldSpaceCenter():ToScreen()}
@@ -67,8 +91,8 @@ hook.Add("HUDPaint", "Profiteers_Markers", function()
                 y2 = y2 - 22
             end
             GAMEMODE:ShadowText(markertbl.name, "CGHUD_24_Unscaled", x, y2, clr, CLR_B2, TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, true)
-            if Profiteers.ActiveMarkers[id].timeout and CurTime() < Profiteers.ActiveMarkers[id].timeout then
-                local tt = string.ToMinutesSeconds(math.max(0, Profiteers.ActiveMarkers[id].timeout - CurTime()))
+            if Profiteers.ActiveMarkers[id].timeout then
+                local tt = Profiteers.ActiveMarkers[id].killed and "INTERCEPTED" or string.ToMinutesSeconds(math.max(0, Profiteers.ActiveMarkers[id].timeout - CurTime()))
                 GAMEMODE:ShadowText(tt, "CGHUD_24_Unscaled", x, y + s / 2, clr, CLR_B2, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, true)
             end
         end

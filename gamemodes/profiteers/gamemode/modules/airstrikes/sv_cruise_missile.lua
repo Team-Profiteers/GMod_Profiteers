@@ -14,5 +14,11 @@ function Profiteers:SpawnCruiseMissilePlane(droppos, ply)
     airdrop:Spawn()
     airdrop:Activate()
 
+    local eta = ((droppos + Vector(0, 0, 5000)) - pos):Length() / 3000 + 0.25
+    local id = Profiteers:CreateMarker("cruise_missile", ply, droppos, nil, eta)
+    Profiteers:SendMarker(id, ply)
+
+    airdrop.MarkerID = id
+
     airdrop.Bounty = Profiteers.Buyables.pt_cruise_missile.Price
 end

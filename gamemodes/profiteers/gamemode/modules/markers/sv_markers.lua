@@ -39,3 +39,17 @@ function Profiteers:SendMarker(id, ply)
         net.Broadcast()
     end
 end
+
+function Profiteers:KillMarker(id, instant, ply)
+    local marker = Profiteers.ActiveMarkers[id]
+    if !marker then return end
+
+    net.Start("pt_marker_kill")
+    net.WriteUInt(id, 9)
+    net.WriteBool(instant)
+    if ply then
+        net.Send(ply)
+    else
+        net.Broadcast()
+    end
+end
