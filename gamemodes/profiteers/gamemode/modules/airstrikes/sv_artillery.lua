@@ -46,6 +46,9 @@ function Profiteers:SpawnMortar(pos, ply)
                 shell:GetPhysicsObject():SetVelocity(Vector(0, 0, -8000000))
             end)
         end
+
+        local id = Profiteers:CreateMarker("mortar", ply, pos, nil, 20)
+        Profiteers:SendMarker(id, ply)
     else
         ply:AddMoney(Profiteers.Buyables.pt_mortar.Price)
         return
