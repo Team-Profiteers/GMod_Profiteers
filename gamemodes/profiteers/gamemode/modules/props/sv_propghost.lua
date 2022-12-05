@@ -36,7 +36,7 @@ function GM:GhostProp(ent)
     ent:SetCollisionGroup(COLLISION_GROUP_WORLD)
 end
 
-function GM:UnGhostProp(ent, physics)
+function GM:UnGhostProp(ent)
     if !ent:GetNWBool("Ghosted") then return end
     ent:SetNWBool("Ghosted", false)
 
@@ -72,12 +72,16 @@ end
 
 
 hook.Add("PhysgunDrop", "Profiteers", function(ply, ent)
-    if !GetConVar("pt_prop_ghost"):GetBool() then return end
-    GAMEMODE:FreezeProp(ent, true)
-    ply:AddFrozenPhysicsObject(ent, ent:GetPhysicsObject())
-    GAMEMODE:StartUnGhost(ent)
+    if GetConVar("pt_prop_ghost"):GetBool() then
+        GAMEMODE:StartUnGhost(ent)
+    else
+        GAMEMODE:UnGhostProp(ent)
+    end
+    if GetConVar("pt_prop_freeze"):GetBool() then
+        GAMEMODE:FreezeProp(ent, true)
+        ply:AddFrozenPhysicsObject(ent, ent:GetPhysicsObject())
+    end
 end)
-
 
 hook.Add("OnPhysgunPickup", "ProfiteersOnPhysgunPickupGhostProps", function(ply, ent)
     if !GetConVar("pt_prop_ghost"):GetBool() then return end
@@ -90,10 +94,15 @@ end)
 hook.Add("PlayerSpawnedProp", "Profiteers", function(ply, model, ent)
     ent:CalculatePropHealth()
     ent:CPPISetOwner(ply)
-    GAMEMODE:GhostProp(ent)
-    GAMEMODE:FreezeProp(ent, true)
-    ply:AddFrozenPhysicsObject(ent, ent:GetPhysicsObject())
-    GAMEMODE:StartUnGhost(ent)
+
+    if GetConVar("pt_prop_ghost"):GetBool() then
+        GAMEMODE:GhostProp(ent)
+        GAMEMODE:StartUnGhost(ent)
+    end
+    if GetConVar("pt_prop_freeze"):GetBool() then
+        GAMEMODE:FreezeProp(ent, true)
+        ply:AddFrozenPhysicsObject(ent, ent:GetPhysicsObject())
+    end
 end)
 
 hook.Add("CanPlayerUnfreeze", "Profiteers", function(ply, ent, phys)
