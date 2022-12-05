@@ -14,5 +14,11 @@ function Profiteers:SpawnBunkerBusterPlane(ply, droppos)
     airdrop:Spawn()
     airdrop:Activate()
 
+    local eta = (droppos - pos):Length() / 1300
+    local id = Profiteers:CreateMarker("bunker_buster", ply, droppos, nil, eta)
+    Profiteers:SendMarker(id, ply)
+
+    airdrop.MarkerID = id
+
     airdrop.Bounty = Profiteers.Buyables.pt_bomb_marker.Price
 end

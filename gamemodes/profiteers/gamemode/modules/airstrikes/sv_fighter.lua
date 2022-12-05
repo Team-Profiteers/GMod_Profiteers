@@ -13,5 +13,9 @@ function Profiteers:SpawnFighterPlane(ply)
     airdrop:Spawn()
     airdrop:Activate()
 
+    local id = Profiteers:CreateMarker("fighter", ply, nil, nil, 20)
+    Profiteers:SendMarker(id, ply)
+    airdrop.MarkerID = id
+
     airdrop.Bounty = Profiteers.Buyables.pt_fighter.Price
 end

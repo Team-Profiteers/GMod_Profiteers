@@ -40,6 +40,8 @@ if SERVER then
             bomb.TargetPos = self.DropPos
             bomb:Spawn()
 
+            bomb.MarkerID = self.MarkerID
+
             if self.Bounty then
                 bomb.Bounty = self.Bounty * 0.5
                 self.Bounty = self.Bounty - bomb.Bounty
@@ -51,6 +53,12 @@ if SERVER then
         end
 
         self:FrameAdvance(FrameTime())
+    end
+
+    function ENT:OnDestroyed()
+        if self.MarkerID and !self.BombDropped then
+            Profiteers:KillMarker(self.MarkerID, false)
+        end
     end
 
 else

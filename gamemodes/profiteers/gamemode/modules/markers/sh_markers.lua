@@ -7,6 +7,18 @@ Profiteers.Markers = {
         name = "Cruise Missile",
         mat = Material("profiteers/markers/cruise_missile.png", "smooth mips"),
     },
+    ["pave_low"] = {
+        name = "Cruise Missile",
+        mat = Material("profiteers/markers/pave_low.png", "smooth mips"),
+    },
+    ["bunker_buster"] = {
+        name = "Bunker Buster",
+        mat = Material("profiteers/markers/bunker_buster.png", "smooth mips"),
+    },
+    ["fighter"] = {
+        name = "Fighter Patrol",
+        mat = Material("profiteers/markers/fighter.png", "smooth mips"),
+    },
 }
 
 -- Fewer than 512 markers should exist at one time

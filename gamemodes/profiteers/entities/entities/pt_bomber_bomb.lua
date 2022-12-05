@@ -97,6 +97,10 @@ if SERVER then
             self.Paid = true
         end
 
+        if self.MarkerID then
+            Profiteers:KillMarker(self.MarkerID, false)
+        end
+
         return 0
     end
 end

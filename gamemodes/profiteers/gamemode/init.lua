@@ -24,13 +24,13 @@ end
 
 function GM:GetFallDamage(ply, speed)
     if IsValid(ply:GetGroundEntity()) and ply:GetGroundEntity():IsValidCombatTarget() then
-        ply:SetVelocity(Vector(0, 0, speed))
+        ply:SetVelocity(Vector(0, 0, math.max(500, speed)))
         if !ply:IsFriendly(ply:GetGroundEntity()) then
             ply:GetGroundEntity().GoombaStomped = true
             local dmg = DamageInfo()
             dmg:SetAttacker(ply)
             dmg:SetInflictor(ply)
-            dmg:SetDamage(math.Clamp(speed / 5, 200, 1000))
+            dmg:SetDamage(999)
             dmg:SetDamageType(DMG_CRUSH + DMG_NEVERGIB)
             dmg:SetDamageForce(Vector(0, 0, math.min(speed / 10, 500)))
             dmg:SetDamagePosition(ply:GetPos())
