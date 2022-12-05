@@ -20,10 +20,12 @@ ENT.Spawnable = false
 
 ENT.Mass = 100
 
-ENT.Range = 4096
-ENT.Damage = 90
-ENT.MagSize = 50
+ENT.Range = 5000
+ENT.Damage = 100
+ENT.MagSize = 60
 
+ENT.TurnRate = 90
+ENT.TurnRatePitch = 60
 ENT.PitchMin = -30
 ENT.PitchMax = 60
 
@@ -99,7 +101,7 @@ if SERVER then
         local dot = targetang:Forward():Dot(self:GetAimAngle():Forward())
         if IsValid(self.Target) and dot >= 0.95 then
             if self:GetLockonTime() == 0 then
-                self:SetLockonTime(CurTime() + 2)
+                self:SetLockonTime(CurTime() + 1)
                 self:EmitSound("npc/turret_floor/ping.wav", 120, 100)
             elseif self:GetLockonTime() < CurTime() and dot >= 0.995 then
                 self:ShootTarget()
@@ -145,7 +147,7 @@ if SERVER then
             self.NextFire = CurTime() + 0.5
             return
         end
-        self.NextFire = CurTime() + 0.25
+        self.NextFire = CurTime() + 0.2
         self.LastBurstTime = CurTime()
 
         local targetang = self:LocalToWorldAngles(self:GetAimAngle())
@@ -174,7 +176,7 @@ if SERVER then
         else
             self.SalvoLeft = (self.SalvoLeft or 1) - 1
             if self.SalvoLeft <= 0 then
-                self.NextFire = CurTime() + 3
+                self.NextFire = CurTime() + 1.5
                 self.SalvoLeft = 3
             end
         end
