@@ -193,7 +193,9 @@ function PLAYER:StartMove( mv, cmd )
 
             if tr_walljump.Hit and !tr_walljump.HitSky and tr_walljump.HitNormal.z <= 0.75 and tr_walljump.HitNormal.z >= -0.75 and (ply.LastWallJumpNormal == Vector(0, 0, 0) or ply.LastWallJumpNormal:Dot(tr_walljump.HitNormal) <= 0.5) then
 
-                local v = math.max(ply:GetVelocity():Length() + 300, 800)
+                local v2 = ply:GetVelocity()
+                v2.z = 0
+                local v = math.Clamp(v2:Length() + 400, 800, 3000)
                 mv:SetVelocity(ang:Forward() * v * 0.55 + up * v * 0.45)
                 ply.LastWallJumpNormal = tr_walljump.HitNormal
 
@@ -219,7 +221,7 @@ function PLAYER:StartMove( mv, cmd )
     -- Parachute slow fall
     if ply:GetNWBool("pt_parachute") then
         if vel.z < -300 then
-            vel.z = math.Approach(vel.z, -300, -FrameTime() * 2000)
+            vel.z = math.Approach(vel.z, -300, -FrameTime() * (1000 + math.abs(vel.z * 1.25)))
         else
             vel.z = math.Approach(vel.z, -300, -FrameTime() * 500)
         end
