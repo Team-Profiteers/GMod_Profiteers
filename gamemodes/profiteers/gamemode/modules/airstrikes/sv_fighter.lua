@@ -13,7 +13,7 @@ function Profiteers:SpawnFighterPlane(ply)
     airdrop:Spawn()
     airdrop:Activate()
 
-    local id = Profiteers:CreateMarker("fighter", ply, nil, nil, 20)
+    local id = Profiteers:CreateMarker("fighter", ply, nil, nil, 15)
     Profiteers:SendMarker(id, ply)
     airdrop.MarkerID = id
 

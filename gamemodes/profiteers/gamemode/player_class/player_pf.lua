@@ -193,7 +193,8 @@ function PLAYER:StartMove( mv, cmd )
 
             if tr_walljump.Hit and !tr_walljump.HitSky and tr_walljump.HitNormal.z <= 0.75 and tr_walljump.HitNormal.z >= -0.75 and (ply.LastWallJumpNormal == Vector(0, 0, 0) or ply.LastWallJumpNormal:Dot(tr_walljump.HitNormal) <= 0.5) then
 
-                mv:SetVelocity(ang:Forward() * 400 + up * 300)
+                local v = math.max(ply:GetVelocity():Length() + 300, 600)
+                mv:SetVelocity(ang:Forward() * v * 0.6 + up * v * 0.4)
                 ply.LastWallJumpNormal = tr_walljump.HitNormal
 
                 ply:SetNWFloat("pt_nextclimb", CurTime() + 0.5)
