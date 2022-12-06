@@ -14,5 +14,9 @@ function Profiteers:SpawnPaveLowPlane(ply)
     airdrop:Spawn()
     airdrop:Activate()
 
+    local id = Profiteers:CreateMarker("pave_low", ply, ply:GetPos(), nil, 150)
+    Profiteers:SendMarker(id, ply)
+    airdrop.MarkerID = id
+
     airdrop.Bounty = Profiteers.Buyables.pt_pavelow.Price
 end

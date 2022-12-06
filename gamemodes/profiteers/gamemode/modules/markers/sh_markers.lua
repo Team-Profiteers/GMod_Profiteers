@@ -12,7 +12,7 @@ Profiteers.Markers = {
         mat = Material("profiteers/markers/cruise_missile.png", "smooth mips"),
     },
     ["pave_low"] = {
-        name = "Cruise Missile",
+        name = "Pave Low",
         mat = Material("profiteers/markers/pave_low.png", "smooth mips"),
     },
     ["bunker_buster"] = {

@@ -78,7 +78,7 @@ hook.Add("HUDPaint", "Profiteers_Markers", function()
         surface.SetAlphaMultiplier(a * a2)
 
         local ply_dist = EyePos():DistToSqr(v[1])
-        local s = math.Clamp(1 - ply_dist / 4096 ^ 2, 0.5, 1) * 64
+        local s = math.Clamp(1 - ply_dist / 8192 ^ 2, 0.5, 1) * 64
         local x, y = v[2].x, v[2].y
         local clr = Profiteers.ActiveMarkers[id].color
 

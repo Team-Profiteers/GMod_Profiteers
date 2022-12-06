@@ -19,7 +19,7 @@ ENT.NextMissileTime = 0
 
 ENT.LoiterTargetAng = Angle(0, 0, 0)
 
-ENT.Health = 10000
+ENT.BaseHealth = 10000
 
 ENT.Range = 10000
 ENT.AirAssetWeight = 5
@@ -37,7 +37,7 @@ if SERVER then
     function ENT:Think()
         local targetpos
 
-        if !IsValid(self:GetOwner()) or self.Rockets <= 0 or self.SpawnTime + 120 < CurTime() then
+        if !IsValid(self:GetOwner()) or self.Rockets <= 0 or self.SpawnTime + 150 < CurTime() then
             targetpos = self.EnterPos
             self.LeavingArea = true
         else
@@ -141,6 +141,11 @@ if SERVER then
         self.Rockets = self.Rockets - 1
     end
 
+    function ENT:OnDestroyed()
+        if self.MarkerID then
+            Profiteers:KillMarker(self.MarkerID, false)
+        end
+    end
 else
     function ENT:Think()
         if self:Health() < (self:GetMaxHealth() * 0.5) and self.Ticks % 5 == 0 then
