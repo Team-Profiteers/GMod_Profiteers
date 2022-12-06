@@ -49,6 +49,7 @@ if SERVER then
             end
             ]]
             self.NextShoot = CurTime() + 0.01
+            self.BombDropped = true
             local shootang = (self:GetAngles() + Angle(90, 0, 0)):Forward()
             local bullet = {
                 Attacker = self:GetOwner(),
@@ -88,6 +89,12 @@ if SERVER then
             return true
         else
             phys:ApplyForceCenter(self:GetAngles():Forward() * FrameTime() * 30000000)
+        end
+    end
+
+    function ENT:OnDestroyed()
+        if self.MarkerID and !self.BombDropped then
+            Profiteers:KillMarker(self.MarkerID, false)
         end
     end
 end

@@ -65,10 +65,18 @@ if SERVER then
                 bomb.Bounty = self.Bounty * 0.25
                 bomb2.Bounty = self.Bounty * 0.25
                 self.Bounty = self.Bounty - bomb.Bounty - bomb2.Bounty
+                bomb.MarkerID = self.MarkerID
+                bomb2.MarkerID = self.MarkerID
             end
 
             constraint.NoCollide(bomb, bomb2, 0, 0)
             self.AirAssetWeight = -1
+        end
+    end
+
+    function ENT:OnDestroyed()
+        if self.MarkerID and !self.BombDropped then
+            Profiteers:KillMarker(self.MarkerID, false)
         end
     end
 end

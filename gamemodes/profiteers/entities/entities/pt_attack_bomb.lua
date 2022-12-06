@@ -65,13 +65,17 @@ if SERVER then
     end
 
     function ENT:OnTakeDamage(dmginfo)
-        if dmginfo:GetInflictor():GetClass() == self:GetClass() then return end
+        if self.Detonated or dmginfo:GetInflictor():GetClass() == self:GetClass() then return end
         self.Dud = true
         self:Detonate()
 
         if !self.Paid and self.Bounty and IsValid(dmginfo:GetAttacker()) and dmginfo:GetAttacker():IsPlayer() and (dmginfo:GetAttacker() != self:GetOwner() or GetConVar("pt_dev_airffa"):GetBool()) then
             dmginfo:GetAttacker():AddMoney(self.Bounty * GetConVar("pt_money_airmult"):GetFloat())
             self.Paid = true
+        end
+
+        if self.MarkerID then
+            Profiteers:KillMarker(self.MarkerID, false)
         end
 
         return 0

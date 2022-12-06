@@ -30,6 +30,11 @@ function Profiteers:SpawnAttackerPlane(ply, droppos)
     airdrop:SetOwner(ply)
     airdrop.Bounty = Profiteers.Buyables.pt_attacker.Price
 
+    local eta = (droppos - pos):Length() / 3000 + (pos.z - droppos.z) / 4000
+    local id = Profiteers:CreateMarker("bomber", ply, droppos, nil, eta)
+    Profiteers:SendMarker(id, ply)
+    airdrop.MarkerID = id
+
     airdrop.DropPos = droppos
     if !diagonal.Hit then
         airdrop.DiagonalDrop = diagonal.HitPos
@@ -61,6 +66,12 @@ function Profiteers:SpawnGunRunPlane(ply, droppos)
     airdrop:Activate()
 
     airdrop.Bounty = Profiteers.Buyables.pt_gunrun.Price
+
+    local eta = (droppos - pos):Length() / 3000
+    local id = Profiteers:CreateMarker("gun_run", ply, droppos, nil, eta)
+    Profiteers:SendMarker(id, ply)
+
+    airdrop.MarkerID = id
 
     --[[]
     local done = false

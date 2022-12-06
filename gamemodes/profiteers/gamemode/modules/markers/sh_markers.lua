@@ -23,6 +23,14 @@ Profiteers.Markers = {
         name = "Fighter Patrol",
         mat = Material("profiteers/markers/fighter.png", "smooth mips"),
     },
+    ["gun_run"] = {
+        name = "Gun Run",
+        mat = Material("profiteers/markers/gun_run.png", "smooth mips"),
+    },
+    ["bomber"] = {
+        name = "CAS Bomber",
+        mat = Material("profiteers/markers/bomber.png", "smooth mips"),
+    },
 
     ["death"] = {
         name = "Last Death",
