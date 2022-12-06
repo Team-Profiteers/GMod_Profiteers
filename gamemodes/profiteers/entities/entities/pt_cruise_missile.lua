@@ -76,6 +76,8 @@ if SERVER then
     end
 
     function ENT:OnTakeDamage(dmginfo)
+        if self.Detonated or self.Dead then return end
+
         self.Dud = true
         self:Detonate()
 

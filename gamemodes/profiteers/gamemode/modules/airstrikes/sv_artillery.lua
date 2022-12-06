@@ -8,7 +8,7 @@ function Profiteers:SpawnArtillery(pos, ply)
     })
     if tr.HitSky then
         for i = 1, 10 do
-            timer.Simple(i * 5 + math.Rand(0, 2), function()
+            timer.Simple(i * 5 + math.Rand(0, 3), function()
                 local spread = 256 + ((10 - i) / 10) * 512
                 local shell = ents.Create("pt_shell_artillery")
                 shell:SetPos(tr.HitPos + Vector(math.Rand(-spread, spread), math.Rand(-spread, spread), -32))
@@ -19,6 +19,9 @@ function Profiteers:SpawnArtillery(pos, ply)
                 shell:GetPhysicsObject():SetVelocity(Vector(0, 0, -9000000))
             end)
         end
+
+        local id = Profiteers:CreateMarker("artillery", ply, pos, nil, 60)
+        Profiteers:SendMarker(id, ply)
     else
         ply:AddMoney(Profiteers.Buyables.pt_artillery.Price)
         return

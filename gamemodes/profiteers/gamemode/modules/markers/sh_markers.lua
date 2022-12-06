@@ -3,6 +3,10 @@ Profiteers.Markers = {
         name = "Mortar Strike",
         mat = Material("profiteers/markers/mortar.png", "smooth mips"),
     },
+    ["artillery"] = {
+        name = "Artillery Strike",
+        mat = Material("profiteers/markers/artillery.png", "smooth mips"),
+    },
     ["cruise_missile"] = {
         name = "Cruise Missile",
         mat = Material("profiteers/markers/cruise_missile.png", "smooth mips"),
@@ -19,6 +23,7 @@ Profiteers.Markers = {
         name = "Fighter Patrol",
         mat = Material("profiteers/markers/fighter.png", "smooth mips"),
     },
+
     ["death"] = {
         name = "Last Death",
         mat = Material("profiteers/markers/death.png", "smooth mips"),
