@@ -9,7 +9,7 @@ net.Receive("pt_marker_add", function()
     Profiteers.ActiveMarkers[id].starttime = CurTime()
 
     if Profiteers.ActiveMarkers[id].pos == Vector(0, 0, 0) then Profiteers.ActiveMarkers[id].pos = nil end
-    if Profiteers.ActiveMarkers[id].timeout < 0 then Profiteers.ActiveMarkers[id].pos = nil end
+    if Profiteers.ActiveMarkers[id].timeout < 0 then Profiteers.ActiveMarkers[id].timeout = nil end
     if !IsValid(Profiteers.ActiveMarkers[id].ent) then Profiteers.ActiveMarkers[id].ent = nil end
     if !IsValid(Profiteers.ActiveMarkers[id].owner) then Profiteers.ActiveMarkers[id].owner = nil end
 
@@ -51,7 +51,7 @@ hook.Add("HUDPaint", "Profiteers_Markers", function()
                 else
                     Profiteers.ActiveMarkers[id].alpha = Lerp((math.sin(CurTime() * math.pi * 5) + 1) / 2, 0.5, 1)
                 end
-            elseif Profiteers.ActiveMarkers[id].timeout and CurTime() >= Profiteers.ActiveMarkers[id].timeout then
+            elseif (Profiteers.ActiveMarkers[id].timeout or 0) > 0 and CurTime() >= Profiteers.ActiveMarkers[id].timeout then
                 Profiteers.ActiveMarkers[id].alpha = Lerp((CurTime() - Profiteers.ActiveMarkers[id].timeout) / 3, 1, 0)
                 if Profiteers.ActiveMarkers[id].alpha == 0 then
                     Profiteers.ActiveMarkers[id] = nil
@@ -86,12 +86,12 @@ hook.Add("HUDPaint", "Profiteers_Markers", function()
         local mouse_range = CGSS(math.Clamp(1 - ply_dist / 2048 ^ 2, 0.1, 1) * 300)
         if mouse_dist < mouse_range then
             local y2 = y - s / 2 - 2
-            if Profiteers.ActiveMarkers[id].owner then
+            if Profiteers.ActiveMarkers[id].owner and Profiteers.ActiveMarkers[id].owner ~= LocalPlayer() then
                 GAMEMODE:ShadowText(IsValid(Profiteers.ActiveMarkers[id].owner) and Profiteers.ActiveMarkers[id].owner:GetName() or "UNKNOWN", "CGHUD_24_Unscaled", x, y2, clr, CLR_B2, TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, true)
                 y2 = y2 - 22
             end
             GAMEMODE:ShadowText(markertbl.name, "CGHUD_24_Unscaled", x, y2, clr, CLR_B2, TEXT_ALIGN_CENTER, TEXT_ALIGN_BOTTOM, true)
-            if Profiteers.ActiveMarkers[id].timeout then
+            if (Profiteers.ActiveMarkers[id].timeout or 0) > 0 then
                 local tt = Profiteers.ActiveMarkers[id].killed and "INTERCEPTED" or string.ToMinutesSeconds(math.max(0, Profiteers.ActiveMarkers[id].timeout - CurTime()))
                 GAMEMODE:ShadowText(tt, "CGHUD_24_Unscaled", x, y + s / 2, clr, CLR_B2, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, true)
             end

@@ -33,6 +33,7 @@ function Profiteers:SendMarker(id, ply)
     net.WriteVector(marker.pos or Vector(0, 0, 0))
     net.WriteEntity(marker.ent or NULL)
     net.WriteFloat(marker.timeout or -1)
+
     if ply then
         net.Send(ply)
     else
@@ -40,16 +41,25 @@ function Profiteers:SendMarker(id, ply)
     end
 end
 
-function Profiteers:KillMarker(id, instant, ply)
+function Profiteers:KillMarker(id, instant)
     local marker = Profiteers.ActiveMarkers[id]
     if !marker then return end
 
     net.Start("pt_marker_kill")
     net.WriteUInt(id, 9)
     net.WriteBool(instant)
-    if ply then
-        net.Send(ply)
-    else
-        net.Broadcast()
-    end
+    net.Broadcast()
+
+    Profiteers.ActiveMarkers[id] = nil
 end
+
+hook.Add("DoPlayerDeath", "Profiteers_MarkDeath", function(ply, attacker, dmginfo)
+
+    if ply.LastDeathMarkerID then
+        Profiteers:KillMarker(ply.LastDeathMarkerID, true)
+    end
+
+    local id = Profiteers:CreateMarker("death", ply, ply:GetPos())
+    Profiteers:SendMarker(id, ply)
+    ply.LastDeathMarkerID = id
+end)

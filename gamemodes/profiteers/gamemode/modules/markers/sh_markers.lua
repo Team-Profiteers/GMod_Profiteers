@@ -19,6 +19,10 @@ Profiteers.Markers = {
         name = "Fighter Patrol",
         mat = Material("profiteers/markers/fighter.png", "smooth mips"),
     },
+    ["death"] = {
+        name = "Last Death",
+        mat = Material("profiteers/markers/death.png", "smooth mips"),
+    },
 }
 
 -- Fewer than 512 markers should exist at one time
