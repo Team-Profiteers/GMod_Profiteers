@@ -195,8 +195,8 @@ function PLAYER:StartMove( mv, cmd )
 
                 local v2 = ply:GetVelocity()
                 v2.z = 0
-                local v = math.Clamp(v2:Length() + 400, 800, 3000)
-                mv:SetVelocity(ang:Forward() * v * 0.55 + up * v * 0.45)
+                local v = math.Clamp(v2:Length() + 300, 600, 3000)
+                mv:SetVelocity(ang:Forward() * v * 0.85 + up * (200 + v * 0.15))
                 ply.LastWallJumpNormal = tr_walljump.HitNormal
 
                 ply:SetNWFloat("pt_nextclimb", CurTime() + 0.5)
