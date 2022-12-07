@@ -39,22 +39,34 @@ Profiteers.Buyables = {
     ["arc9_bo2_stinger"] = {
         EntityClass = "arc9_bo2_stinger",
         Price = 15000,
+        -- Cooldown = 120,
 
         Description = "Anti-Aircraft Launcher",
         Description2 = "Fire and forget",
         Category = "Explosives",
     },
+    ["arc9_mw2e_thumper"] = {
+        EntityClass = "arc9_mw2e_thumper",
+        Price = 2000,
+        -- Cooldown = 60,
+
+        Description = "Single Shot Grenade Launcher",
+        Description2 = "Cost effective, low firepower",
+        Category = "Explosives",
+    },
     ["arc9_bo1_chinalake"] = {
         EntityClass = "arc9_bo1_chinalake",
-        Price = 4000,
+        Price = 6000,
+        -- Cooldown = 90,
 
-        Description = "Pump-Action Grenade Launcher",
+        Description = "Pump Action Grenade Launcher",
         Description2 = "Slow, loads multiple rounds",
         Category = "Explosives",
     },
     ["arc9_bo1_m202"] = {
         EntityClass = "arc9_bo1_m202",
         Price = 80000,
+        -- Cooldown = 180,
 
         Description = "Multiple Rocket Launcher",
         Description2 = "Massive incendiary damage",
@@ -63,6 +75,7 @@ Profiteers.Buyables = {
     ["arc9_bo1_minigun"] = {
         EntityClass = "arc9_bo1_minigun",
         Price = 100000,
+        -- Cooldown = 180,
 
         Description = "Man-portable Minigun",
         Description2 = "Massive rate of fire",
@@ -71,6 +84,7 @@ Profiteers.Buyables = {
     ["arc9_bo2_mm1"] = {
         EntityClass = "arc9_bo2_mm1",
         Price = 90000,
+        -- Cooldown = 240,
 
         Description = "Multiple Grenade Launcher",
         Description2 = "Lay down fields of fire",
@@ -78,23 +92,44 @@ Profiteers.Buyables = {
     },
     ["arc9_bo1_strela"] = {
         EntityClass = "arc9_bo1_strela",
-        Price = 7500,
+        Price = 8000,
+        -- Cooldown = 90,
 
         Description = "Anti-Aircraft Launcher",
-        Description2 = "Powerful, needs constant lock",
+        Description2 = "Requires constant lock",
         Category = "Explosives",
     },
     ["arc9_bo1_rpg7"] = {
         EntityClass = "arc9_bo1_rpg7",
-        Price = 6000,
+        Price = 9000,
+        -- Cooldown = 120,
 
-        Description = "Anti-Tank Rocket Launcher",
+        Description = "Dumb-fire Rocket Launcher",
         Description2 = "Powerful and accurate, no lock",
+        Category = "Explosives",
+    },
+    ["arc9_mw2e_javelin"] = {
+        EntityClass = "arc9_mw2e_javelin",
+        Price = 25000,
+        -- Cooldown = 180,
+
+        Description = "Guided Rocket Launcher",
+        Description2 = "Top attack or guide with aim",
+        Category = "Explosives",
+    },
+    ["arc9_cod4e_at4"] = {
+        EntityClass = "arc9_cod4e_at4",
+        Price = 5000,
+        -- Cooldown = 60,
+
+        Description = "Light Anti-Tank Weapon",
+        Description2 = "High impact damage, weak splash",
         Category = "Explosives",
     },
     ["arc9_bo1_law"] = {
         EntityClass = "arc9_bo1_law",
-        Price = 2000,
+        Price = 4000,
+        -- Cooldown = 60,
 
         Description = "Light Anti-Tank Weapon",
         Description2 = "Inaccurate but cheap",
@@ -103,6 +138,7 @@ Profiteers.Buyables = {
     ["arc9_bo2_m32"] = {
         EntityClass = "arc9_bo2_m32",
         Price = 40000,
+        -- Cooldown = 180,
 
         Description = "Multiple Grenade Launcher",
         Description2 = "Fast-firing, slow to load",
@@ -111,6 +147,7 @@ Profiteers.Buyables = {
     ["arc9_waw_flamethrower"] = {
         EntityClass = "arc9_waw_flamethrower",
         Price = 80000,
+        -- Cooldown = 180,
 
         Description = "Extreme close range \"fire\"power",
         Description2 = "Napalm sweet as wine",
