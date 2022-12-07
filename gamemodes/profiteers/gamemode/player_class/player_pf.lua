@@ -181,12 +181,12 @@ function PLAYER:StartMove( mv, cmd )
         end
 
         -- Wall jump
-        if !done and ply:GetNWFloat("pt_nextclimb", 0) < CurTime() and math.abs(ang:Forward():Dot(up)) <= 0.5 then
+        if !done and ply:GetNWFloat("pt_nextclimb", 0) < CurTime() and math.abs(ang:Forward():Dot(up)) <= 0 then
             local tr_walljump = util.TraceHull({
                 start = ply:GetPos(),
-                endpos = ply:GetPos() - (ang:Forward() * 48),
-                mins = Vector(-8, -8, 0),
-                maxs = Vector(8, 8, 8),
+                endpos = ply:GetPos() - (ang:Forward() * 32),
+                mins = Vector(-16, -16, 0),
+                maxs = Vector(16, 16, 16),
                 filter = ply
             })
             ply.LastWallJumpNormal = ply.LastWallJumpNormal or Vector(0, 0, 0)
