@@ -95,6 +95,10 @@ net.Receive("pt_team_invite", function(len, ply)
     net.WriteUInt(ply:UserID(), 8)
     net.WriteBool(allow)
     net.Send(invitee)
+
+    if not allow and invitee:Team() == ply:UserID() then
+        invitee:SetTeam(TEAM_UNASSIGNED)
+    end
 end)
 
 net.Receive("pt_team_join", function(len, ply)
