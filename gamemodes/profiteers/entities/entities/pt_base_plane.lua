@@ -10,6 +10,8 @@ ENT.IsAirAsset = true
 ENT.FlybySound = false
 ENT.BaseHealth = 1000
 
+ENT.TailLightPos = Vector(0, 0, 0)
+
 if SERVER then
     function ENT:Initialize()
         self:SetModel(self.Model)
@@ -79,8 +81,22 @@ else
         self:DrawModel()
     end
 
+    local glowmat = Material("sprites/physg_glow1")
+
     function ENT:DrawTranslucent()
         self:Draw()
+
+        if (math.sin((CurTime() * 4)) > 0.75) then
+            render.SetMaterial(glowmat)
+
+            local pos = self:GetPos() + self:GetForward() * self.TailLightPos.x + self:GetRight() * self.TailLightPos.y + self:GetUp() * self.TailLightPos.z
+
+            if self:IsFriendly(LocalPlayer()) then
+                render.DrawSprite(pos, 256, 256, Color(25, 255, 25))
+            else
+                render.DrawSprite(pos, 256, 256, Color(255, 25, 25))
+            end
+        end
     end
 
     ENT.Ticks = 0

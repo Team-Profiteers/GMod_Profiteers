@@ -16,6 +16,8 @@ ENT.DropPos = Vector(0, 0, 0)
 
 ENT.NextRocketTime = 0
 
+ENT.TailLightPos = Vector(0, 0, -32)
+
 if SERVER then
     function ENT:Think()
         local phys = self:GetPhysicsObject()

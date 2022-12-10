@@ -11,6 +11,7 @@ ENT.MyAngle = Angle(0, 0, 0)
 
 ENT.BaseHealth = 500
 ENT.FlybySound = true
+ENT.TailLightPos = Vector(-140, 0, -32)
 
 if SERVER then
     function ENT:Think()

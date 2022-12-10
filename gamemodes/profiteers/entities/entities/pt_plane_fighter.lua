@@ -14,6 +14,8 @@ ENT.FlybySound = true
 ENT.NextMissileTime = 0
 ENT.LaunchedMissileAt = {}
 
+ENT.TailLightPos = Vector(0, 0, -32)
+
 if SERVER then
 
     function ENT:Think()
@@ -26,7 +28,7 @@ if SERVER then
 
         if self.NextMissileTime < CurTime() then
             for k, v in pairs(ents.GetAll()) do
-                if v.IsAirAsset and not IsValid(self.LaunchedMissileAt[v]) and v ~= self and (v:GetOwner() ~= self:GetOwner() or GetConVar("pt_dev_airffa"):GetBool()) then
+                if v.IsAirAsset and not IsValid(self.LaunchedMissileAt[v]) and v ~= self and (not v:IsFriendly(self) or GetConVar("pt_dev_airffa"):GetBool()) then
                     self:LaunchMissile(v)
                     break
                 end

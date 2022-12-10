@@ -9,6 +9,8 @@ ENT.Model = "models/profiteers/c130.mdl"
 ENT.Dropped = false
 ENT.MyAngle = Angle(0, 0, 0)
 
+ENT.TailLightPos = Vector(-650, 0, 160)
+
 if SERVER then
     function ENT:Initialize()
         self:SetModel(self.Model)

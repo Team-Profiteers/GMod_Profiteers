@@ -31,6 +31,7 @@ if SERVER then
         local ents = ents.FindInSphere(self:GetPos(), 32)
 
         for k, v in pairs(ents) do
+            if v:IsFriendly(self) then continue end
             if v:IsPlayer() or v:IsNPC() then
                 self:Detonate()
                 break
@@ -74,7 +75,7 @@ ENT.RandoTime = 0
         self:DrawShadow(false)
     end
 
-    local glowmat = Material("sprites/redglow1")
+    local glowmat = Material("sprites/physg_glow1")
 
     function ENT:Draw()
     end
@@ -82,7 +83,12 @@ ENT.RandoTime = 0
     function ENT:DrawTranslucent(flags)
         if (math.sin(self.RandoTime + (CurTime() * 8)) > 0.75) then
             render.SetMaterial(glowmat)
-            render.DrawSprite(self:GetPos(), 12, 12, Color(255, 255, 255))
+
+            if self:IsFriendly(LocalPlayer()) then
+                render.DrawSprite(self:GetPos(), 12, 12, Color(25, 25, 255))
+            else
+                render.DrawSprite(self:GetPos(), 12, 12, Color(255, 25, 25))
+            end
         end
     end
 end

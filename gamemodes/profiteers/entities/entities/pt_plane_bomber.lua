@@ -12,6 +12,8 @@ ENT.MyAngle = Angle(0, 0, 0)
 ENT.BaseHealth = 5000
 ENT.FlybySound = true
 
+ENT.TailLightPos = Vector(0, 0, -32)
+
 if SERVER then
     function ENT:Think()
         local phys = self:GetPhysicsObject()

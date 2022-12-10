@@ -24,6 +24,7 @@ ENT.BaseHealth = 10000
 ENT.Range = 10000
 ENT.AirAssetWeight = 5
 
+ENT.TailLightPos = Vector(-200, 0, -90)
 
 DEFINE_BASECLASS(ENT.Base)
 
@@ -87,7 +88,7 @@ if SERVER then
                     if !IsValid(self.LaunchedMissileAt[v]) and
                     v != self and (v != self:GetOwner() or GetConVar("pt_dev_airffa"):GetBool()) and
                     ((v:IsPlayer() and v:Alive() and v:IsOnGround()) or (v:IsNPC() and v:Health() > 0)
-                    or scripted_ents.IsBasedOn(v:GetClass(), "pt_base_anchorable") and (v:CPPIGetOwner() != self:GetOwner() or GetConVar("pt_dev_airffa"):GetBool())) and
+                    or scripted_ents.IsBasedOn(v:GetClass(), "pt_base_anchorable") and (!v:IsFriendly(self) or GetConVar("pt_dev_airffa"):GetBool())) and
                     v:Visible(self) then
                         local mypos2d = self:GetPos()
                         local tgtpos2d = v:GetPos()
