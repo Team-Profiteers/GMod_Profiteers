@@ -158,6 +158,7 @@ if SERVER then
         ang:RotateAroundAxis(targetang:Up(), math.Rand(-3, 3))
         rocket:SetAngles(ang)
         rocket:Spawn()
+        rocket:SetOwner(self:CPPIGetOwner())
         rocket.Damage = self.Damage
         rocket.ImpactDamage = self.Damage
         rocket:GetPhysicsObject():SetVelocityInstantaneous(ang:Forward() * self.LaunchVelocity * 1.1)
