@@ -21,10 +21,10 @@ ENT.Spawnable = false
 ENT.Mass = 100
 
 ENT.Range = 5000
-ENT.Damage = 100
+ENT.Damage = 200
 ENT.MagSize = 60
 
-ENT.TurnRate = 90
+ENT.TurnRate = 120
 ENT.TurnRatePitch = 60
 ENT.PitchMin = -30
 ENT.PitchMax = 60
