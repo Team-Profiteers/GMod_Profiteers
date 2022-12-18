@@ -634,17 +634,17 @@ Profiteers.Buyables = {
             Profiteers:SpawnICBMPlane(ply)
         end
     },
-    ["pt_flyable_littlebird"] = {
-        Name = "Little Bird",
-        Price = 50000,
-        EntityClass = "pt_flyable_littlebird",
-        PlaceEntity = true,
-        EntityLimit = 1,
+    // ["pt_flyable_littlebird"] = {
+    //     Name = "Little Bird",
+    //     Price = 50000,
+    //     EntityClass = "pt_flyable_littlebird",
+    //     PlaceEntity = true,
+    //     EntityLimit = 1,
 
-        Description = "Flyable light helicopter",
+    //     Description = "Flyable light helicopter",
 
-        Category = "Vehicles"
-    },
+    //     Category = "Vehicles"
+    // },
     ["pt_artillery"] = {
         Name = "Artillery Strike",
         EntityClass = "pt_signal_artillery",
