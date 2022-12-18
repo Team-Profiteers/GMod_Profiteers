@@ -127,7 +127,7 @@ end
 function ENT:PTPV_Move(ply, mv)
     local speed = 10 * FrameTime()
 
-    local ang = mv:GetMoveAngles()
+    local ang = self:LocalToWorldAngles(mv:GetMoveAngles())
     local pos = mv:GetOrigin()
     local vel = mv:GetVelocity()
 
@@ -144,7 +144,7 @@ function ENT:PTPV_Move(ply, mv)
     local tr = util.TraceHull({
         start = pos,
         endpos = newpos,
-        mins = Vector(-100, -100, -64),
+        mins = Vector(-100, -100, -100),
         maxs = Vector(100, 100, 64),
         filter = {self, self:GetPilotSeat()}
     })
