@@ -29,7 +29,7 @@ ENT.MagSize = 1000
 ENT.LockAirAssets = true
 ENT.TurnRate = 360
 ENT.TurnRatePitch = 180
-ENT.PitchMin = 10
+ENT.PitchMin = 0
 ENT.PitchMax = 90
 
 function ENT:SetupDataTables()
@@ -151,7 +151,7 @@ if SERVER then
         }
 
         self:FireBullets(bullet)
-        self:EmitSound("^weapons/ar1/ar1_dist2.wav", 140, 85, 0.85)
+        self:EmitSound("^weapons/ar1/ar1_dist2.wav", 140, 85, 0.85, CHAN_WEAPON)
         self:SetAmmo(self:GetAmmo() - 1)
     end
 
@@ -198,9 +198,9 @@ if CLIENT then
 
         if bone and bone2 and bone3 then
             local bonepos, boneang = self:GetBonePosition(bone2)
-            self.AimAngYaw = LerpAngle(FrameTime() * 3, self.AimAngYaw or Angle(0, 0, 0), Angle(0, self:GetAimAngle().y - 90, 0))
+            self.AimAngYaw = LerpAngle(FrameTime() * 15, self.AimAngYaw or Angle(0, 0, 0), Angle(0, self:GetAimAngle().y - 90, 0))
             self:ManipulateBoneAngles(bone, self.AimAngYaw, false)
-            self.AimAngPitch = LerpAngle(FrameTime() * 3, self.AimAngPitch or Angle(0, 0, 0), Angle(self:GetAimAngle().p, 0, 0))
+            self.AimAngPitch = LerpAngle(FrameTime() * 15, self.AimAngPitch or Angle(0, 0, 0), Angle(self:GetAimAngle().p, 0, 0))
             self:ManipulateBoneAngles(bone2, self.AimAngPitch, false)
             self.BarrelRoll = Angle(0, 0, math.fmod(CurTime() * 500, 360))
             self:ManipulateBoneAngles(bone3, self.BarrelRoll, false)

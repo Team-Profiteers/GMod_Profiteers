@@ -281,7 +281,7 @@ if SERVER then
 
             -- simulate_projectile(self:GetSentryOrigin(), ang:Forward() * self.LaunchVelocity)
 
-            self:EmitSound("weapons/stinger_fire1.wav", 140, 85, 0.85)
+            self:EmitSound("weapons/stinger_fire1.wav", 140, 85, 0.85, CHAN_WEAPON)
         end
 
         rocket.Inflictor = self
